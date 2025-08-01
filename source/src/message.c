@@ -34,7 +34,7 @@ const char *message[4][MSG_END] =
 	"ROM Buffer %2dMB",
 
     // MSG_BROWSER_HELP
-    "›:‘I‘ð  ~:ƒƒjƒ…[   :" FONT_UP_DIRECTORY,
+    "ï¿½ï¿½:ï¿½Iï¿½ï¿½  ï¿½~:ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[  ï¿½ï¿½:" FONT_UP_DIRECTORY,
 
     // MSG_MENU_DATE_FMT_0
     "%4d/%2d/%2d %-4s %2d:%02d",
@@ -46,169 +46,169 @@ const char *message[4][MSG_END] =
 	#include "text/main_menu_t.h"
 
     // MSG_MAIN_MENU_0
-    "ƒ[ƒhƒXƒe[ƒg : ƒXƒƒbƒg %d",
+    "ï¿½ï¿½ï¿½[ï¿½hï¿½Xï¿½eï¿½[ï¿½g : ï¿½Xï¿½ï¿½ï¿½bï¿½g %d",
 
     // MSG_MAIN_MENU_1
-    "ƒZ[ƒuƒXƒe[ƒg : ƒXƒƒbƒg %d",
+    "ï¿½Zï¿½[ï¿½uï¿½Xï¿½eï¿½[ï¿½g : ï¿½Xï¿½ï¿½ï¿½bï¿½g %d",
 
     // MSG_MAIN_MENU_2
-    "ƒXƒe[ƒgƒZ[ƒuŠg’£ " FONT_R_TRIGGER,
+    "ï¿½Xï¿½eï¿½[ï¿½gï¿½Zï¿½[ï¿½uï¿½gï¿½ï¿½ " FONT_R_TRIGGER,
 
     // MSG_MAIN_MENU_3
-    "ƒXƒNƒŠ[ƒ“ ƒVƒ‡ƒbƒg: %s",
+    "ï¿½Xï¿½Nï¿½ï¿½ï¿½[ï¿½ï¿½ ï¿½Vï¿½ï¿½ï¿½bï¿½g: %s",
 
     // MSG_MAIN_MENU_4
-    "ƒGƒ~ƒ…ƒŒ[ƒ^‚ÌÝ’è",
+    "ï¿½Gï¿½~ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½ÌÝ’ï¿½",
 
     // MSG_MAIN_MENU_5
-    "ƒQ[ƒ€ƒpƒbƒh‚ÌÝ’è",
+    "ï¿½Qï¿½[ï¿½ï¿½ï¿½pï¿½bï¿½hï¿½ÌÝ’ï¿½",
 
     // MSG_MAIN_MENU_6
-    "ƒAƒiƒƒOƒXƒeƒBƒbƒN‚ÌÝ’è",
+    "ï¿½Aï¿½iï¿½ï¿½ï¿½Oï¿½Xï¿½eï¿½Bï¿½bï¿½Nï¿½ÌÝ’ï¿½",
 
 	//MSG_MAIN_MENU_CHEAT
-    "ƒ`[ƒgƒƒjƒ…[",
+    "ï¿½`ï¿½[ï¿½gï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[",
 
     // MSG_MAIN_MENU_7
-    "ƒQ[ƒ€‚Ìƒ[ƒh " FONT_L_TRIGGER,
+    "ï¿½Qï¿½[ï¿½ï¿½ï¿½Ìƒï¿½ï¿½[ï¿½h " FONT_L_TRIGGER,
 
     // MSG_MAIN_MENU_8
-    "ƒŠƒZƒbƒg",
+    "ï¿½ï¿½ï¿½Zï¿½bï¿½g",
 
     // MSG_MAIN_MENU_9
-    "ƒQ[ƒ€‚É–ß‚é",
+    "ï¿½Qï¿½[ï¿½ï¿½ï¿½É–ß‚ï¿½",
 
     // MSG_MAIN_MENU_10
-    "ƒXƒŠ[ƒv",
+    "ï¿½Xï¿½ï¿½ï¿½[ï¿½v",
 
     // MSG_MAIN_MENU_11
-    "TempGBA‚ÌI—¹",
+    "FrogGBAï¿½ÌIï¿½ï¿½",
 
     // MSG_MAIN_MENU_HELP_0
-    "›:ƒ[ƒh  " FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ƒXƒƒbƒg‘I‘ð",
+    "ï¿½ï¿½:ï¿½ï¿½ï¿½[ï¿½h  " FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Xï¿½ï¿½ï¿½bï¿½gï¿½Iï¿½ï¿½",
 
     // MSG_MAIN_MENU_HELP_1
-    "›:ƒZ[ƒu  " FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ƒXƒƒbƒg‘I‘ð",
+    "ï¿½ï¿½:ï¿½Zï¿½[ï¿½u  " FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Xï¿½ï¿½ï¿½bï¿½gï¿½Iï¿½ï¿½",
 
     // MSG_MAIN_MENU_HELP_2
-    "›:ƒTƒuƒƒjƒ…[  " FONT_R_TRIGGER ":ƒVƒ‡[ƒgƒJƒbƒg",
+    "ï¿½ï¿½:ï¿½Tï¿½uï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[  " FONT_R_TRIGGER ":ï¿½Vï¿½ï¿½ï¿½[ï¿½gï¿½Jï¿½bï¿½g",
 
     // MSG_MAIN_MENU_HELP_3
-    "›:ƒCƒ[ƒW•Û‘¶  " FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ƒtƒH[ƒ}ƒbƒg‘I‘ð",
+    "ï¿½ï¿½:ï¿½Cï¿½ï¿½ï¿½[ï¿½Wï¿½Û‘ï¿½  " FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½tï¿½Hï¿½[ï¿½}ï¿½bï¿½gï¿½Iï¿½ï¿½",
 
     // MSG_MAIN_MENU_HELP_4
-    "›:ƒTƒuƒƒjƒ…[",
+    "ï¿½ï¿½:ï¿½Tï¿½uï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[",
 
     // MSG_MAIN_MENU_HELP_5
-    "›:ƒTƒuƒƒjƒ…[",
+    "ï¿½ï¿½:ï¿½Tï¿½uï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[",
 
     // MSG_MAIN_MENU_HELP_6
-    "›:ƒTƒuƒƒjƒ…[",
+    "ï¿½ï¿½:ï¿½Tï¿½uï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[",
 
     // MSG_MAIN_MENU_HELP_CHEAT
-    "›:ƒ`[ƒg‚ð•ÏX‚µ‚Ü‚·",
+    "ï¿½ï¿½:ï¿½`ï¿½[ï¿½gï¿½ï¿½ÏXï¿½ï¿½ï¿½Ü‚ï¿½",
 
     // MSG_MAIN_MENU_HELP_7
-    "›:ƒtƒ@ƒCƒ‹ƒuƒ‰ƒEƒU  " FONT_L_TRIGGER ":ƒVƒ‡[ƒgƒJƒbƒg",
+    "ï¿½ï¿½:ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½uï¿½ï¿½ï¿½Eï¿½U  " FONT_L_TRIGGER ":ï¿½Vï¿½ï¿½ï¿½[ï¿½gï¿½Jï¿½bï¿½g",
 
     // MSG_MAIN_MENU_HELP_8
-    "›:ƒQ[ƒ€‚ðƒŠƒZƒbƒg",
+    "ï¿½ï¿½:ï¿½Qï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½bï¿½g",
 
     // MSG_MAIN_MENU_HELP_9
-    "›:ƒQ[ƒ€‚É–ß‚é",
+    "ï¿½ï¿½:ï¿½Qï¿½[ï¿½ï¿½ï¿½É–ß‚ï¿½",
 
     // MSG_MAIN_MENU_HELP_10
-    "›:ƒXƒŠ[ƒv ƒ‚[ƒh",
+    "ï¿½ï¿½:ï¿½Xï¿½ï¿½ï¿½[ï¿½v ï¿½ï¿½ï¿½[ï¿½h",
 
     // MSG_MAIN_MENU_HELP_11
-    "›:I—¹",
+    "ï¿½ï¿½:ï¿½Iï¿½ï¿½",
 
     // MSG_OPTION_MENU_TITLE
 	#include "text/option_menu_t.h"
 
     // MSG_OPTION_MENU_0
-    "‰æ–Ê•\\Ž¦@@@@@: %s",
+    "ï¿½ï¿½Ê•\\ï¿½ï¿½ï¿½@ï¿½@ï¿½@ï¿½@ï¿½@: %s",
 
     // MSG_OPTION_MENU_1
-    "‰æ–Ê‚ÌŠg‘å—¦@@@: %d%%",
+    "ï¿½ï¿½Ê‚ÌŠgï¿½å—¦ï¿½@ï¿½@ï¿½@: %d%%",
 
     // MSG_OPTION_MENU_2
-    "‰æ–Ê‚ÌƒtƒBƒ‹ƒ^@@: %s",
+    "ï¿½ï¿½Ê‚Ìƒtï¿½Bï¿½ï¿½ï¿½^ï¿½@ï¿½@: %s",
 
     // MSG_OPTION_MENU_SHOW_FPS
-    "FPS•\\Ž¦ @@@@@: %s",
+    "FPSï¿½\\ï¿½ï¿½ ï¿½@ï¿½@ï¿½@ï¿½@ï¿½@: %s",
 
     // MSG_OPTION_MENU_3
-    "ƒtƒŒ[ƒ€ƒXƒLƒbƒv@: %s",
+    "ï¿½tï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Xï¿½Lï¿½bï¿½vï¿½@: %s",
 
     // MSG_OPTION_MENU_4
-    "ƒXƒLƒbƒv‚Ì’l@@@: %d",
+    "ï¿½Xï¿½Lï¿½bï¿½vï¿½Ì’lï¿½@ï¿½@ï¿½@: %d",
 
     // MSG_OPTION_MENU_5
-    "“®ìƒNƒƒbƒN@@@: %s",
+    "ï¿½ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½@ï¿½@ï¿½@: %s",
 
     // MSG_OPTION_MENU_6
-    "ƒTƒEƒ“ƒh‰¹—Ê@@@: %s",
+    "ï¿½Tï¿½Eï¿½ï¿½ï¿½hï¿½ï¿½ï¿½Ê@ï¿½@ï¿½@: %s",
 
     // MSG_OPTION_MENU_7
-    "ƒXƒ^ƒbƒN‚ÌÅ“K‰»@: %s",
+    "ï¿½Xï¿½^ï¿½bï¿½Nï¿½ÌÅ“Kï¿½ï¿½ï¿½@: %s",
 
     // MSG_OPTION_MENU_8
-    "BIOS‚©‚ç‹N“®‚ðs‚¤: %s",
+    "BIOSï¿½ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½: %s",
 
     // MSG_OPTION_MENU_9
-    "ƒoƒbƒNƒAƒbƒv‚ÌXV: %s",
+    "ï¿½oï¿½bï¿½Nï¿½Aï¿½bï¿½vï¿½ÌXï¿½V: %s",
 
     // MSG_OPTION_MENU_10
-    "Œ¾Œê@@@@@@@: %s",
+    "ï¿½ï¿½ï¿½ï¿½@ï¿½@ï¿½@ï¿½@ï¿½@ï¿½@ï¿½@: %s",
 
     // MSG_OPTION_MENU_HELP_DEFAULT
-    "Ý’è‚Ì‰Šú‰»",
+    "ï¿½Ý’ï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½",
 
     // MSG_OPTION_MENU_11
-    "–ß‚é",
+    "ï¿½ß‚ï¿½",
 
     // MSG_OPTION_MENU_HELP_0
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":‘I‘ð   ‹¤’Ê",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Iï¿½ï¿½   ï¿½ï¿½ï¿½ï¿½",
 
     // MSG_OPTION_MENU_HELP_1
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":‘I‘ð   ‹¤’Ê",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Iï¿½ï¿½   ï¿½ï¿½ï¿½ï¿½",
 
     // MSG_OPTION_MENU_HELP_2
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":‘I‘ð   ‹¤’Ê",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Iï¿½ï¿½   ï¿½ï¿½ï¿½ï¿½",
 
     // MSG_OPTION_MENU_HELP_SHOW_FPS
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":‘I‘ð   ƒGƒ~ƒ…ƒŒ[ƒ^",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Iï¿½ï¿½   ï¿½Gï¿½~ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^",
 
     // MSG_OPTION_MENU_HELP_3
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":‘I‘ð   ‹¤’Ê",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Iï¿½ï¿½   ï¿½ï¿½ï¿½ï¿½",
 
     // MSG_OPTION_MENU_HELP_4
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":‘I‘ð   ‹¤’Ê",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Iï¿½ï¿½   ï¿½ï¿½ï¿½ï¿½",
 
     // MSG_OPTION_MENU_HELP_5
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":‘I‘ð   ‹¤’Ê",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Iï¿½ï¿½   ï¿½ï¿½ï¿½ï¿½",
 
     // MSG_OPTION_MENU_HELP_6
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":‘I‘ð   ‹¤’Ê",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Iï¿½ï¿½   ï¿½ï¿½ï¿½ï¿½",
 
     // MSG_OPTION_MENU_HELP_7
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":‘I‘ð   ƒGƒ~ƒ…ƒŒ[ƒ^",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Iï¿½ï¿½   ï¿½Gï¿½~ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^",
 
     // MSG_OPTION_MENU_HELP_8
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":‘I‘ð   ƒGƒ~ƒ…ƒŒ[ƒ^",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Iï¿½ï¿½   ï¿½Gï¿½~ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^",
 
     // MSG_OPTION_MENU_HELP_9
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":‘I‘ð   ƒGƒ~ƒ…ƒŒ[ƒ^",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Iï¿½ï¿½   ï¿½Gï¿½~ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^",
 
     // MSG_OPTION_MENU_HELP_10
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":‘I‘ð   ƒGƒ~ƒ…ƒŒ[ƒ^",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Iï¿½ï¿½   ï¿½Gï¿½~ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^",
 
     // MSG_OPTION_MENU_DEFAULT
-    "›:‰Šú‰»",
+    "ï¿½ï¿½:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
 
     // MSG_OPTION_MENU_HELP_11
-    "›:ƒƒCƒ“ƒƒjƒ…[",
+    "ï¿½ï¿½:ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[",
 
     // MSG_STATE_MENU_DATE_FMT_0
     "%4d/%2d/%2d %-4s %2d:%02d:%02d",
@@ -223,7 +223,7 @@ const char *message[4][MSG_END] =
     "--/--/---- ---- --:--:--",
 
     // MSG_STATE_MENU_STATE_NONE
-    "‚±‚ÌƒXƒƒbƒg‚Éƒf[ƒ^‚Í‚ ‚è‚Ü‚¹‚ñ",
+    "ï¿½ï¿½ï¿½ÌƒXï¿½ï¿½ï¿½bï¿½gï¿½Éƒfï¿½[ï¿½^ï¿½Í‚ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½",
 
     // MSG_STATE_MENU_TITLE
 	#include "text/state_menu_t.h"
@@ -232,52 +232,52 @@ const char *message[4][MSG_END] =
     "",
 
     // MSG_STATE_MENU_1
-    "ƒtƒ@ƒCƒ‹‚©‚çƒXƒe[ƒg‚ðƒ[ƒh",
+    "ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½h",
 
     // MSG_STATE_MENU_2
-    "–ß‚é",
+    "ï¿½ß‚ï¿½",
 
     // MSG_STATE_MENU_HELP_0
-    "›:ŽÀs  " FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":‘I‘ð",
+    "ï¿½ï¿½:ï¿½ï¿½ï¿½s  " FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Iï¿½ï¿½",
 
     // MSG_STATE_MENU_HELP_1
-    "›:ƒtƒ@ƒCƒ‹ƒuƒ‰ƒEƒU",
+    "ï¿½ï¿½:ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½uï¿½ï¿½ï¿½Eï¿½U",
 
     // MSG_STATE_MENU_HELP_2
-    "›:ƒƒCƒ“ƒƒjƒ…[",
+    "ï¿½ï¿½:ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[",
 
     // MSG_PAD_MENU_TITLE
 	#include "text/pad_menu_t.h"
 
     // MSG_PAD_MENU_0
-    "ª@@ : %s",
+    "ï¿½ï¿½ï¿½@ï¿½@ : %s",
 
     // MSG_PAD_MENU_1
-    "«@@ : %s",
+    "ï¿½ï¿½ï¿½@ï¿½@ : %s",
 
     // MSG_PAD_MENU_2
-    "©@@ : %s",
+    "ï¿½ï¿½ï¿½@ï¿½@ : %s",
 
     // MSG_PAD_MENU_3
-    "¨@@ : %s",
+    "ï¿½ï¿½ï¿½@ï¿½@ : %s",
 
     // MSG_PAD_MENU_4
-    "›@@ : %s",
+    "ï¿½ï¿½ï¿½@ï¿½@ : %s",
 
     // MSG_PAD_MENU_5
-    "~@@ : %s",
+    "ï¿½~ï¿½@ï¿½@ : %s",
 
     // MSG_PAD_MENU_6
-    " @@ : %s",
+    "ï¿½ï¿½ï¿½@ï¿½@ : %s",
 
     // MSG_PAD_MENU_7
-    "¢@@ : %s",
+    "ï¿½ï¿½ï¿½@ï¿½@ : %s",
 
     // MSG_PAD_MENU_8
-    FONT_L_TRIGGER "@@ : %s",
+    FONT_L_TRIGGER "ï¿½@ï¿½@ : %s",
 
     // MSG_PAD_MENU_9
-    FONT_R_TRIGGER "@@ : %s",
+    FONT_R_TRIGGER "ï¿½@ï¿½@ : %s",
 
     // MSG_PAD_MENU_10
     "START  : %s",
@@ -286,27 +286,27 @@ const char *message[4][MSG_END] =
     "SELECT : %s",
 
     // MSG_PAD_MENU_12
-    "–ß‚é",
+    "ï¿½ß‚ï¿½",
 
     // MSG_PAD_MENU_HELP_0
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":‘I‘ð",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Iï¿½ï¿½",
 
     // MSG_PAD_MENU_HELP_1
-    "›:ƒƒCƒ“ƒƒjƒ…[",
+    "ï¿½ï¿½:ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[",
 
-    //PAD‚ÌÝ’è ƒRƒ“ƒtƒBƒO
+    //PADï¿½ÌÝ’ï¿½ ï¿½Rï¿½ï¿½ï¿½tï¿½Bï¿½O
 
     // MSG_PAD_MENU_CFG_0
-    "ª",
+    "ï¿½ï¿½",
 
     // MSG_PAD_MENU_CFG_1
-    "«",
+    "ï¿½ï¿½",
 
     // MSG_PAD_MENU_CFG_2
-    "©",
+    "ï¿½ï¿½",
 
     // MSG_PAD_MENU_CFG_3
-    "¨",
+    "ï¿½ï¿½",
 
     // MSG_PAD_MENU_CFG_4
     "A",
@@ -321,160 +321,160 @@ const char *message[4][MSG_END] =
     "R",
 
     // MSG_PAD_MENU_CFG_8
-    "ƒXƒ^[ƒg",
+    "ï¿½Xï¿½^ï¿½[ï¿½g",
 
     // MSG_PAD_MENU_CFG_9
-    "ƒZƒŒƒNƒg",
+    "ï¿½Zï¿½ï¿½ï¿½Nï¿½g",
 
     // MSG_PAD_MENU_CFG_10
-    "ƒƒjƒ…[",
+    "ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[",
 
     // MSG_PAD_MENU_CFG_11
-    "ƒ^[ƒ{",
+    "ï¿½^ï¿½[ï¿½{",
 
     // MSG_PAD_MENU_CFG_12
-    "ƒXƒe[ƒgƒ[ƒh",
+    "ï¿½Xï¿½eï¿½[ï¿½gï¿½ï¿½ï¿½[ï¿½h",
 
     // MSG_PAD_MENU_CFG_13
-    "ƒXƒe[ƒgƒZ[ƒu",
+    "ï¿½Xï¿½eï¿½[ï¿½gï¿½Zï¿½[ï¿½u",
 
     // MSG_PAD_MENU_CFG_14
-    "A˜AŽË",
+    "Aï¿½Aï¿½ï¿½",
 
     // MSG_PAD_MENU_CFG_15
-    "B˜AŽË",
+    "Bï¿½Aï¿½ï¿½",
 
     // MSG_PAD_MENU_CFG_16
-    "L˜AŽË",
+    "Lï¿½Aï¿½ï¿½",
 
     // MSG_PAD_MENU_CFG_17
-    "R˜AŽË",
+    "Rï¿½Aï¿½ï¿½",
 
     // MSG_PAD_MENU_CFG_18
-    "ƒtƒŒ[ƒ€ƒŒ[ƒg•\\Ž¦",
+    "ï¿½tï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½gï¿½\\ï¿½ï¿½",
 
     // MSG_PAD_MENU_CFG_19
-    "‚È‚µ",
+    "ï¿½È‚ï¿½",
 
     // MSG_A_PAD_MENU_TITLE
 	#include "text/a_pad_menu_t.h"
 
     // MSG_A_PAD_MENU_0
-    "ƒAƒiƒƒO ª : %s",
+    "ï¿½Aï¿½iï¿½ï¿½ï¿½O ï¿½ï¿½ : %s",
 
     // MSG_A_PAD_MENU_1
-    "ƒAƒiƒƒO « : %s",
+    "ï¿½Aï¿½iï¿½ï¿½ï¿½O ï¿½ï¿½ : %s",
 
     // MSG_A_PAD_MENU_2
-    "ƒAƒiƒƒO © : %s",
+    "ï¿½Aï¿½iï¿½ï¿½ï¿½O ï¿½ï¿½ : %s",
 
     // MSG_A_PAD_MENU_3
-    "ƒAƒiƒƒO ¨ : %s",
+    "ï¿½Aï¿½iï¿½ï¿½ï¿½O ï¿½ï¿½ : %s",
 
     // MSG_A_PAD_MENU_4
-    "ƒAƒiƒƒO“ü—Í‚ð—LŒø: %s",
+    "ï¿½Aï¿½iï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½Í‚ï¿½Lï¿½ï¿½: %s",
 
     // MSG_A_PAD_MENU_5
-    "ƒAƒiƒƒO“ü—Í‚ÌŠ´“x: %d",
+    "ï¿½Aï¿½iï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½Í‚ÌŠï¿½ï¿½x: %d",
 
     // MSG_A_PAD_MENU_6
-    "–ß‚é",
+    "ï¿½ß‚ï¿½",
 
     // MSG_A_PAD_MENU_HELP_0
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":‘I‘ð",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Iï¿½ï¿½",
 
     // MSG_A_PAD_MENU_HELP_1
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":‘I‘ð",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Iï¿½ï¿½",
 
     // MSG_A_PAD_MENU_HELP_2
-    "›:ƒƒCƒ“ƒƒjƒ…[",
+    "ï¿½ï¿½:ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[",
 
 	//MSG_CHEAT_MENU_TITLE,
 	#include "text/cheat_menu_t.h"
 
 	//MSG_CHEAT_MENU_NON_LOAD,
-	"(–³) %2d: ------------------------",
+	"(ï¿½ï¿½) %2d: ------------------------",
 
 	//MSG_CHEAT_MENU_0,
 	"%%s %2d: %s",
 
 	//MSG_CHEAT_MENU_1,
-	"ƒ`[ƒgƒtƒ@ƒCƒ‹‚Ìƒ[ƒh  " FONT_L_TRIGGER,
+	"ï¿½`ï¿½[ï¿½gï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Ìƒï¿½ï¿½[ï¿½h  " FONT_L_TRIGGER,
 
 	//MSG_CHEAT_MENU_2,
-	"–ß‚é",
+	"ï¿½ß‚ï¿½",
 
 	//MSG_CHEAT_MENU_3,
-	"ƒ`[ƒgƒy[ƒW: %d",
+	"ï¿½`ï¿½[ï¿½gï¿½yï¿½[ï¿½W: %d",
 
 	//MSG_CHEAT_MENU_HELP_0,
-	FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":‘I‘ð‚µ‚½ƒR[ƒh‚Ì—LŒø^–³Œø‚ÌØ‘Ö",
+	FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Rï¿½[ï¿½hï¿½Ì—Lï¿½ï¿½ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ÌØ‘ï¿½",
 
 	//MSG_CHEAT_MENU_HELP_1,
-	"›:ƒ`[ƒgƒtƒ@ƒCƒ‹‚ðƒ[ƒh‚µ‚Ü‚·  " FONT_L_TRIGGER ":ƒVƒ‡[ƒgƒJƒbƒg",
+	"ï¿½ï¿½:ï¿½`ï¿½[ï¿½gï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½ï¿½Ü‚ï¿½  " FONT_L_TRIGGER ":ï¿½Vï¿½ï¿½ï¿½[ï¿½gï¿½Jï¿½bï¿½g",
 
 	//MSG_CHEAT_MENU_HELP_2,
-	"›:ƒƒCƒ“ƒƒjƒ…[‚É–ß‚è‚Ü‚·",
+	"ï¿½ï¿½:ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[ï¿½É–ß‚ï¿½Ü‚ï¿½",
 
 	//MSG_CHEAT_MENU_HELP_3,
-	FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ƒy[ƒW‚ð•ÏX",
+	FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":ï¿½yï¿½[ï¿½Wï¿½ï¿½ÏX",
 
     // MSG_NON_LOAD_GAME
-    "ƒQ[ƒ€‚Íƒ[ƒh‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ",
+    "ï¿½Qï¿½[ï¿½ï¿½ï¿½Íƒï¿½ï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½",
 
     // MSG_DAYW_0
-    "(“ú)",
+    "(ï¿½ï¿½)",
 
     // MSG_DAYW_1
-    "(ŒŽ)",
+    "(ï¿½ï¿½)",
 
     // MSG_DAYW_2
-    "(‰Î)",
+    "(ï¿½ï¿½)",
 
     // MSG_DAYW_3
-    "(…)",
+    "(ï¿½ï¿½)",
 
     // MSG_DAYW_4
-    "(–Ø)",
+    "(ï¿½ï¿½)",
 
     // MSG_DAYW_5
-    "(‹à)",
+    "(ï¿½ï¿½)",
 
     // MSG_DAYW_6
-    "(“y)",
+    "(ï¿½y)",
 
     // MSG_YES
-    "‚Í‚¢",
+    "ï¿½Í‚ï¿½",
 
     // MSG_NO
-    "‚¢‚¢‚¦",
+    "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
 
     // MSG_ON
-    "ƒIƒ“",
+    "ï¿½Iï¿½ï¿½",
 
     // MSG_OFF
-    "ƒIƒt",
+    "ï¿½Iï¿½t",
 
     // MSG_ENABLED
-    "—LŒø",
+    "ï¿½Lï¿½ï¿½",
 
     // MSG_DISABLED
-    "–³Œø",
+    "ï¿½ï¿½ï¿½ï¿½",
 
     // MSG_AUTO
-    "Ž©“®",
+    "ï¿½ï¿½ï¿½ï¿½",
 
     // MSG_MANUAL
-    "Žè“®",
+    "ï¿½è“®",
 
     // MSG_EXITONLY
-    "I—¹Žž‚Ì‚Ý",
+    "ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Ì‚ï¿½",
 
     // MSG_LOAD
-    "ƒ[ƒh",
+    "ï¿½ï¿½ï¿½[ï¿½h",
 
     // MSG_SAVE
-    "ƒZ[ƒu",
+    "ï¿½Zï¿½[ï¿½u",
 
     // MSG_SCN_SCALED_NONE
     "100% GU",
@@ -486,19 +486,19 @@ const char *message[4][MSG_END] =
     "150% SW",
 
     // MSG_SCN_SCALED_USER
-    "Žw’è GU",
+    "ï¿½wï¿½ï¿½ GU",
 
     // MSG_LANG_JAPANESE
-    "“ú–{Œê",
+    "ï¿½ï¿½ï¿½{ï¿½ï¿½",
 
     // MSG_LANG_ENGLISH
-    "‰pŒê",
+    "ï¿½pï¿½ï¿½",
 
     // MSG_LANG_CHS
-    "’†‘ŒêŠÈé“",
+    "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
 
     // MSG_LANG_CHT
-    "’†‘Œê”Éé“",
+    "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
 
     // MSG_SS_DATE_FMT_0
     "%04d_%02d_%02d_%s%02d_%02d_%02d_%03d",
@@ -507,62 +507,62 @@ const char *message[4][MSG_END] =
     "%02d_%02d_%04d_%s%02d_%02d_%02d_%03d",
 
     // MSG_ERR_SET_DIR_0
-    "ƒGƒ‰[ [%s] Žw’è‚³‚ê‚½ƒfƒBƒŒƒNƒgƒŠ‚Í–³Œø‚Å‚·B",
+    "ï¿½Gï¿½ï¿½ï¿½[ [%s] ï¿½wï¿½è‚³ï¿½ê‚½ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½Í–ï¿½ï¿½ï¿½ï¿½Å‚ï¿½ï¿½B",
 
     // MSG_ERR_SET_DIR_1
-    "ƒGƒ‰[ [%s] Žw’è‚ª‚ ‚è‚Ü‚¹‚ñB",
+    "ï¿½Gï¿½ï¿½ï¿½[ [%s] ï¿½wï¿½è‚ªï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B",
 
     // MSG_ERR_SET_DIR_2
-    "ƒGƒ‰[‚Ì”­¶‚µ‚½€–Ú‚ÍAˆÈ‰º‚ÌƒfƒBƒŒƒNƒgƒŠ‚ÉÝ’è‚µ‚Ü‚·B\n%s",
+    "ï¿½Gï¿½ï¿½ï¿½[ï¿½Ì”ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú‚ÍAï¿½È‰ï¿½ï¿½Ìƒfï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½ÉÝ’è‚µï¿½Ü‚ï¿½ï¿½B\n%s",
 
     // png.c
     // MSG_ERR_SS_PNG_0
-    "ƒƒ‚ƒŠ‚ÌŠm•Û‚ªo—ˆ‚Ü‚¹‚ñ‚Å‚µ‚½B",
+    "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÌŠmï¿½Û‚ï¿½ï¿½oï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½ï¿½B",
 
     // MSG_ERR_SS_PNG_1
-    "PNGƒCƒ[ƒW‚Ìì¬‚ªo—ˆ‚Ü‚¹‚ñ‚Å‚µ‚½B",
+    "PNGï¿½Cï¿½ï¿½ï¿½[ï¿½Wï¿½Ìì¬ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½ï¿½B",
 
     // memory.c
     // MSG_LOADING_ROM
-    "ƒ[ƒh’†...",
+    "ï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½...",
 
     // MSG_SEARCHING_BACKUP_ID
-    "BACKUP ID ‚ðŒŸõ’†",
+    "BACKUP ID ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
 
     // main.c
     // MSG_GBA_SLEEP_MODE
-    "ƒXƒŠ[ƒv ƒ‚[ƒh",
+    "ï¿½Xï¿½ï¿½ï¿½[ï¿½v ï¿½ï¿½ï¿½[ï¿½h",
 
     // MSG_ERR_LOAD_DIR_INI
-    "dir.ini‚ªƒ[ƒho—ˆ‚Ü‚¹‚ñB‚·‚×‚Ä‚ðˆÈ‰º‚ÌƒfƒBƒŒƒNƒgƒŠ‚ÉÝ’è‚µ‚Ü‚·B\n%s",
+    "dir.iniï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½hï¿½oï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½Bï¿½ï¿½ï¿½×‚Ä‚ï¿½ï¿½È‰ï¿½ï¿½Ìƒfï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½ÉÝ’è‚µï¿½Ü‚ï¿½ï¿½B\n%s",
 
     // MSG_ERR_BIOS_NONE
-    "BIOSƒtƒ@ƒCƒ‹‚ªƒ[ƒho—ˆ‚Ü‚¹‚ñB",
+    "BIOSï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½hï¿½oï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B",
 
     // MSG_ERR_LOAD_GAMEPACK
-    "ƒQ[ƒ€ƒtƒ@ƒCƒ‹‚ªƒ[ƒho—ˆ‚Ü‚¹‚ñB",
+    "ï¿½Qï¿½[ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½hï¿½oï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B",
 
     // MSG_ERR_OPEN_GAMEPACK
-    "ƒQ[ƒ€ƒtƒ@ƒCƒ‹‚ª“Ç‚ß‚Ü‚¹‚ñB",
+    "ï¿½Qï¿½[ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½Ç‚ß‚Ü‚ï¿½ï¿½ï¿½B",
 
     // MSG_ERR_START_CALLBACK_THREAD
-    "ƒR[ƒ‹ƒoƒbƒNƒXƒŒƒbƒh‚ðŠJŽno—ˆ‚Ü‚¹‚ñB",
+    "ï¿½Rï¿½[ï¿½ï¿½ï¿½oï¿½bï¿½Nï¿½Xï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½Jï¿½nï¿½oï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B",
 
     // sound.c
     // MSG_ERR_RESERVE_AUDIO_CHANNEL
-    "ƒI[ƒfƒBƒIƒ`ƒƒƒ“ƒlƒ‹‚ðŠm•Ûo—ˆ‚Ü‚¹‚ñB",
+    "ï¿½Iï¿½[ï¿½fï¿½Bï¿½Iï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½lï¿½ï¿½ï¿½ï¿½ï¿½mï¿½Ûoï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B",
 
     // MSG_ERR_START_SOUND_THEREAD
-    "ƒTƒEƒ“ƒhƒXƒŒƒbƒh‚ðŠJŽno—ˆ‚Ü‚¹‚ñB",
+    "ï¿½Tï¿½Eï¿½ï¿½ï¿½hï¿½Xï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½Jï¿½nï¿½oï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B",
 
     // MSG_ERR_MALLOC
-    "ƒƒ‚ƒŠ‚ÌŠm•Û‚ªo—ˆ‚Ü‚¹‚ñB",
+    "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÌŠmï¿½Û‚ï¿½ï¿½oï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B",
 
     // MSG_ERR_CONT
-    "‰½‚©ƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚Ä‚­‚¾‚³‚¢B",
+    "ï¿½ï¿½ï¿½ï¿½ï¿½{ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B",
 
     // MSG_ERR_QUIT
-    "‰½‚©ƒ{ƒ^ƒ“‚ð‰Ÿ‚·‚ÆI—¹‚µ‚Ü‚·B",
+    "ï¿½ï¿½ï¿½ï¿½ï¿½{ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÆIï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B",
 
     // MSG_BLANK
     ""

@@ -15,7 +15,7 @@ PSP_FW_VERSION = 371
 PSP_LARGE_MEMORY = 1
 
 PSP_EBOOT_ICON = res/ICON0.png
-PSP_EBOOT_TITLE = TempGBA mod
+PSP_EBOOT_TITLE = FrogGBA
 
 EXTRA_TARGETS = EBOOT.PBP
 
@@ -34,7 +34,7 @@ OBJG = compress.o uncompr.o gzclose.o gzlib.o gzread.o gzwrite.o
 
 OBJS = $(MAINOBJS) $(OBJZ) $(OBJG)
 
-TARGET = TempGBA
+TARGET = FrogGBA
 
 VPATH = src src/zlib
 
