@@ -3251,6 +3251,56 @@ static s32 load_game_config(char *gamepak_title, char *gamepak_code, char *gamep
   //flash_device_id = FLASH_DEVICE_MACRONIX_64KB;
   //backup_type = BACKUP_NONE;
 
+  // Load built-in optimizations for popular games
+  if (!strcmp(gamepak_code, "AWRE") && !strcmp(gamepak_maker, "01")) {
+    // Advance Wars (U)
+    idle_loop_target_pc[idle_loop_targets++] = 0x803880a;
+  }
+  else if (!strcmp(gamepak_code, "AWRP") && !strcmp(gamepak_maker, "01")) {
+    // Advance Wars (E)
+    idle_loop_target_pc[idle_loop_targets++] = 0x803880a;
+  }
+  else if (!strcmp(gamepak_code, "AW2E") && !strcmp(gamepak_maker, "01")) {
+    // Advance Wars 2: Black Hole Rising (U)
+    idle_loop_target_pc[idle_loop_targets++] = 0x8036e2a;
+  }
+  else if (!strcmp(gamepak_code, "AW2P") && !strcmp(gamepak_maker, "01")) {
+    // Advance Wars 2: Black Hole Rising (E)
+    idle_loop_target_pc[idle_loop_targets++] = 0x8036e2a;
+  }
+  else if (!strcmp(gamepak_code, "AREJ") && !strcmp(gamepak_maker, "08")) {
+    // Battle Network Rockman EXE (J)
+    idle_loop_target_pc[idle_loop_targets++] = 0x8000338;
+  }
+  else if (!strcmp(gamepak_code, "AAME") && !strcmp(gamepak_maker, "A4")) {
+    // Castlevania Circle Of The Moon (U)
+    idle_loop_target_pc[idle_loop_targets++] = 0x80003d2;
+  }
+  else if (!strcmp(gamepak_code, "AAMP") && !strcmp(gamepak_maker, "A4")) {
+    // Castlevania (E)
+    idle_loop_target_pc[idle_loop_targets++] = 0x80003d2;
+  }
+  else if (!strcmp(gamepak_code, "AFSE") && !strcmp(gamepak_maker, "01")) {
+    // Final Fantasy I & II: Dawn of Souls (U)
+    idle_loop_target_pc[idle_loop_targets++] = 0x8000428;
+  }
+  else if (!strcmp(gamepak_code, "AFSP") && !strcmp(gamepak_maker, "01")) {
+    // Final Fantasy I & II: Dawn of Souls (E)  
+    idle_loop_target_pc[idle_loop_targets++] = 0x8000428;
+  }
+  else if (!strcmp(gamepak_code, "ABSE") && !strcmp(gamepak_maker, "52")) {
+    // Bomberman Tournament (U)
+    idle_loop_target_pc[idle_loop_targets++] = 0x8000526;
+  }
+  else if (!strcmp(gamepak_code, "BKWE") && !strcmp(gamepak_maker, "5G")) {
+    // Bookworm (U)
+    idle_loop_target_pc[idle_loop_targets++] = 0x800397c;
+  }
+  else if (!strcmp(gamepak_code, "ABJE") && !strcmp(gamepak_maker, "6L")) {
+    // Broken Sword - The Shadow of the Templars (U)
+    idle_loop_target_pc[idle_loop_targets++] = 0x8000a26;
+  }
+
   sprintf(config_path, "%s%s", main_path, CONFIG_FILENAME);
 
   config_file = fopen(config_path, "rb");
