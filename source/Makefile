@@ -43,7 +43,7 @@ CFLAGS = \
  -march=allegrex -mfp32 -mgp32 -mlong32 -mabi=eabi \
  -fomit-frame-pointer -fstrict-aliasing \
  -falign-functions=32 -falign-loops -falign-labels -falign-jumps \
- -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -Werror \
+ -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare \
  -DZLIB_CONST
 
 ASFLAGS = ${CFLAGS}

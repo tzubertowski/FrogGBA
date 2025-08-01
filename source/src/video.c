@@ -21,6 +21,10 @@
 #include "common.h"
 #include "volume_icon.c"
 
+// Global function pointers
+void (*update_screen)(void);
+int (*__draw_volume_status)(int draw);
+
 
 #define render_scanline_dest_normal         u16
 #define render_scanline_dest_alpha          u32
@@ -3711,7 +3715,7 @@ void print_string_ext_gbk(const char *str, s16 x, u16 y, u16 fg_color, s16 bg_co
 /******************************************************************************/
 
 /******************************************************************************
-  ƒƒCƒ“ƒ{ƒŠƒ…[ƒ€•\¦
+  ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½{ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½\ï¿½ï¿½
 ******************************************************************************/
 
 static void load_volume_icon(int devkit_version)
@@ -3816,7 +3820,7 @@ static void load_volume_icon(int devkit_version)
 }
 
 /*------------------------------------------------------
-  ƒ{ƒŠƒ…[ƒ€‚ğ•`‰æ (CFW 3.52ˆÈ~‚Ìƒ†[ƒU[ƒ‚[ƒh‚Ì‚İ)
+  ï¿½{ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½ (CFW 3.52ï¿½È~ï¿½Ìƒï¿½ï¿½[ï¿½Uï¿½[ï¿½ï¿½ï¿½[ï¿½hï¿½Ì‚ï¿½)
 ------------------------------------------------------*/
 
 static void draw_volume(int volume)
@@ -3936,7 +3940,7 @@ static void draw_volume(int volume)
 }
 
 /*------------------------------------------------------
-  ƒƒCƒ“ƒ{ƒŠƒ…[ƒ€•\¦
+  ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½{ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½\ï¿½ï¿½
 ------------------------------------------------------*/
 
 int draw_volume_status(int draw)

@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  psp-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tempgba-psp-dev
+    volumes:
+      - ./:/project
+    working_dir: /project
+    command: /bin/bash -c "cd /project && ./build.sh"
+    stdin_open: true
+    tty: true

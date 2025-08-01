@@ -2309,7 +2309,7 @@ CPU_ALERT_TYPE write_rtc(u32 address, u32 value)
                   // Actually outputs the time, all of it
                   case RTC_COMMAND_OUTPUT_TIME_FULL:
                   {
-                    pspTime current_time;
+                    ScePspDateTime current_time;
                     int day_of_week;
 
                     sceRtcGetCurrentClockLocalTime(&current_time);
@@ -2327,22 +2327,22 @@ CPU_ALERT_TYPE write_rtc(u32 address, u32 value)
                     rtc_data[2] = encode_bcd(current_time.day);
                     rtc_data[3] = encode_bcd(day_of_week);
                     rtc_data[4] = encode_bcd(current_time.hour);
-                    rtc_data[5] = encode_bcd(current_time.minutes);
-                    rtc_data[6] = encode_bcd(current_time.seconds);
+                    rtc_data[5] = encode_bcd(current_time.minute);
+                    rtc_data[6] = encode_bcd(current_time.second);
                     break;
                   }
 
                   // Only outputs the current time of day.
                   case RTC_COMMAND_OUTPUT_TIME:
                   {
-                    pspTime current_time;
+                    ScePspDateTime current_time;
                     sceRtcGetCurrentClockLocalTime(&current_time);
 
                     rtc_state = RTC_OUTPUT_DATA;
                     rtc_data_bytes = 3;
                     rtc_data[0] = encode_bcd(current_time.hour);
-                    rtc_data[1] = encode_bcd(current_time.minutes);
-                    rtc_data[2] = encode_bcd(current_time.seconds);
+                    rtc_data[1] = encode_bcd(current_time.minute);
+                    rtc_data[2] = encode_bcd(current_time.second);
                     break;
                   }
                 }
@@ -3311,8 +3311,8 @@ static s32 load_game_config(char *gamepak_title, char *gamepak_code, char *gamep
               flash_device_id = FLASH_DEVICE_MACRONIX_128KB;
             }
 
-            // DBZLGCYGOKU2 ¤Î¥×¥í¥Æ¥¯¥È»Ø±Ü
-            // EEPROM_V124¤ÇÌØÊâ¤ÊÎï(¬FÔÚÅÐ„e²»¿É) ¤ÇÖ¸¶¨¤¹¤ì¤Ð„Ó×÷¿É
+            // DBZLGCYGOKU2 ï¿½Î¥×¥ï¿½ï¿½Æ¥ï¿½ï¿½È»Ø±ï¿½
+            // EEPROM_V124ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½Fï¿½ï¿½ï¿½Ð„eï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð„ï¿½ï¿½ï¿½ï¿½ï¿½
             if (!strcasecmp(current_variable, "save_type"))
             {
               if (!strcasecmp(current_value, "sram"))

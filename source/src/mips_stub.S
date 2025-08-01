@@ -399,10 +399,10 @@ mips_indirect_branch_dual_no_update_gba:
   sltiu $2, $1, 0x0F              # check if the value is open
   sll $1, $1, 2                   # make address word indexed
 
-  beql $2, $0, 01f
+  beql $2, $0, 1f
   addiu $1, $0, (\force_open * 4) # (delay Likely)
 
-01:
+1:
   lui $2, %hi(\ftable)
   addu $2, $2, $1
   lw $2, %lo(\ftable)($2)         # new function handler is in $2
@@ -431,10 +431,10 @@ mips_indirect_branch_dual_no_update_gba:
   sltiu $2, $1, 0x0F              # check if the value is open
   sll $1, $1, 2                   # make address word indexed
 
-  beql $2, $0, 01f
+  beql $2, $0, 1f
   addiu $1, $0, 4                 # force address to 0x1 (open) delay slot, Likely
 
-01:
+1:
   ins $1, $4, 6, \alignment       # place alignment bits into offset
 
   lui $2, %hi(\ftable)
@@ -572,10 +572,10 @@ mips_indirect_branch_dual_no_update_gba:
 
 .macro translate_region_vram_core
   ext $4, $4, 0, 17               # generate 17bit offset
-  bnel $2, $0, 01f                # if address >= 0x10000
+  bnel $2, $0, 1f                # if address >= 0x10000
   ins $4, $0, 15, 1               # mask out bit 15 of address (delay Likely)
 
-01:
+1:
   lui $1, %hi(vram)               # start loading vram address
   addu $2, $1, $4                 # $2 = (hi)vram + address
 .endm
@@ -627,7 +627,7 @@ mips_indirect_branch_dual_no_update_gba:
   addu $2, $2, $16                # $2 = memory_map_read[address >> 15]
   lw $2, -32768($2)
 
-  bne $2, $0, 01f                 # if it's non-NULL continue
+  bne $2, $0, 1f                 # if it's non-NULL continue
   andi $1, $4, \mask              # $1 = low 15bits of address (delay slot)
 
   ext $4, $4, 15, 10              # $4 = (address >> 15) & 0x3FF
@@ -643,7 +643,7 @@ mips_indirect_branch_dual_no_update_gba:
   lw $ra, REG_SAVE2($16)          # restore return address
   restore_registers               # restore registers
 
-01:
+1:
   addu $2, $2, $1                 # add the memory map offset
 .endm
 
@@ -675,7 +675,7 @@ mips_indirect_branch_dual_no_update_gba:
   addu $2, $2, $16                # $2 = memory_map_read[address >> 15]
   lw $2, -32768($2)
 
-  bne $2, $0, 01f                 # if it's non-NULL continue
+  bne $2, $0, 1f                 # if it's non-NULL continue
   andi $1, $4, 0x7FFC             # $1 = low 15bits of address (delay slot)
 
   ext $4, $4, 15, 10              # $4 = (address >> 15) & 0x3FF
@@ -693,7 +693,7 @@ mips_indirect_branch_dual_no_update_gba:
   lw $6, REG_SAVE3($16)           # restore a2
   restore_registers               # restore registers
 
-01:
+1:
   addu $2, $2, $1                 # add the memory map offset
 .endm
 
@@ -797,14 +797,14 @@ mips_indirect_branch_dual_no_update_gba:
   andi $4, $4, 0x03               # in ARM mode, isolate lower 2bits from address
   addiu $17, $17, -1              # waitstate cycles
 
-  bnel $2, $0, 02f
+  bnel $2, $0, 2f
   lbu $2, CPU_DMA_LAST($16)       # DMA Prefetch (delay Likely)
 
   andi $1, $1, 0x20               # test T bit
-  bnel $1, $0, 01f                # branch if Thumb mode
+  bnel $1, $0, 1f                # branch if Thumb mode
   andi $4, $4, 0x01               # in Thumb mode, isolate one more bit (delay Likely)
 
-01:
+1:
   addu $4, $5, $4                 # a0 = PC + low bits of address
 
   sw $ra, REG_SAVE($16)           # save the return address
@@ -815,7 +815,7 @@ mips_indirect_branch_dual_no_update_gba:
   lw $ra, REG_SAVE($16)           # restore return address
   restore_registers               # restore registers
 
-02:
+2:
   jr $ra                          # return
 .endm
 
@@ -832,14 +832,14 @@ mips_indirect_branch_dual_no_update_gba:
   andi $4, $4, 0x02               # in ARM mode, isolate bit 1 from address
   addiu $17, $17, -1              # waitstate cycles
 
-  bnel $2, $0, 02f
+  bnel $2, $0, 2f
   lhu $2, CPU_DMA_LAST($16)       # DMA Prefetch (delay Likely)
 
   andi $1, $1, 0x20               # test T bit
-  bnel $1, $0, 01f                # branch if Thumb mode
+  bnel $1, $0, 1f                # branch if Thumb mode
   addu $4, $0, $0                 # in Thumb mode, zero out address bit (delay Likely)
 
-01:
+1:
   addu $4, $5, $4                 # a0 = PC + low bits of address
 
   sw $ra, REG_SAVE($16)           # save the return address
@@ -850,7 +850,7 @@ mips_indirect_branch_dual_no_update_gba:
   lw $ra, REG_SAVE($16)           # restore return address
   restore_registers               # restore registers
 
-02:
+2:
   jr $ra                          # return
 .endm
 
@@ -870,30 +870,30 @@ mips_indirect_branch_dual_no_update_gba:
 
   addiu $17, $17, -1              # waitstate cycles
 
-  bnel $2, $0, 03f
+  bnel $2, $0, 3f
   lw $2, CPU_DMA_LAST($16)        # DMA Prefetch (delay Likely)
 
   save_registers                  # save registers
 
   andi $1, $1, 0x20               # test T bit
-  beq $1, $0, 01f                 # branch if ARM mode
+  beq $1, $0, 1f                 # branch if ARM mode
   sw $ra, REG_SAVE($16)           # save the return address (delay)
 
   jal read_open_memory16          # get instruction at PC
   addu $4, $5, $0                 # a0 = PC (delay)
 
-  j 02f
+  j 2f
   ins $2, $2, 16, 16              # result = (result << 16) | result (delay)
 
-01:
+1:
   jal read_open_memory32          # get instruction at PC
   addu $4, $5, $0                 # a0 = PC (delay)
 
-02:                               # join point
+2:                               # join point
   lw $ra, REG_SAVE($16)           # restore return address
   restore_registers               # restore registers
 
-03:
+3:
   jr $ra                          # return
 .endm
 
@@ -902,30 +902,30 @@ mips_indirect_branch_dual_no_update_gba:
   lw $1, REG_CPSR($16)            # $1 = CPSR
   sw $6, REG_SAVE2($16)           # save a2
 
-  beq $2, $0, 01f
+  beq $2, $0, 1f
   addiu $17, $17, -1              # waitstate cycles (delay)
 
   jr $ra
   lw $2, CPU_DMA_LAST($16)        # DMA Prefetch (delay)
 
-01:
+1:
   save_registers                  # save registers
 
   andi $1, $1, 0x20               # test T bit
-  beq $1, $0, 02f                 # branch if ARM mode
+  beq $1, $0, 2f                 # branch if ARM mode
   sw $ra, REG_SAVE($16)           # save the return address (delay)
 
   jal read_open_memory16          # get instruction at PC
   addu $4, $5, $0                 # a0 = PC (delay)
 
-  j 03f
+  j 3f
   ins $2, $2, 16, 16              # result = (result << 16) | result (delay)
 
-02:
+2:
   jal read_open_memory32          # get instruction at PC
   addu $4, $5, $0                 # a0 = PC (delay)
 
-03:
+3:
   lw $ra, REG_SAVE($16)           # restore return address
   restore_registers               # restore registers
 
