@@ -21,7 +21,7 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#define MSG  message[option_language]
+#define MSG  message[(option_language >= 0 && option_language < 4) ? option_language : 1]
 
 enum MESSAGE_ITEM
 {
