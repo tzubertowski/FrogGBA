@@ -35,14 +35,14 @@
 
 #define COLOR15(red, green, blue)  (((blue) << 10) | ((green) << 5) | (red))
 
-#define COLOR15_WHITE   COLOR15(31, 31, 31)
+#define COLOR15_WHITE   COLOR15(31, 31, 29)  // Warm cream white
 #define COLOR15_BLACK   COLOR15( 0,  0,  0)
 #define COLOR15_RED     COLOR15(31,  5,  5)
-#define COLOR15_GREEN   COLOR15( 5, 31,  5)
-#define COLOR15_BLUE    COLOR15( 5,  5, 31)
-#define COLOR15_YELLOW  COLOR15(31, 31,  5)
-#define COLOR15_PURPLE  COLOR15(31,  5, 31)
-#define COLOR15_CYAN    COLOR15( 5, 31, 31)
+#define COLOR15_GREEN   COLOR15(12, 28, 16)  // Pastel mint green
+#define COLOR15_BLUE    COLOR15(12, 20, 28)  // Pastel blue
+#define COLOR15_YELLOW  COLOR15(28, 28, 12)  // Pastel yellow
+#define COLOR15_PURPLE  COLOR15(25, 15, 28)  // Pastel purple
+#define COLOR15_CYAN    COLOR15(15, 28, 26)  // Pastel cyan
 
 #define COL15_GET_R5(col15) ((col15) & 0x1F)
 #define COL15_GET_G5(col15) (((col15) >> 5) & 0x1F)

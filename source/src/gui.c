@@ -24,18 +24,18 @@
 #define GPSP_CONFIG_NUM       (15 + 16) // options + game pad config
 #define GPSP_GAME_CONFIG_NUM  (7 + 16)
 
-#define COLOR_BG            COLOR15( 3,  5,  8)
-#define COLOR_ROM_INFO      COLOR15(22, 18, 26)
-#define COLOR_ACTIVE_ITEM   COLOR15(31, 31, 31)
-#define COLOR_INACTIVE_ITEM COLOR15(13, 20, 18)
+#define COLOR_BG            COLOR15( 8, 15, 12)  // Soft mint green background
+#define COLOR_ROM_INFO      COLOR15(18, 28, 22)  // Darker mint for ROM info
+#define COLOR_ACTIVE_ITEM   COLOR15(31, 31, 29)  // Soft cream white for active items
+#define COLOR_INACTIVE_ITEM COLOR15(12, 25, 18)  // Medium mint for inactive items
 
-#define COLOR_HELP_TEXT     COLOR15(16, 20, 24)
-#define COLOR_INACTIVE_DIR  COLOR15(13, 22, 22)
-#define COLOR_SCROLL_BAR    COLOR15( 7,  9, 11)
+#define COLOR_HELP_TEXT     COLOR15(20, 28, 22)  // Readable mint for help text
+#define COLOR_INACTIVE_DIR  COLOR15(15, 26, 20)  // Pastel mint for directories
+#define COLOR_SCROLL_BAR    COLOR15(10, 18, 14)  // Darker mint for scroll bar
 
 #define COLOR_BATT_NORMAL   COLOR_HELP_TEXT
-#define COLOR_BATT_LOW      COLOR15_YELLOW
-#define COLOR_BATT_CHARG    COLOR15_GREEN
+#define COLOR_BATT_LOW      COLOR15(28, 22, 8)   // Pastel amber for low battery
+#define COLOR_BATT_CHARG    COLOR15(16, 28, 18)  // Brighter mint for charging
 
 #define FILE_LIST_ROWS      (20)
 #define FILE_LIST_POS_X     (18)
@@ -881,7 +881,7 @@ u32 menu(void)
   u16 *savestate_screen = NULL;
 
   u32 savestate_action = 0;
-  char savestate_timestamps[10][40];
+  static char savestate_timestamps[10][40];  // moved to static to prevent stack overflow
 
   char time_str[40];
   char batt_str[40];
@@ -892,7 +892,7 @@ u32 menu(void)
 
   char line_buffer[80];
 
-  char cheat_format_str[MAX_CHEATS][25*4];// gpsp kai 41*4
+  static char cheat_format_str[MAX_CHEATS][25*4];// gpsp kai 41*4 - moved to static to prevent stack overflow
 
   MenuType *current_menu;
   MenuOptionType *current_option;
@@ -1905,7 +1905,7 @@ static void update_status_string(char *time_str, char *batt_str, u16 *color_batt
   int batt_life_per;
   int batt_life_time;
 
-  char batt_icon[4][4] =
+  static const char batt_icon[4][4] =
   {
     FONT_BATTERY0 "\0", // empty
     FONT_BATTERY1 "\0",
@@ -1970,7 +1970,7 @@ static void update_status_string_gbk(char *time_str, char *batt_str, u16 *color_
   int batt_life_per;
   int batt_life_time;
 
-  char batt_icon[4][4] =
+  static const char batt_icon[4][4] =
   {
     FONT_BATTERY0_GBK "\0", // empty
     FONT_BATTERY1_GBK "\0",
