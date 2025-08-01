@@ -903,6 +903,9 @@ u32 menu(void)
   u32 current_option_num = 0;
   u32 menu_main_option_num = 0;
 
+  // Bounds check option_language before using MSG macro
+  if (option_language < 0 || option_language >= 4) option_language = 1;
+
   const char *yes_no_options[] =
   {
     MSG[MSG_NO],
@@ -1235,6 +1238,9 @@ u32 menu(void)
 		option_language = 3;
 	else
 		option_language = 1;
+	
+	// Bounds check to prevent crashes
+	if (option_language < 0 || option_language >= 4) option_language = 1;
 
   }
 
@@ -2254,6 +2260,7 @@ s32 load_config_file(void)
       option_enable_analog  = file_options[12] % 2;
       option_analog_sensitivity = file_options[13] % 10;
       option_language       = file_options[14] % 4;
+      if (option_language < 0 || option_language >= 4) option_language = 1;
 
       for (i = 0; i < 16; i++)
       {
@@ -2294,6 +2301,9 @@ s32 load_config_file(void)
     option_language = 3;
   else
     option_language = 1;
+  
+  // Bounds check to prevent crashes
+  if (option_language < 0 || option_language >= 4) option_language = 1;
 
   return -1;
 }
