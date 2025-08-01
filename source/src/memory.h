@@ -172,7 +172,7 @@ extern u16 io_registers  [  0x400];
 extern u8  ewram         [0x40000];
 extern u8  iwram         [ 0x8000];
 extern u8  vram          [0x18000];
-struct BiosData bios;
+extern struct BiosData bios;
 
 extern u16 ewram_metadata[0x40000];
 extern u16 iwram_metadata[ 0x8000];
