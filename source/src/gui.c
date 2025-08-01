@@ -20,7 +20,7 @@
 
 #include "common.h"
 
-#define GPSP_CONFIG_FILENAME  "tempgba.cfg"
+#define GPSP_CONFIG_FILENAME  "froggba.cfg"
 #define GPSP_CONFIG_NUM       (15 + 16) // options + game pad config
 #define GPSP_GAME_CONFIG_NUM  (7 + 16)
 

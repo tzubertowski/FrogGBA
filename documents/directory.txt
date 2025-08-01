@@ -1,30 +1,30 @@
 directory
 
-dir.ini - Žg—p‚·‚éƒfƒBƒŒƒNƒgƒŠ‚ÌŽw’è
+dir.ini - ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½ÌŽwï¿½ï¿½
 
 
 rom_directory
- Å‰‚Éƒtƒ@ƒCƒ‹ƒŠƒXƒg‚Å•\Ž¦‚·‚éƒfƒBƒŒƒNƒgƒŠ
+ ï¿½Åï¿½ï¿½Éƒtï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½gï¿½Å•\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½
 
 save_directory
- ƒoƒbƒNƒAƒbƒvƒf[ƒ^‚ª•Û‘¶‚³‚ê‚éƒfƒBƒŒƒNƒgƒŠ
+ ï¿½oï¿½bï¿½Nï¿½Aï¿½bï¿½vï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½Û‘ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½
 
 save_state_directory
- ƒXƒe[ƒgƒZ[ƒuƒf[ƒ^‚ª•Û‘¶‚³‚ê‚éƒfƒBƒŒƒNƒgƒŠ
+ ï¿½Xï¿½eï¿½[ï¿½gï¿½Zï¿½[ï¿½uï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½Û‘ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½
 
 game_config_directory
- ŒÂ•Ê‚ÌƒQ[ƒ€Ý’èƒf[ƒ^‚ª•Û‘¶‚³‚ê‚éƒfƒBƒŒƒNƒgƒŠ
+ ï¿½Â•Ê‚ÌƒQï¿½[ï¿½ï¿½ï¿½Ý’ï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½Û‘ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½
 
 snapshot_directory
- ƒXƒNƒŠ[ƒ“ƒVƒ‡ƒbƒg‚ª•Û‘¶‚³‚ê‚éƒfƒBƒŒƒNƒgƒŠ
+ ï¿½Xï¿½Nï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½bï¿½gï¿½ï¿½ï¿½Û‘ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½
 
 
-":"‚ªŠÜ‚Ü‚ê‚È‚¢ê‡A‹N“®ƒfƒBƒŒƒNƒgƒŠ‚ª•t‰Á‚³‚ê‚éB
+":"ï¿½ï¿½ï¿½Ü‚Ü‚ï¿½È‚ï¿½ï¿½ê‡ï¿½Aï¿½Nï¿½ï¿½ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
 rom_directory = roms
- roms -> ms0:/PSP/GAME/TempGBA/roms/
+ roms -> ms0:/PSP/GAME/FrogGBA/roms/
 
 
-ˆÈ‰º‚Ìê‡AŽg—p‚·‚éƒfƒBƒŒƒNƒgƒŠ‚Í‹N“®ƒfƒBƒŒƒNƒgƒŠ‚ÉÝ’è‚³‚ê‚éB
- dir.ini‚ª‘¶Ý‚µ‚È‚¢ê‡ - ‚·‚×‚Ä‚ÌƒfƒBƒŒƒNƒgƒŠ
- ƒfƒBƒŒƒNƒgƒŠÝ’è‚ª–³Œø‚Ì€–Ú
+ï¿½È‰ï¿½ï¿½Ìê‡ï¿½Aï¿½gï¿½pï¿½ï¿½ï¿½ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½Í‹Nï¿½ï¿½ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½ÉÝ’è‚³ï¿½ï¿½ï¿½B
+ dir.iniï¿½ï¿½ï¿½ï¿½ï¿½Ý‚ï¿½ï¿½È‚ï¿½ï¿½ê‡ - ï¿½ï¿½ï¿½×‚Ä‚Ìƒfï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½
+ ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½Ý’è‚ªï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
 

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# TempGBA4PSP Build Script
-# This script compiles the TempGBA4PSP emulator for PSP
+# FrogGBA Build Script
+# This script compiles the FrogGBA emulator for PSP
 
 set -e  # Exit on any error
 
-echo "=== TempGBA4PSP Build Script ==="
+echo "=== FrogGBA Build Script ==="
 echo "Setting up PSP development environment..."
 
 # Set PSP development environment variables
@@ -29,7 +29,7 @@ echo "PSP DEV path: $PSPDEV"
 # Navigate to source directory
 cd source
 
-echo "=== Building TempGBA4PSP ==="
+echo "=== Building FrogGBA ==="
 echo "Cleaning previous build..."
 make clean || true
 
@@ -37,18 +37,18 @@ echo "Starting compilation..."
 make
 
 # Check if build was successful
-if [ -f "TempGBA.prx" ] && [ -f "EBOOT.PBP" ]; then
+if [ -f "FrogGBA.prx" ] && [ -f "EBOOT.PBP" ]; then
     echo "=== BUILD SUCCESSFUL ==="
     echo "Generated files:"
-    ls -la TempGBA.prx EBOOT.PBP
+    ls -la FrogGBA.prx EBOOT.PBP
     
     # Create output directory
     mkdir -p ../build
-    cp TempGBA.prx ../build/
+    cp FrogGBA.prx ../build/
     cp EBOOT.PBP ../build/
     
     echo "Build artifacts copied to build/ directory"
-    echo "You can now copy EBOOT.PBP to your PSP's PSP/GAME/TempGBA/ folder"
+    echo "You can now copy EBOOT.PBP to your PSP's PSP/GAME/FrogGBA/ folder"
 else
     echo "=== BUILD FAILED ==="
     echo "Expected output files not found"

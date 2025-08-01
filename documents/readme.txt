@@ -1,160 +1,160 @@
--- TempGBA for PSP --
+-- FrogGBA for PSP --
 
--- ŠT—v
+-- ï¿½Tï¿½v
 
-ƒQ[ƒ€ƒ{[ƒCƒAƒhƒoƒ“ƒX‚Ìƒn[ƒhƒEƒFƒA‚ðƒGƒ~ƒ…ƒŒ[ƒg‚µ‚Ü‚·B
-ƒQ[ƒ€ƒ{[ƒCƒAƒhƒoƒ“ƒXê—pƒ\ƒtƒg‚ÌŽÀs‚ª‰Â”\‚Å‚·B
+ï¿½Qï¿½[ï¿½ï¿½ï¿½{ï¿½[ï¿½Cï¿½Aï¿½hï¿½oï¿½ï¿½ï¿½Xï¿½Ìƒnï¿½[ï¿½hï¿½Eï¿½Fï¿½Aï¿½ï¿½ï¿½Gï¿½~ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½gï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
+ï¿½Qï¿½[ï¿½ï¿½ï¿½{ï¿½[ï¿½Cï¿½Aï¿½hï¿½oï¿½ï¿½ï¿½Xï¿½ï¿½pï¿½\ï¿½tï¿½gï¿½ÌŽï¿½ï¿½sï¿½ï¿½ï¿½Â”\ï¿½Å‚ï¿½ï¿½B
 
-ƒQ[ƒ€ƒ{[ƒCAƒQ[ƒ€ƒ{[ƒCƒJƒ‰[‚Ìƒ\ƒtƒg‚É‚Í‘Î‰ž‚µ‚Ü‚¹‚ñB
-
-
--- –ÆÓ
-
-‚¢‚©‚È‚é•ÛØ‚à‚ ‚è‚Ü‚¹‚ñB
-–{ƒ\ƒtƒgƒEƒFƒA‚É‚æ‚Á‚Ä¶‚¶‚½‘¹ŠQ“™‚ÉŠÖ‚µAìŽÒ‚ÍˆêØÓ”C‚ð•‰‚¢‚Ü‚¹‚ñB
+ï¿½Qï¿½[ï¿½ï¿½ï¿½{ï¿½[ï¿½Cï¿½Aï¿½Qï¿½[ï¿½ï¿½ï¿½{ï¿½[ï¿½Cï¿½Jï¿½ï¿½ï¿½[ï¿½Ìƒ\ï¿½tï¿½gï¿½É‚Í‘Î‰ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B
 
 
--- —˜—pŠÂ‹«
+-- ï¿½Æï¿½
 
-FW 3.71ˆÈ~‚ÅŽg—p‚µ‚Ä‰º‚³‚¢B
-CFW 5.00M33‚ÍAM33-4ˆÈ~‚ðŽg—p‚µ‚Ä‰º‚³‚¢B(M33-1`3‚ÍƒNƒƒbƒNÝ’è‚ª“®ì‚µ‚Ü‚¹‚ñ)
+ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ÛØ‚ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B
+ï¿½{ï¿½\ï¿½tï¿½gï¿½Eï¿½Fï¿½Aï¿½É‚ï¿½ï¿½ï¿½Äï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Qï¿½ï¿½ï¿½ÉŠÖ‚ï¿½ï¿½Aï¿½ï¿½Ò‚Íˆï¿½ØÓ”Cï¿½ð•‰‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B
+
+
+-- ï¿½ï¿½ï¿½pï¿½Â‹ï¿½
+
+FW 3.71ï¿½È~ï¿½ÅŽgï¿½pï¿½ï¿½ï¿½Ä‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
+CFW 5.00M33ï¿½ÍAM33-4ï¿½È~ï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½Ä‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B(M33-1ï¿½`3ï¿½ÍƒNï¿½ï¿½ï¿½bï¿½Nï¿½Ý’è‚ªï¿½ï¿½ï¿½ì‚µï¿½Ü‚ï¿½ï¿½ï¿½)
 
 
 -- GBA BIOS
 
-ŽÀs‚·‚é‚½‚ß‚É‚ÍAŽÀ‹@‚ÌBIOSƒCƒ[ƒW‚ª•K—v‚Æ‚È‚è‚Ü‚·B
+ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½é‚½ï¿½ß‚É‚ÍAï¿½ï¿½ï¿½@ï¿½ï¿½BIOSï¿½Cï¿½ï¿½ï¿½[ï¿½Wï¿½ï¿½ï¿½Kï¿½vï¿½Æ‚È‚ï¿½Ü‚ï¿½ï¿½B
 
-ƒtƒ@ƒCƒ‹–¼    Fgba_bios.bin
-ƒtƒ@ƒCƒ‹ƒTƒCƒYF16.0 KB (16,384 ƒoƒCƒg)
-ƒ`ƒFƒbƒNƒTƒ€  FGBA, GBA SP, GAMEBOY micro & GAMEBOY PLAYER
+ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½    ï¿½Fgba_bios.bin
+ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Tï¿½Cï¿½Yï¿½F16.0 KB (16,384 ï¿½oï¿½Cï¿½g)
+ï¿½`ï¿½Fï¿½bï¿½Nï¿½Tï¿½ï¿½  ï¿½FGBA, GBA SP, GAMEBOY micro & GAMEBOY PLAYER
                  CRC32: 81977335   MD5: a860e8c0b6d573d191e4ec7db1b1e4f6
                 GBA BIOS on Nintendo DS & DS Lite
                  CRC32: a6473709   MD5: 1c0d67db9e1208b95a1506b1688a0ad6
 
-‘ŠOŒü‚¯‚Ìƒ‚ƒfƒ‹‚Å‚à“¯ˆê‚Å‚·B
+ï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½Ìƒï¿½ï¿½fï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½ï¿½ï¿½Å‚ï¿½ï¿½B
 
-ŽÀ‹@‚ÌBIOSƒCƒ[ƒW‚ðƒ_ƒ“ƒv‚·‚é•û–@‚ÍAŠeŽ©‚Å’²‚×‚Ä‰º‚³‚¢B
+ï¿½ï¿½ï¿½@ï¿½ï¿½BIOSï¿½Cï¿½ï¿½ï¿½[ï¿½Wï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½@ï¿½ÍAï¿½eï¿½ï¿½ï¿½Å’ï¿½ï¿½×‚Ä‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
 http://wiki.pocketheaven.com/GBA_BIOS
 
-‚±‚±‚Å‚ÍANDS‚Å‚Ì’ˆÓ“_‚Ì‚Ý‹Lq‚µ‚Ü‚·B
+ï¿½ï¿½ï¿½ï¿½ï¿½Å‚ÍANDSï¿½Å‚Ì’ï¿½ï¿½Ó“_ï¿½Ì‚Ý‹Lï¿½qï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
 
-NDS‚É‚ÍA3Ží—Þ‚ÌBIOS‚ª‚ ‚è‚Ü‚·B(NDS-ARM9, NDS-ARM7, GBA)
+NDSï¿½É‚ÍA3ï¿½ï¿½Þ‚ï¿½BIOSï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B(NDS-ARM9, NDS-ARM7, GBA)
 
-NDS‚ÅGBA BIOS‚Ìƒ_ƒ“ƒv‚ðs‚¤‚É‚ÍAGBA(SLOT2)‚Ìƒtƒ‰ƒbƒVƒ…ƒJ[ƒgƒŠƒbƒW‚ª•K—v‚Å‚·B
-SLOT1‚ðŽg—p‚·‚éNDS—p‚Å‚ÍGBA BIOS‚Ìƒ_ƒ“ƒv‚Ís‚¦‚Ü‚¹‚ñB
-‚±‚ê‚ÍADSƒ‚[ƒh‚Å‚ÍGBA BIOS‚ÉƒAƒNƒZƒX•s‰ÂAGBAƒ‚[ƒh‚Å‚ÍSLOT1‚ÉƒAƒNƒZƒX•s‰Â
-‚Æ‚¢‚¤NDS‚ÌŽd—l‚Ì‚½‚ß‚Å‚·B
+NDSï¿½ï¿½GBA BIOSï¿½Ìƒ_ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½sï¿½ï¿½ï¿½É‚ÍAGBA(SLOT2)ï¿½Ìƒtï¿½ï¿½ï¿½bï¿½Vï¿½ï¿½ï¿½Jï¿½[ï¿½gï¿½ï¿½ï¿½bï¿½Wï¿½ï¿½ï¿½Kï¿½vï¿½Å‚ï¿½ï¿½B
+SLOT1ï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½NDSï¿½pï¿½Å‚ï¿½GBA BIOSï¿½Ìƒ_ï¿½ï¿½ï¿½vï¿½Ísï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B
+ï¿½ï¿½ï¿½ï¿½ÍADSï¿½ï¿½ï¿½[ï¿½hï¿½Å‚ï¿½GBA BIOSï¿½ÉƒAï¿½Nï¿½Zï¿½Xï¿½sï¿½ÂAGBAï¿½ï¿½ï¿½[ï¿½hï¿½Å‚ï¿½SLOT1ï¿½ÉƒAï¿½Nï¿½Zï¿½Xï¿½sï¿½ï¿½
+ï¿½Æ‚ï¿½ï¿½ï¿½NDSï¿½ÌŽdï¿½lï¿½Ì‚ï¿½ï¿½ß‚Å‚ï¿½ï¿½B
 
-NDS‚Ìƒ_ƒ“ƒv‚Å“¾‚ç‚ê‚éƒtƒ@ƒCƒ‹ BIOSNDS7.ROM
+NDSï¿½Ìƒ_ï¿½ï¿½ï¿½vï¿½Å“ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ BIOSNDS7.ROM
  CRC32: 1280F0D5 MD5: DF692A80A5B1BC90728BC3DFC76CD948
-‚±‚ê‚ÍuNDS‚ÌBIOS (NDS-ARM7)v‚Å‚ ‚èAŽg—p‚·‚é‚±‚Æ‚Ío—ˆ‚Ü‚¹‚ñB
-ƒtƒ@ƒ“ƒNƒVƒ‡ƒ“‚Ìˆê•”‚Í‹¤’Ê‚Å‚·‚ªA‘½‚­‚ÍíœA–”‚Í•ÏX‚³‚ê‚Ä‚¢‚Ü‚·B
+ï¿½ï¿½ï¿½ï¿½ÍuNDSï¿½ï¿½BIOS (NDS-ARM7)ï¿½vï¿½Å‚ï¿½ï¿½ï¿½Aï¿½gï¿½pï¿½ï¿½ï¿½é‚±ï¿½Æ‚Íoï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B
+ï¿½tï¿½@ï¿½ï¿½ï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Ìˆê•”ï¿½Í‹ï¿½ï¿½Ê‚Å‚ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½Ííœï¿½Aï¿½ï¿½ï¿½Í•ÏXï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½B
 
 
--- ƒfƒBƒŒƒNƒgƒŠ\¬
+-- ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½\ï¿½ï¿½
 
-ˆÈ‰º‚Ìƒtƒ@ƒCƒ‹‚ÍA“¯‚¶\¬‚Å“¯ˆê‚ÌƒfƒBƒŒƒNƒgƒŠ‚É’u‚­•K—v‚ª‚ ‚è‚Ü‚·B
-IR Shell‚Ìƒvƒ‰ƒOƒCƒ“‚Æ‚µ‚ÄŽg—p‚·‚éê‡‚ÍA‚±‚Ì\¬‚ÅEXTAPP/APPxx‚É’u‚¢‚Ä‰º‚³‚¢B
+ï¿½È‰ï¿½ï¿½Ìƒtï¿½@ï¿½Cï¿½ï¿½ï¿½ÍAï¿½ï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½Å“ï¿½ï¿½ï¿½Ìƒfï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½É’uï¿½ï¿½ï¿½Kï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
+IR Shellï¿½Ìƒvï¿½ï¿½ï¿½Oï¿½Cï¿½ï¿½ï¿½Æ‚ï¿½ï¿½ÄŽgï¿½pï¿½ï¿½ï¿½ï¿½ê‡ï¿½ÍAï¿½ï¿½ï¿½Ì\ï¿½ï¿½ï¿½ï¿½EXTAPP/APPxxï¿½É’uï¿½ï¿½ï¿½Ä‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
 
-‚»‚Ì‘¼‚Ìƒtƒ@ƒCƒ‹AƒfƒBƒŒƒNƒgƒŠ‚Í dir.ini‚É‚ÄŽw’è‚µ‚½’Ê‚è‚É”z’u‚µ‚Ä‰º‚³‚¢B
+ï¿½ï¿½ï¿½Ì‘ï¿½ï¿½Ìƒtï¿½@ï¿½Cï¿½ï¿½ï¿½Aï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ dir.iniï¿½É‚ÄŽwï¿½è‚µï¿½ï¿½ï¿½Ê‚ï¿½É”zï¿½uï¿½ï¿½ï¿½Ä‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
 
-TempGBA/ (APPxx)
+FrogGBA/ (APPxx)
  |
- +- EBOOT.PBP        ƒvƒƒOƒ‰ƒ€–{‘Ì
- +- ku_bridge.prx    ƒJ[ƒlƒ‹ƒ‚[ƒh‚ÌAPI‚ðƒ†[ƒU[ƒ‚[ƒh‚Å—˜—p‚·‚éˆ×‚Ìƒvƒ‰ƒOƒCƒ“
- +- exception.prx    —áŠO“®ì‚ÌƒtƒbƒNAî•ñ•\Ž¦‚ðs‚¤ƒvƒ‰ƒOƒCƒ“
- +- game_config.txt  ƒQ[ƒ€Ý’èƒf[ƒ^ƒx[ƒX
- +- gba_bios.bin     GBA BIOSƒCƒ[ƒW
- +- dir.ini          ƒfƒBƒŒƒNƒgƒŠ‚ÌÝ’è
+ +- EBOOT.PBP        ï¿½vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½{ï¿½ï¿½
+ +- ku_bridge.prx    ï¿½Jï¿½[ï¿½lï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½APIï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½Uï¿½[ï¿½ï¿½ï¿½[ï¿½hï¿½Å—ï¿½ï¿½pï¿½ï¿½ï¿½ï¿½×‚Ìƒvï¿½ï¿½ï¿½Oï¿½Cï¿½ï¿½
+ +- exception.prx    ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½Ìƒtï¿½bï¿½Nï¿½Aï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Oï¿½Cï¿½ï¿½
+ +- game_config.txt  ï¿½Qï¿½[ï¿½ï¿½ï¿½Ý’ï¿½fï¿½[ï¿½^ï¿½xï¿½[ï¿½X
+ +- gba_bios.bin     GBA BIOSï¿½Cï¿½ï¿½ï¿½[ï¿½W
+ +- dir.ini          ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½ÌÝ’ï¿½
 
 
--- ‘Î‰žŠg’£Žq
+-- ï¿½Î‰ï¿½ï¿½gï¿½ï¿½ï¿½q
 
-GBAƒƒ€ƒCƒ[ƒW    .gba .bin .agb
-ˆ³kƒtƒ@ƒCƒ‹       .zip .gbz
+GBAï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½W    .gba .bin .agb
+ï¿½ï¿½ï¿½kï¿½tï¿½@ï¿½Cï¿½ï¿½       .zip .gbz
 
-‘Î‰ž‚µ‚Ä‚¢‚éŠg’£ŽqˆÈŠO‚Ìƒtƒ@ƒCƒ‹‚ÍAƒŠƒXƒg‚É•\Ž¦‚³‚ê‚Ü‚¹‚ñB
-gbz ‚ÍAzipƒtƒ@ƒCƒ‹‚Æ‚µ‚Äˆµ‚í‚ê‚Ü‚·B
+ï¿½Î‰ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½qï¿½ÈŠOï¿½Ìƒtï¿½@ï¿½Cï¿½ï¿½ï¿½ÍAï¿½ï¿½ï¿½Xï¿½gï¿½É•\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B
+gbz ï¿½ÍAzipï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Æ‚ï¿½ï¿½Äˆï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
 
-ˆ³kƒtƒ@ƒCƒ‹“à‚Ìƒƒ€ƒCƒ[ƒW‚Íˆê‚Â‚Ì‚Ý‚ÅA‘Î‰ž‚·‚éŠg’£Žq‚É‚µ‚Ä‰º‚³‚¢B
+ï¿½ï¿½ï¿½kï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½Ìƒï¿½ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Wï¿½Íˆï¿½Â‚Ì‚Ý‚ÅAï¿½Î‰ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½qï¿½É‚ï¿½ï¿½Ä‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
 
-ƒQ[ƒ€ƒJ[ƒgƒŠƒbƒW‚Ìƒoƒbƒtƒ@ƒTƒCƒY‚ð’´‚¦‚é‚à‚Ì‚ÍAˆ³kƒtƒ@ƒCƒ‹‚Å‚Í“Ç‚ß‚Ü‚¹‚ñB
-
-
--- ƒGƒ~ƒ…ƒŒ[ƒ^‚ÌÝ’è
-
-‰æ–Ê•\Ž¦
- 100% GU - Šg‘å‚Ís‚í‚¸‚ÉGBA‚Æ“¯‚¶‰ð‘œ“x‚Å•\Ž¦‚µ‚Ü‚·Bƒf[ƒ^‚Ì“]‘—‚ÍGPU‚ðŽg—pB
- 150% GU - GPU‚ðŽg—p‚µ‚Ä1.5”{‚ÉŠg‘åAƒf[ƒ^‚Ì“]‘—‚ðs‚¢‚Ü‚·B
- 150% SW - GPU‚ðŽg—p‚¹‚¸‚Éƒ\ƒtƒgƒEƒFƒA‚ÅŠg‘åˆ—Aƒf[ƒ^‚Ì“]‘—‚ðs‚¢‚Ü‚·B
-           GPU‚É”ä‚×•‰‰×‚ª‚‚¢‚½‚ßAˆ—‚É—]—T‚ª‚È‚¢ê‡‚Í“®ì‘¬“x‚ª’á‰º‚µ‚Ü‚·B
-           ‰æŽ¿‚Í‚ ‚Ü‚è—Ç‚­‚ ‚è‚Ü‚¹‚ñ‚ªA‘N‰s“x‚Ì’á‰º‚Í­‚È‚¢‚Å‚·B
- Žw’è GU - u‰æ–Ê‚ÌŠg‘å—¦v‚ÅŽw’è‚µ‚½ƒTƒCƒY‚Å•\Ž¦‚ð‚µ‚Ü‚·BŠg‘åA“]‘—‚ÍGPU‚ðŽg—pB
-
-‰æ–Ê‚ÌŠg‘å—¦
- ‰æ–Ê•\Ž¦uŽw’è GUv‚ÌŠg‘å—¦‚ðŽw’è‚µ‚Ü‚·B
- 170%‚ÅPSP‚Ì‰æ–Ê‚ÉŽû‚Ü‚éÅ‘å‚ÌƒTƒCƒY‚É‚È‚è‚Ü‚·B
-
-‰æ–Ê‚ÌƒtƒBƒ‹ƒ^
- ƒoƒCƒŠƒjƒAƒtƒBƒ‹ƒ^‚ðŽg—p‚µ‚Ü‚·B
- GPUŽg—pŽž‚Ì‚Ý—LŒø‚Å‚·B
-
-ƒTƒEƒ“ƒh‰¹—Ê
- ƒTƒEƒ“ƒh‚Ìo—ÍƒŒƒxƒ‹‚ð•ÏX‚µ‚Ü‚·B
-
-ƒXƒ^ƒbƒN‚ÌÅ“K‰»
- Ž©“® - game_config.txt‚É‚Äuiwram_stack_optimize = nov‚ÆŽw’è‚³‚ê‚Ä‚¢‚éê‡‚É
-        ƒIƒtAŽw’è‚ª‚È‚¢ê‡‚ÍƒIƒ“‚É‚È‚è‚Ü‚·B
- ƒIƒt - í‚ÉƒIƒt‚Æ‚È‚è‚Ü‚·B
-
- ƒXƒ^ƒbƒN‚ÌÅ“K‰»‚ÍAƒXƒ^ƒbƒN‚ÉIWRAM‚Ì‚Ý‚ð—˜—p‚µ‚Ä‚¢‚éê‡‚ÉŽg—p‚Å‚«‚Ü‚·B
- ˆÙ‚È‚éƒƒ‚ƒŠ—Ìˆæ‚ð—˜—p‚µ‚Ä‚¢‚éê‡‚É‚Í•s‹ï‡‚ª”­¶‚µ‚Ü‚·‚Ì‚ÅAÅ“K‰»‚ÍƒIƒt‚É‚µ
- ‚Ä‰º‚³‚¢B
-
- ‚±‚ÌÝ’è‚Í‚·‚×‚Ä‚ÌƒQ[ƒ€‚É“K—p‚³‚ê‚éˆ×A“®ì‚ª‰ü‘P‚µ‚½ƒ\ƒtƒg‚Ígame_config.txt
- ‚É’Ç‰Á‚µŒÂ•Ê‚ÉÝ’è‚ðs‚¤—l‚É‚µ‚Ä‰º‚³‚¢B
- ŒÂ•ÊŽw’è‚Å‚Í‹N“®Žž‚ÉƒNƒ‰ƒbƒVƒ…‚·‚éê‡‚É‚Í“K—po—ˆ‚È‚¢ˆ×A‘SŽw’è‚Æ‚È‚Á‚Ä‚¢‚Ü‚·B
-
-BIOS‚©‚ç‹N“®‚ðs‚¤
- BIOS‚©‚ç‹N“®‚ðs‚¢‚Ü‚·B
- ƒJ[ƒgƒŠƒbƒWƒwƒbƒ_‚É•s³‚È’l‚ª‚ ‚éê‡‚É‚ÍABIOS‚ÉƒƒbƒN‚³‚ê‹N“®‚µ‚Ü‚¹‚ñB
-
-Œ¾Œê
- •\Ž¦Œ¾Œê‚ðØ‚è‘Ö‚¦‚Ü‚·B
- Ä‹N“®‚Í•s—v‚Å‚·‚ªAƒQ[ƒ€‚É–ß‚é‚È‚Ç‚Åƒƒjƒ…[‚ðˆê’UI—¹‚·‚é•K—v‚ª‚ ‚è‚Ü‚·B
+ï¿½Qï¿½[ï¿½ï¿½ï¿½Jï¿½[ï¿½gï¿½ï¿½ï¿½bï¿½Wï¿½Ìƒoï¿½bï¿½tï¿½@ï¿½Tï¿½Cï¿½Yï¿½ð’´‚ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚ÍAï¿½ï¿½ï¿½kï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Å‚Í“Ç‚ß‚Ü‚ï¿½ï¿½ï¿½B
 
 
--- ƒJ[ƒhƒŠƒbƒWEƒAƒhƒIƒ“
+-- ï¿½Gï¿½~ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½ÌÝ’ï¿½
 
- EŽžŒv(RTC)
- ŽžŒv‹@”\‚ðƒQ[ƒ€‚Ìƒ\ƒtƒgƒEƒFƒA‚Å—˜—p‚Å‚«‚Ü‚·B
- PSP–{‘Ì‚©‚çŽž‚ðŽæ“¾‚µ‚Ä‚¢‚Ü‚·‚Ì‚ÅAŽž‡‚í‚¹‚ÍPSP‘¤‚Ås‚Á‚Ä‰º‚³‚¢B
+ï¿½ï¿½Ê•\ï¿½ï¿½
+ 100% GU - ï¿½gï¿½ï¿½Ísï¿½í‚¸ï¿½ï¿½GBAï¿½Æ“ï¿½ï¿½ï¿½ï¿½ð‘œ“xï¿½Å•\ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½Bï¿½fï¿½[ï¿½^ï¿½Ì“]ï¿½ï¿½ï¿½ï¿½GPUï¿½ï¿½ï¿½gï¿½pï¿½B
+ 150% GU - GPUï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½1.5ï¿½{ï¿½ÉŠgï¿½ï¿½Aï¿½fï¿½[ï¿½^ï¿½Ì“]ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
+ 150% SW - GPUï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½ï¿½Éƒ\ï¿½tï¿½gï¿½Eï¿½Fï¿½Aï¿½ÅŠgï¿½åˆï¿½ï¿½ï¿½Aï¿½fï¿½[ï¿½^ï¿½Ì“]ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
+           GPUï¿½É”ï¿½×•ï¿½ï¿½×‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßAï¿½ï¿½ï¿½ï¿½ï¿½É—]ï¿½Tï¿½ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½Í“ï¿½ï¿½ì‘¬ï¿½xï¿½ï¿½ï¿½á‰ºï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
+           ï¿½æŽ¿ï¿½Í‚ï¿½ï¿½Ü‚ï¿½Ç‚ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ñ‚ªAï¿½Nï¿½sï¿½xï¿½Ì’á‰ºï¿½Íï¿½ï¿½È‚ï¿½ï¿½Å‚ï¿½ï¿½B
+ ï¿½wï¿½ï¿½ GU - ï¿½uï¿½ï¿½Ê‚ÌŠgï¿½å—¦ï¿½vï¿½ÅŽwï¿½è‚µï¿½ï¿½ï¿½Tï¿½Cï¿½Yï¿½Å•\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½Bï¿½gï¿½ï¿½Aï¿½]ï¿½ï¿½ï¿½ï¿½GPUï¿½ï¿½ï¿½gï¿½pï¿½B
 
- EŒX‚«ƒZƒ“ƒT[
- ƒAƒiƒƒOƒpƒbƒh‚ÅAƒVƒ~ƒ…ƒŒ[ƒg‚µ‚Ü‚·B(ƒAƒiƒƒOƒpƒbƒh‚ÉŠ„‚è“–‚Ä‚½ƒL[‚Í–³Œø)
- ƒQ[ƒ€‚Ìƒ\ƒtƒgƒEƒFƒA‚©‚çƒZƒ“ƒT[‚Ö‚Ìƒf[ƒ^—v‹‚ª‚ ‚é‚ÆŽ©“®‚Å—LŒø‚É‚È‚è‚Ü‚·B
- ƒJ[ƒgƒŠƒbƒW‚ÌŒü‚«‚ÍƒIƒŠƒWƒiƒ‹‚ÌGBA(–{‘Ì‚Ìã•”‚ÉƒJ[ƒgƒŠƒbƒW)‚ÅAƒAƒiƒƒOƒpƒbƒh
- ‚ð“ü—Í‚µ‚½•ûŒü‚ª‰º‚Æ‚È‚è‚Ü‚·B
+ï¿½ï¿½Ê‚ÌŠgï¿½å—¦
+ ï¿½ï¿½Ê•\ï¿½ï¿½ï¿½uï¿½wï¿½ï¿½ GUï¿½vï¿½ÌŠgï¿½å—¦ï¿½ï¿½ï¿½wï¿½è‚µï¿½Ü‚ï¿½ï¿½B
+ 170%ï¿½ï¿½PSPï¿½Ì‰ï¿½Ê‚ÉŽï¿½ï¿½Ü‚ï¿½Å‘ï¿½ÌƒTï¿½Cï¿½Yï¿½É‚È‚ï¿½Ü‚ï¿½ï¿½B
+
+ï¿½ï¿½Ê‚Ìƒtï¿½Bï¿½ï¿½ï¿½^
+ ï¿½oï¿½Cï¿½ï¿½ï¿½jï¿½Aï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
+ GPUï¿½gï¿½pï¿½ï¿½ï¿½Ì‚Ý—Lï¿½ï¿½ï¿½Å‚ï¿½ï¿½B
+
+ï¿½Tï¿½Eï¿½ï¿½ï¿½hï¿½ï¿½ï¿½ï¿½
+ ï¿½Tï¿½Eï¿½ï¿½ï¿½hï¿½Ìoï¿½Íƒï¿½ï¿½xï¿½ï¿½ï¿½ï¿½ÏXï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
+
+ï¿½Xï¿½^ï¿½bï¿½Nï¿½ÌÅ“Kï¿½ï¿½
+ ï¿½ï¿½ï¿½ï¿½ - game_config.txtï¿½É‚Äuiwram_stack_optimize = noï¿½vï¿½ÆŽwï¿½è‚³ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡ï¿½ï¿½
+        ï¿½Iï¿½tï¿½Aï¿½wï¿½è‚ªï¿½È‚ï¿½ï¿½ê‡ï¿½ÍƒIï¿½ï¿½ï¿½É‚È‚ï¿½Ü‚ï¿½ï¿½B
+ ï¿½Iï¿½t - ï¿½ï¿½ÉƒIï¿½tï¿½Æ‚È‚ï¿½Ü‚ï¿½ï¿½B
+
+ ï¿½Xï¿½^ï¿½bï¿½Nï¿½ÌÅ“Kï¿½ï¿½ï¿½ÍAï¿½Xï¿½^ï¿½bï¿½Nï¿½ï¿½IWRAMï¿½Ì‚Ý‚ð—˜—pï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡ï¿½ÉŽgï¿½pï¿½Å‚ï¿½ï¿½Ü‚ï¿½ï¿½B
+ ï¿½Ù‚È‚éƒï¿½ï¿½ï¿½ï¿½ï¿½Ìˆï¿½ð—˜—pï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡ï¿½É‚Í•sï¿½ï‡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½Ì‚ÅAï¿½Å“Kï¿½ï¿½ï¿½ÍƒIï¿½tï¿½É‚ï¿½
+ ï¿½Ä‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
+
+ ï¿½ï¿½ï¿½ÌÝ’ï¿½Í‚ï¿½ï¿½×‚Ä‚ÌƒQï¿½[ï¿½ï¿½ï¿½É“Kï¿½pï¿½ï¿½ï¿½ï¿½ï¿½×Aï¿½ï¿½ï¿½ì‚ªï¿½ï¿½ï¿½Pï¿½ï¿½ï¿½ï¿½ï¿½\ï¿½tï¿½gï¿½ï¿½game_config.txt
+ ï¿½É’Ç‰ï¿½ï¿½ï¿½ï¿½Â•Ê‚ÉÝ’ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½lï¿½É‚ï¿½ï¿½Ä‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
+ ï¿½Â•ÊŽwï¿½ï¿½Å‚Í‹Nï¿½ï¿½ï¿½ï¿½ï¿½ÉƒNï¿½ï¿½ï¿½bï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½É‚Í“Kï¿½pï¿½oï¿½ï¿½ï¿½È‚ï¿½ï¿½×Aï¿½Sï¿½wï¿½ï¿½Æ‚È‚ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½B
+
+BIOSï¿½ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½
+ BIOSï¿½ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
+ ï¿½Jï¿½[ï¿½gï¿½ï¿½ï¿½bï¿½Wï¿½wï¿½bï¿½_ï¿½É•sï¿½ï¿½ï¿½È’lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½É‚ÍABIOSï¿½Éƒï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B
+
+ï¿½ï¿½ï¿½ï¿½
+ ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø‚ï¿½Ö‚ï¿½ï¿½Ü‚ï¿½ï¿½B
+ ï¿½Ä‹Nï¿½ï¿½ï¿½Í•sï¿½vï¿½Å‚ï¿½ï¿½ï¿½ï¿½Aï¿½Qï¿½[ï¿½ï¿½ï¿½É–ß‚ï¿½È‚Ç‚Åƒï¿½ï¿½jï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½Uï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Kï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
 
 
--- ƒZ[ƒuƒ^ƒCƒv
- ƒoƒbƒNƒAƒbƒvƒƒfƒBƒA‚Ìƒ^ƒCƒv‚ÍABACKUP ID‚æ‚èŽæ“¾‚µ‚Ä‚¢‚Ü‚·B
- ƒpƒbƒ`‚È‚Ç‚ð“K—p‚µABACKUP ID‚ÆƒZ[ƒuƒ^ƒCƒv‚ªˆÙ‚È‚éê‡‚Í³í‚É“®ì‚µ‚Ü‚¹‚ñB
+-- ï¿½Jï¿½[ï¿½hï¿½ï¿½ï¿½bï¿½Wï¿½Eï¿½Aï¿½hï¿½Iï¿½ï¿½
 
- ƒuƒŒƒXƒIƒuƒtƒ@ƒCƒA `—³‚ÌíŽm`‚ÍABACKUP ID‚ª EEPROM_V121,FLASH_V124,SRAM_V112
- ‚Ì3‚Â‘¶Ý‚µ‚Ü‚·B
- ‚±‚Ì—l‚È“ÁŽê‚ÈƒP[ƒX‚ª‘¼‚É‚à‘¶Ý‚µAŒ»Ýs‚Á‚Ä‚¢‚é•û–@‚Å‘Î‰ž‚Å‚«‚È‚¢ê‡‚Íƒƒ€
- ƒCƒ[ƒW‚ÌC³‚ª•K—v‚Å‚·B
+ ï¿½Eï¿½ï¿½ï¿½v(RTC)
+ ï¿½ï¿½ï¿½vï¿½@ï¿½\ï¿½ï¿½ï¿½Qï¿½[ï¿½ï¿½ï¿½Ìƒ\ï¿½tï¿½gï¿½Eï¿½Fï¿½Aï¿½Å—ï¿½ï¿½pï¿½Å‚ï¿½ï¿½Ü‚ï¿½ï¿½B
+ PSPï¿½{ï¿½Ì‚ï¿½ï¿½çŽžï¿½ï¿½ï¿½ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½Ì‚ÅAï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½í‚¹ï¿½ï¿½PSPï¿½ï¿½ï¿½Åsï¿½ï¿½ï¿½Ä‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
 
- BACKUP ID‚ÍAƒƒ€ƒCƒ[ƒW‚ÌÅŒã‚É‘¶Ý‚·‚éID‚ðŽg—p‚µ‚Ä‚¢‚Ü‚·B
- BACKUP ID‚ª‘¶Ý‚µ‚È‚¢ê‡‚ÍAŽ©“®”»•Ê‚µ‚Ü‚·B(FLASHƒƒfƒBƒA‚ÌƒTƒCƒY‚Í”»•Ê•s‰Â)
+ ï¿½Eï¿½Xï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½Tï¿½[
+ ï¿½Aï¿½iï¿½ï¿½ï¿½Oï¿½pï¿½bï¿½hï¿½ÅAï¿½Vï¿½~ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½gï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B(ï¿½Aï¿½iï¿½ï¿½ï¿½Oï¿½pï¿½bï¿½hï¿½ÉŠï¿½ï¿½è“–ï¿½Ä‚ï¿½ï¿½Lï¿½[ï¿½Í–ï¿½ï¿½ï¿½)
+ ï¿½Qï¿½[ï¿½ï¿½ï¿½Ìƒ\ï¿½tï¿½gï¿½Eï¿½Fï¿½Aï¿½ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½Tï¿½[ï¿½Ö‚Ìƒfï¿½[ï¿½^ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÆŽï¿½ï¿½ï¿½ï¿½Å—Lï¿½ï¿½ï¿½É‚È‚ï¿½Ü‚ï¿½ï¿½B
+ ï¿½Jï¿½[ï¿½gï¿½ï¿½ï¿½bï¿½Wï¿½ÌŒï¿½ï¿½ï¿½ï¿½ÍƒIï¿½ï¿½ï¿½Wï¿½iï¿½ï¿½ï¿½ï¿½GBA(ï¿½{ï¿½Ì‚Ìã•”ï¿½ÉƒJï¿½[ï¿½gï¿½ï¿½ï¿½bï¿½W)ï¿½ÅAï¿½Aï¿½iï¿½ï¿½ï¿½Oï¿½pï¿½bï¿½h
+ ï¿½ï¿½ï¿½ï¿½Í‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚È‚ï¿½Ü‚ï¿½ï¿½B
+
+
+-- ï¿½Zï¿½[ï¿½uï¿½^ï¿½Cï¿½v
+ ï¿½oï¿½bï¿½Nï¿½Aï¿½bï¿½vï¿½ï¿½ï¿½fï¿½Bï¿½Aï¿½Ìƒ^ï¿½Cï¿½vï¿½ÍABACKUP IDï¿½ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½B
+ ï¿½pï¿½bï¿½`ï¿½È‚Ç‚ï¿½Kï¿½pï¿½ï¿½ï¿½ABACKUP IDï¿½ÆƒZï¿½[ï¿½uï¿½^ï¿½Cï¿½vï¿½ï¿½ï¿½Ù‚È‚ï¿½ê‡ï¿½Íï¿½ï¿½ï¿½É“ï¿½ï¿½ì‚µï¿½Ü‚ï¿½ï¿½ï¿½B
+
+ ï¿½uï¿½ï¿½ï¿½Xï¿½Iï¿½uï¿½tï¿½@ï¿½Cï¿½A ï¿½`ï¿½ï¿½ï¿½Ìï¿½mï¿½`ï¿½ÍABACKUP IDï¿½ï¿½ EEPROM_V121,FLASH_V124,SRAM_V112
+ ï¿½ï¿½3ï¿½Â‘ï¿½ï¿½Ý‚ï¿½ï¿½Ü‚ï¿½ï¿½B
+ ï¿½ï¿½ï¿½Ì—lï¿½È“ï¿½ï¿½ï¿½ÈƒPï¿½[ï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½ï¿½Ý‚ï¿½ï¿½Aï¿½ï¿½ï¿½Ýsï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½@ï¿½Å‘Î‰ï¿½ï¿½Å‚ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½Íƒï¿½ï¿½ï¿½
+ ï¿½Cï¿½ï¿½ï¿½[ï¿½Wï¿½ÌCï¿½ï¿½ï¿½ï¿½ï¿½Kï¿½vï¿½Å‚ï¿½ï¿½B
+
+ BACKUP IDï¿½ÍAï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Wï¿½ÌÅŒï¿½É‘ï¿½ï¿½Ý‚ï¿½ï¿½ï¿½IDï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½B
+ BACKUP IDï¿½ï¿½ï¿½ï¿½ï¿½Ý‚ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½ÍAï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê‚ï¿½ï¿½Ü‚ï¿½ï¿½B(FLASHï¿½ï¿½ï¿½fï¿½Bï¿½Aï¿½ÌƒTï¿½Cï¿½Yï¿½Í”ï¿½ï¿½Ê•sï¿½ï¿½)
 
  EEPROM_Vnnn    EEPROM 512 bytes or 8 Kbytes (4Kbit or 64Kbit)
  SRAM_Vnnn      SRAM 32 Kbytes (256Kbit)
- SRAM_Fnnn      FRAM 32 Kbytes (256Kbit) SRAMŒÝŠ·B
+ SRAM_Fnnn      FRAM 32 Kbytes (256Kbit) SRAMï¿½ÝŠï¿½ï¿½B
  FLASH_Vnnn     FLASH 64 Kbytes (512Kbit) (ID used in older files)
  FLASH512_Vnnn  FLASH 64 Kbytes (512Kbit) (ID used in newer files)
  FLASH1M_Vnnn   FLASH 128 Kbytes (1Mbit)
 
- "nnn"‚ÍAƒc[ƒ‹‚Ìƒo[ƒWƒ‡ƒ“BƒZ[ƒuƒ^ƒCƒv‚Ì”»•Ê‚É‚ÍŽg—p‚µ‚Ä‚¢‚Ü‚¹‚ñB
+ "nnn"ï¿½ÍAï¿½cï¿½[ï¿½ï¿½ï¿½Ìƒoï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Bï¿½Zï¿½[ï¿½uï¿½^ï¿½Cï¿½vï¿½Ì”ï¿½ï¿½Ê‚É‚ÍŽgï¿½pï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B
 

@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: tempgba-psp-dev
+    container_name: froggba-psp-dev
     volumes:
       - ./:/project
     working_dir: /project

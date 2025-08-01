@@ -57,7 +57,7 @@
     "Sleep",
 
     // MSG_MAIN_MENU_11
-    "Exit TempGBA",
+    "Exit FrogGBA",
 
     // MSG_MAIN_MENU_HELP_0
     "○:Load  " FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select slot",
@@ -602,7 +602,7 @@
     "待机",
 
     // MSG_MAIN_MENU_11
-    "退出TempGBA",
+    "退出FrogGBA",
 
     // MSG_MAIN_MENU_HELP_0
     "○:读取  " FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择存档",
@@ -1147,7 +1147,7 @@
     "待機",
 
     // MSG_MAIN_MENU_11
-    "退出TempGBA",
+    "退出FrogGBA",
 
     // MSG_MAIN_MENU_HELP_0
     "○:讀取  " FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇存档",
