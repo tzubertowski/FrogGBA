@@ -39,10 +39,10 @@ u32 key = 0;
 
 u32 ALIGN_DATA gamepad_config_map[16] =
 {
-  BUTTON_ID_FASTFORWARD,		//0 BUTTON_ID_MENU
+  BUTTON_ID_RAPIDFIRE_A,		//0 Triangle - Turbo A
   BUTTON_ID_A,		//1
   BUTTON_ID_B,		//2
-  BUTTON_ID_FPS,	//3 BUTTON_ID_START
+  BUTTON_ID_RAPIDFIRE_B,	//3 Square - Turbo B
   BUTTON_ID_L,		//4
   BUTTON_ID_R,		//5
   BUTTON_ID_DOWN,		//6
