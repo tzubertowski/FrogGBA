@@ -9,7 +9,7 @@
 	"ROM Buffer %2dMB",
 
     // MSG_BROWSER_HELP
-    "○:Select  ×:Menu  □:" FONT_UP_DIRECTORY_GBK,
+    "X:Select  O:Menu  Square:Up Dir",
 
     // MSG_MENU_DATE_FMT_0
     "%4d/%2d/%2d %-3s %2d:%02d",
@@ -27,7 +27,7 @@
     "Save state : SLOT %d",
 
     // MSG_MAIN_MENU_2
-    "Savestate details " FONT_R_TRIGGER_GBK,
+    "Savestate details (R)",
 
     // MSG_MAIN_MENU_3
     "Screen capture : %s",
@@ -45,7 +45,7 @@
     "Cheats options",
 
     // MSG_MAIN_MENU_7
-    "Load game " FONT_L_TRIGGER_GBK,
+    "Load game (L)",
 
     // MSG_MAIN_MENU_8
     "Reset",
@@ -60,43 +60,43 @@
     "Exit FrogGBA",
 
     // MSG_MAIN_MENU_HELP_0
-    "○:Load  " FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select slot",
+    "X:Load  Left/Right:Select slot",
 
     // MSG_MAIN_MENU_HELP_1
-    "○:Save  " FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select slot",
+    "X:Save  Left/Right:Select slot",
 
     // MSG_MAIN_MENU_HELP_2
-    "○:Sub menu  " FONT_R_TRIGGER_GBK ":Shortcut key",
+    "X:Sub menu  (R):Shortcut key",
 
     // MSG_MAIN_MENU_HELP_3
-    "○:Save Image  " FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select image format",
+    "X:Save Image  Left/Right:Select image format",
 
     // MSG_MAIN_MENU_HELP_4
-    "○:Sub menu",
+    "X:Sub menu",
 
     // MSG_MAIN_MENU_HELP_5
-    "○:Sub menu",
+    "X:Sub menu",
 
     // MSG_MAIN_MENU_HELP_6
-    "○:Sub menu",
+    "X:Sub menu",
 
     // MSG_MAIN_MENU_HELP_CHEAT
-    "○:Select to manage cheats",
+    "X:Select to manage cheats",
 
     // MSG_MAIN_MENU_HELP_7
-    "○:File browser  " FONT_L_TRIGGER_GBK ":Shortcut key",
+    "X:File browser  (L):Shortcut key",
 
     // MSG_MAIN_MENU_HELP_8
-    "○:Reset game",
+    "X:Reset game",
 
     // MSG_MAIN_MENU_HELP_9
-    "○:Return to game",
+    "X:Return to game",
 
     // MSG_MAIN_MENU_HELP_10
-    "○:Sleep mode",
+    "X:Sleep mode",
 
     // MSG_MAIN_MENU_HELP_11
-    "○:Exit",
+    "X:Exit",
 
     // MSG_OPTION_MENU_TITLE
     "Emulator options",
@@ -144,46 +144,46 @@
     "Back",
 
     // MSG_OPTION_MENU_HELP_0
-    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select   all",
+    "Left/Right:Select   Description:Settings",
 
     // MSG_OPTION_MENU_HELP_1
-    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select   all",
+    "Left/Right:Select   Description:Settings",
 
     // MSG_OPTION_MENU_HELP_2
-    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select   all",
+    "Left/Right:Select   Description:Settings",
 
     // MSG_OPTION_MENU_HELP_SHOW_FPS
-    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select   emulator",
+    "Left/Right:Select   Description:Show FPS toggle",
 
     // MSG_OPTION_MENU_HELP_3
-    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select   all",
+    "Left/Right:Select   Description:Settings",
 
     // MSG_OPTION_MENU_HELP_4
-    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select   all",
+    "Left/Right:Select   Description:Settings",
 
     // MSG_OPTION_MENU_HELP_5
-    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select   all",
+    "Left/Right:Select   Description:Settings",
 
     // MSG_OPTION_MENU_HELP_6
-    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select   all",
+    "Left/Right:Select   Description:Settings",
 
     // MSG_OPTION_MENU_HELP_7
-    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select   emulator",
+    "Left/Right:Select   Description:Settings",
 
     // MSG_OPTION_MENU_HELP_8
-    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select   emulator",
+    "Left/Right:Select   Description:Settings",
 
     // MSG_OPTION_MENU_HELP_9
-    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select   emulator",
+    "Left/Right:Select   Description:Settings",
 
     // MSG_OPTION_MENU_HELP_10
-    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select   emulator",
+    "Left/Right:Select   Description:Settings",
 
     // MSG_OPTION_MENU_HELP_DEFAULT
-    "○:Restore default settings",
+    "X:Restore default settings",
 
     // MSG_OPTION_MENU_HELP_11
-    "○:Main menu",
+    "X:Main menu",
 
     // MSG_STATE_MENU_DATE_FMT_0
     "%4d/%2d/%2d %-3s %2d:%02d:%02d",
