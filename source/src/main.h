@@ -73,6 +73,7 @@ extern u32 sleep_flag;
 
 extern u32 synchronize_flag;
 extern u32 psp_fps_debug;
+extern u32 fast_forward_speed;
 
 extern u32 real_frame_count;
 extern u32 virtual_frame_count;

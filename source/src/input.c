@@ -323,6 +323,32 @@ u32 update_input(void)
   non_repeat_buttons = (last_buttons ^ buttons) & buttons;
   last_buttons = buttons;
 
+  // Check for SELECT + R combination to toggle fast forward speed
+  if ((buttons & PSP_CTRL_SELECT) && (non_repeat_buttons & PSP_CTRL_RTRIGGER))
+  {
+    if (synchronize_flag == 0)  // Fast forward is active
+    {
+      if (fast_forward_speed == 1)  // Currently at 3x
+      {
+        // Go back to 1x (disable fast forward)
+        synchronize_flag = 1;
+        fast_forward_speed = 0;
+      }
+      else
+      {
+        // Go from 2x to 3x
+        fast_forward_speed = 1;
+      }
+    }
+    else
+    {
+      // Enable fast forward at 2x speed
+      synchronize_flag = 0;
+      fast_forward_speed = 0;  // Start at 2x
+    }
+    return 0;
+  }
+
   if ((enable_home_menu != 0) && ((non_repeat_buttons & PSP_CTRL_HOME) != 0))
   {
     // Safety wrapper for HOME button menu call to help debug crashes
@@ -378,6 +404,8 @@ u32 update_input(void)
 
         case BUTTON_ID_FASTFORWARD:
           synchronize_flag ^= 1;
+          if (synchronize_flag == 0)
+            fast_forward_speed = 0;  // Start at 2x when enabling
           return 0;
 
         case BUTTON_ID_FPS:
