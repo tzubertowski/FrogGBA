@@ -39,10 +39,10 @@ u32 key = 0;
 
 u32 ALIGN_DATA gamepad_config_map[16] =
 {
-  BUTTON_ID_RAPIDFIRE_A,		//0 Triangle - Turbo A
+  BUTTON_ID_FASTFORWARD,		//0 Triangle - Fast Forward
   BUTTON_ID_A,		//1
   BUTTON_ID_B,		//2
-  BUTTON_ID_RAPIDFIRE_B,	//3 Square - Turbo B
+  BUTTON_ID_FPS,	//3 Square - FPS
   BUTTON_ID_L,		//4
   BUTTON_ID_R,		//5
   BUTTON_ID_DOWN,		//6
@@ -346,6 +346,13 @@ u32 update_input(void)
       synchronize_flag = 0;
       fast_forward_speed = 0;  // Start at 2x
     }
+    return 0;
+  }
+
+  // Check for SELECT + Square combination to toggle FPS display
+  if ((buttons & PSP_CTRL_SELECT) && (non_repeat_buttons & PSP_CTRL_SQUARE))
+  {
+    psp_fps_debug ^= 1;
     return 0;
   }
 
