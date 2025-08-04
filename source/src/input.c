@@ -39,10 +39,10 @@ u32 key = 0;
 
 u32 ALIGN_DATA gamepad_config_map[16] =
 {
-  BUTTON_ID_FASTFORWARD,		//0 Triangle - Fast Forward
+  BUTTON_ID_RAPIDFIRE_A,		//0 Triangle - Turbo A
   BUTTON_ID_A,		//1
   BUTTON_ID_B,		//2
-  BUTTON_ID_FPS,	//3 Square - FPS
+  BUTTON_ID_RAPIDFIRE_B,	//3 Square - Turbo B
   BUTTON_ID_L,		//4
   BUTTON_ID_R,		//5
   BUTTON_ID_DOWN,		//6
@@ -281,6 +281,7 @@ u32 update_input(void)
   u32 new_key = 0;
   u32 analog_sensitivity = 20 + (option_analog_sensitivity * 10);
   u32 inv_analog_sensitivity = 255 - analog_sensitivity;
+  static u32 turbo_counter = 0;
 
   tilt_sensorX = 0x800;
   tilt_sensorY = 0x800;
@@ -433,20 +434,18 @@ u32 update_input(void)
       {
         if ((button_id >= BUTTON_ID_RAPIDFIRE_A) && (button_id <= BUTTON_ID_RAPIDFIRE_R))
         {
-          rapidfire_flag ^= 1;
-
-          if (rapidfire_flag != 0)
+          // Turbo buttons alternate on/off each frame while held
+          if ((turbo_counter & 3) < 2)  // On for 2 frames, off for 2 frames
           {
             new_key |= button_id_to_gba_mask[button_id - BUTTON_ID_RAPIDFIRE_A + BUTTON_ID_A];
-          }
-          else
-          {
-            new_key &= ~button_id_to_gba_mask[button_id - BUTTON_ID_RAPIDFIRE_A + BUTTON_ID_A];
           }
         }
       }
     }
   }
+
+  // Increment turbo counter for next frame
+  turbo_counter++;
 
   if ((new_key | key) != key)
     trigger_key(new_key);
