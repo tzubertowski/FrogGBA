@@ -216,10 +216,10 @@ GUI_ACTION_TYPE get_gui_input(void)
     new_button = CURSOR_DEFAULT;
 
   if ((new_buttons & PSP_CTRL_CIRCLE) != 0)
-    new_button = CURSOR_SELECT;
+    new_button = CURSOR_EXIT;
 
   if ((new_buttons & PSP_CTRL_CROSS) != 0)
-    new_button = CURSOR_EXIT;
+    new_button = CURSOR_SELECT;
 
   if ((new_buttons & PSP_CTRL_SQUARE) != 0)
     new_button = CURSOR_BACK;
