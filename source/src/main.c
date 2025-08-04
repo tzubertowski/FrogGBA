@@ -57,6 +57,7 @@ u32 sleep_flag = 0;
 
 u32 synchronize_flag = 1;
 u32 psp_fps_debug = 0;
+u32 fast_forward_speed = 0;  // 0 = 1x (off), 1 = 2x, 2 = 3x
 
 u32 real_frame_count = 0;
 u32 virtual_frame_count = 0;
@@ -558,22 +559,26 @@ static void synchronize(void)
 
   if (!synchronize_flag)
   {
+    char turbo_msg[32];
+    sprintf(turbo_msg, "%s %dx", MSG[MSG_TURBO], fast_forward_speed + 2);
+    
     if (psp_fps_debug != 0)
 	{
 		if (option_language == 0)
-			print_string(MSG[MSG_TURBO], 0, 12, COLOR15_WHITE, COLOR15_BLACK);
+			print_string(turbo_msg, 0, 12, COLOR15_WHITE, COLOR15_BLACK);
 		else
-			print_string_gbk(MSG[MSG_TURBO], 0, 12, COLOR15_WHITE, COLOR15_BLACK);
+			print_string_gbk(turbo_msg, 0, 12, COLOR15_WHITE, COLOR15_BLACK);
 	}
 	else
 	{
 		if (option_language == 0)
-		print_string(MSG[MSG_TURBO], 0, 0, COLOR15_WHITE, COLOR15_BLACK);
+		print_string(turbo_msg, 0, 0, COLOR15_WHITE, COLOR15_BLACK);
 		else
-		print_string_gbk(MSG[MSG_TURBO], 0, 0, COLOR15_WHITE, COLOR15_BLACK);
+		print_string_gbk(turbo_msg, 0, 0, COLOR15_WHITE, COLOR15_BLACK);
 	}
     used_frameskip_type = FRAMESKIP_MANUAL;
-    used_frameskip_value = 4;
+    // Use different frameskip values: 2x = skip 1, 3x = skip 2
+    used_frameskip_value = (fast_forward_speed == 0) ? 1 : 2;
   }
 
   skip_next_frame = 0;
