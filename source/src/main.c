@@ -577,8 +577,8 @@ static void synchronize(void)
 		print_string_gbk(turbo_msg, 0, 0, COLOR15_WHITE, COLOR15_BLACK);
 	}
     used_frameskip_type = FRAMESKIP_MANUAL;
-    // Use different frameskip values: 2x = skip 1, 3x = skip 2
-    used_frameskip_value = (fast_forward_speed == 0) ? 1 : 2;
+    // Both 2x and 3x use frameskip value of 1 (skip 1 frame)
+    used_frameskip_value = 1;
   }
 
   skip_next_frame = 0;
