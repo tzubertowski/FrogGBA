@@ -863,6 +863,7 @@ void action_savestate(void)
 
 u32 menu(void)
 {
+
 	int id_language;
   u32 i;
 
@@ -1477,6 +1478,7 @@ u32 menu(void)
   }
 
 
+
   // Marker for help information, don't go past this mark (except \n)------*
   MenuOptionType emulator_options[] =
   {
@@ -1502,14 +1504,14 @@ u32 menu(void)
 
     STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_9], update_backup_options, &option_update_backup, 2, MSG_OPTION_MENU_HELP_9, 12), 
 
-    STRING_SELECTION_ACTION_OPTION(menu_exit, NULL, MSG[MSG_OPTION_MENU_10], language_option, &option_language, 4, MSG_OPTION_MENU_HELP_10, 14), 
+    STRING_SELECTION_ACTION_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_10], language_option, &option_language, 4, MSG_OPTION_MENU_HELP_10, 14), 
 
-    ACTION_OPTION(menu_default, NULL, MSG[MSG_OPTION_MENU_DEFAULT], MSG_OPTION_MENU_HELP_DEFAULT, 16),
+    ACTION_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_DEFAULT], MSG_OPTION_MENU_HELP_DEFAULT, 16),
 
-    ACTION_SUBMENU_OPTION(NULL, menu_init, MSG[MSG_OPTION_MENU_11], MSG_OPTION_MENU_HELP_11, 17)
+    ACTION_SUBMENU_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_11], MSG_OPTION_MENU_HELP_11, 17)
   };
 
-  MAKE_MENU(emulator, submenu_emulator, NULL);
+  MAKE_MENU(emulator, NULL, NULL);
 
 
   MenuOptionType cheats_misc_options[] =
@@ -1526,12 +1528,12 @@ u32 menu(void)
     CHEAT_OPTION((10 * menu_cheat_page) + 9),
 
     NUMERIC_SELECTION_OPTION(reload_cheats_page, MSG[MSG_CHEAT_MENU_3], &menu_cheat_page, MAX_CHEATS_PAGE, MSG_CHEAT_MENU_HELP_3, 11),
-    ACTION_OPTION(menu_load_cheat_file, NULL, MSG[MSG_CHEAT_MENU_1], MSG_CHEAT_MENU_HELP_1, 13),
+    ACTION_OPTION(NULL, NULL, MSG[MSG_CHEAT_MENU_1], MSG_CHEAT_MENU_HELP_1, 13),
 
     SUBMENU_OPTION(NULL, MSG[MSG_CHEAT_MENU_2], MSG_CHEAT_MENU_HELP_2, 15)
   };
 
-  MAKE_MENU(cheats_misc, submenu_cheats_misc, NULL);
+  MAKE_MENU(cheats_misc, NULL, NULL);
 
   MenuOptionType savestate_options[] =
   {
@@ -1546,12 +1548,12 @@ u32 menu(void)
     SAVESTATE_OPTION(8),
     SAVESTATE_OPTION(9),
 
-    ACTION_OPTION(menu_load_state_file, NULL, MSG[MSG_STATE_MENU_1], MSG_STATE_MENU_HELP_1, 11),
+    ACTION_OPTION(NULL, NULL, MSG[MSG_STATE_MENU_1], MSG_STATE_MENU_HELP_1, 11),
 
-    ACTION_SUBMENU_OPTION(NULL, menu_init, MSG[MSG_STATE_MENU_2], MSG_STATE_MENU_HELP_2, 13)
+    ACTION_SUBMENU_OPTION(NULL, NULL, MSG[MSG_STATE_MENU_2], MSG_STATE_MENU_HELP_2, 13)
   };
 
-  MAKE_MENU(savestate, submenu_savestate, NULL);
+  MAKE_MENU(savestate, NULL, NULL);
 
   MenuOptionType gamepad_config_options[] =
   {
@@ -1568,10 +1570,10 @@ u32 menu(void)
     GAMEPAD_CONFIG_OPTION(MSG[MSG_PAD_MENU_10], 10),
     GAMEPAD_CONFIG_OPTION(MSG[MSG_PAD_MENU_11], 11),
 
-    ACTION_SUBMENU_OPTION(NULL, menu_init, MSG[MSG_PAD_MENU_12], MSG_PAD_MENU_HELP_1, 13)
+    ACTION_SUBMENU_OPTION(NULL, NULL, MSG[MSG_PAD_MENU_12], MSG_PAD_MENU_HELP_1, 13)
   };
 
-  MAKE_MENU(gamepad_config, submenu_gamepad, NULL);
+  MAKE_MENU(gamepad_config, NULL, NULL);
 
   MenuOptionType analog_config_options[] =
   {
@@ -1583,20 +1585,20 @@ u32 menu(void)
     STRING_SELECTION_OPTION(NULL, MSG[MSG_A_PAD_MENU_4], yes_no_options, &option_enable_analog, 2, MSG_A_PAD_MENU_HELP_0, 5),
     NUMERIC_SELECTION_OPTION(NULL, MSG[MSG_A_PAD_MENU_5], &option_analog_sensitivity, 10, MSG_A_PAD_MENU_HELP_1, 6),
 
-    ACTION_SUBMENU_OPTION(NULL, menu_init, MSG[MSG_A_PAD_MENU_6], MSG_A_PAD_MENU_HELP_2, 8)
+    ACTION_SUBMENU_OPTION(NULL, NULL, MSG[MSG_A_PAD_MENU_6], MSG_A_PAD_MENU_HELP_2, 8)
   };
 
-  MAKE_MENU(analog_config, submenu_analog, NULL);
+  MAKE_MENU(analog_config, NULL, NULL);
 
   MenuOptionType main_options[] =
   {
-    NUMERIC_SELECTION_ACTION_OPTION(menu_load_state, NULL, MSG[MSG_MAIN_MENU_0], &savestate_slot, 10, MSG_MAIN_MENU_HELP_0, 0),
+    NUMERIC_SELECTION_ACTION_OPTION(NULL, NULL, MSG[MSG_MAIN_MENU_0], &savestate_slot, 10, MSG_MAIN_MENU_HELP_0, 0),
 
-    NUMERIC_SELECTION_ACTION_OPTION(menu_save_state, NULL, MSG[MSG_MAIN_MENU_1], &savestate_slot, 10, MSG_MAIN_MENU_HELP_1, 1),
+    NUMERIC_SELECTION_ACTION_OPTION(NULL, NULL, MSG[MSG_MAIN_MENU_1], &savestate_slot, 10, MSG_MAIN_MENU_HELP_1, 1),
 
-    ACTION_SUBMENU_OPTION(&savestate_menu, menu_init, MSG[MSG_MAIN_MENU_2], MSG_MAIN_MENU_HELP_2, 2),
+    ACTION_SUBMENU_OPTION(&savestate_menu, NULL, MSG[MSG_MAIN_MENU_2], MSG_MAIN_MENU_HELP_2, 2),
 
-    STRING_SELECTION_ACTION_OPTION(menu_screen_capture, NULL, MSG[MSG_MAIN_MENU_3], image_format_options, &option_screen_capture_format, 2, MSG_MAIN_MENU_HELP_3, 4),
+    STRING_SELECTION_ACTION_OPTION(NULL, NULL, MSG[MSG_MAIN_MENU_3], image_format_options, &option_screen_capture_format, 2, MSG_MAIN_MENU_HELP_3, 4),
 
     SUBMENU_OPTION(&emulator_menu, MSG[MSG_MAIN_MENU_4], MSG_MAIN_MENU_HELP_4, 6), 
 
@@ -1606,18 +1608,20 @@ u32 menu(void)
 
     SUBMENU_OPTION(&cheats_misc_menu, MSG[MSG_MAIN_MENU_CHEAT], MSG_MAIN_MENU_HELP_CHEAT, 10),
 
-    ACTION_OPTION(menu_load_file, NULL, MSG[MSG_MAIN_MENU_7], MSG_MAIN_MENU_HELP_7, 11),
+    ACTION_OPTION(NULL, NULL, MSG[MSG_MAIN_MENU_7], MSG_MAIN_MENU_HELP_7, 11),
 
-    ACTION_OPTION(menu_reset, NULL, MSG[MSG_MAIN_MENU_8], MSG_MAIN_MENU_HELP_8, 13),
+    ACTION_OPTION(NULL, NULL, MSG[MSG_MAIN_MENU_8], MSG_MAIN_MENU_HELP_8, 13),
 
-    ACTION_OPTION(menu_exit, NULL, MSG[MSG_MAIN_MENU_9], MSG_MAIN_MENU_HELP_9, 14),
+    ACTION_OPTION(NULL, NULL, MSG[MSG_MAIN_MENU_9], MSG_MAIN_MENU_HELP_9, 14),
 
-    ACTION_OPTION(menu_suspend, NULL, MSG[MSG_MAIN_MENU_10], MSG_MAIN_MENU_HELP_10, 16),
+    ACTION_OPTION(NULL, NULL, MSG[MSG_MAIN_MENU_10], MSG_MAIN_MENU_HELP_10, 16),
 
-    ACTION_OPTION(menu_quit, NULL, MSG[MSG_MAIN_MENU_11], MSG_MAIN_MENU_HELP_11, 17)
+    ACTION_OPTION(NULL, NULL, MSG[MSG_MAIN_MENU_11], MSG_MAIN_MENU_HELP_11, 17)
   };
 
-  MAKE_MENU(main, submenu_main, NULL);
+
+  MAKE_MENU(main, NULL, NULL);
+
 
   void choose_menu(MenuType *new_menu)
   {
@@ -1676,7 +1680,9 @@ u32 menu(void)
 
   video_resolution_large();
   set_cpu_clock(PSP_CLOCK_222);
+  
   choose_menu(&main_menu);
+  
 
   while (repeat)
   {
@@ -1705,15 +1711,17 @@ u32 menu(void)
 
     //print_string(backup_id, 228, 208, COLOR_INACTIVE_ITEM, BG_NO_FILL);
 
-    if (current_menu->init_function != NULL)
+    if (current_menu && current_menu->init_function != NULL)
     {
       current_menu->init_function();
     }
 
-    display_option = current_menu->options;
-
-    for (i = 0; i < current_menu->num_options; i++, display_option++)
+    if (current_menu && current_menu->options)
     {
+      display_option = current_menu->options;
+
+      for (i = 0; i < current_menu->num_options; i++, display_option++)
+      {
       if (display_option->option_type & NUMBER_SELECTION_OPTION)
       {
         sprintf(line_buffer, display_option->display_string, *(display_option->current_option));
@@ -1730,6 +1738,7 @@ u32 menu(void)
 			print_string(line_buffer, MENU_LIST_POS_X, (display_option->line_number * FONTHEIGHT) + 28, (display_option == current_option) ? COLOR_ACTIVE_ITEM : COLOR_INACTIVE_ITEM, BG_NO_FILL);
 		else
 			print_string_gbk(line_buffer, MENU_LIST_POS_X, (display_option->line_number * FONTHEIGHT) + 28, (display_option == current_option) ? COLOR_ACTIVE_ITEM : COLOR_INACTIVE_ITEM, BG_NO_FILL);
+      }
     }
 
 	if (option_language == 0)
@@ -1844,12 +1853,36 @@ u32 menu(void)
         switch (current_option->option_type & (ACTION_OPTION | SUBMENU_OPTION))
         {
           case (ACTION_OPTION | SUBMENU_OPTION):
-            current_option->action_function();
+            if (current_option->action_function != NULL)
+              current_option->action_function();
             choose_menu(current_option->sub_menu);
             break;
 
           case ACTION_OPTION:
-            current_option->action_function();
+            if (current_option->action_function != NULL)
+              current_option->action_function();
+            else
+            {
+              // Handle menu actions inline to avoid corrupted function pointers
+              switch (current_option->line_number)
+              {
+                case 0:  // Load State
+                  action_loadstate();
+                  break;
+                case 1:  // Save State  
+                  action_savestate();
+                  break;
+                case 14: // "Return to Game"
+                  repeat = 0;
+                  break;
+                case 17: // "Quit"
+                  quit();
+                  break;
+                default:
+                  // For other actions, just continue for now
+                  break;
+              }
+            }
             break;
 
           case SUBMENU_OPTION:
@@ -1888,6 +1921,7 @@ u32 menu(void)
   //menu_cheat_page = 0;//
 
   scePowerUnlock(0);
+
 
   return return_value;
 }
