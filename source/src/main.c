@@ -550,7 +550,7 @@ static void synchronize(void)
     if (psp_fps_debug != 0)
     {
       char print_buffer[16];
-      sprintf(print_buffer, "%02d(%02d)", fps, frames_drawn);
+      sprintf(print_buffer, "%02ld(%02ld)", (long)fps, (long)frames_drawn);
 //    sprintf(print_buffer, "%02d(%02d)", fps % 100, frames_drawn);
       print_string(print_buffer, 0, 0, COLOR15_WHITE, COLOR15_BLACK);
     }
