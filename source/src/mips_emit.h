@@ -615,7 +615,7 @@ extern u32 option_advanced_opts;
   *((u16 *)(dest)) = mips_relative_offset(dest, offset)                       \
 
 #define generate_branch_patch_unconditional(dest, offset)                     \
-  *((u32 *)(dest)) = (mips_opcode_j << 26) | ((mips_absolute_offset(offset)) & 0x3FFFFFF) \
+  *((u32 *)(dest)) = (mips_opcode_j << 26) | ((mips_absolute_offset(offset)) & 0x3FFFFFF)
 
 #define generate_branch_no_cycle_update(type, writeback_location, new_pc)     \
 {                                                                             \

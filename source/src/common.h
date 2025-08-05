@@ -66,8 +66,15 @@
 #define PSP_CYCLE_BATCHING
 #define PSP_CYCLE_BATCH_THRESHOLD 128
 
+// Enable block coalescing for better cache usage
+#define PSP_BLOCK_COALESCING
+#define PSP_MAX_COALESCE_SIZE 16384
+
 // Enable cache invalidation reduction for better performance  
 #define PSP_REDUCE_CACHE_INVALIDATION
+
+// Enable sprite rendering optimizations for better performance
+#define PSP_SPRITE_OPTIMIZATIONS
 
 // Enable memory optimization (skip waitstates for performance)
 #define PSP_MEMORY_OPTIMIZATIONS

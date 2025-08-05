@@ -840,6 +840,52 @@ static void order_layers(u8 layer_flags);
 // Draws multiple sequential tiles from an obj, flip_op determines if it should
 // be flipped or not (set to flip or noflip)
 
+#ifdef PSP_SPRITE_OPTIMIZATIONS
+#define multiple_tile_obj(combine_op, color_depth, alpha_op, flip_op)         \
+  if (option_advanced_opts && tile_run >= 4) {                               \
+    /* Unrolled loop for better performance on sprite-heavy games */         \
+    u32 unroll_count = tile_run >> 2;                                         \
+    u32 remainder = tile_run & 3;                                             \
+    for (i = 0; i < unroll_count; i++) {                                     \
+      obj_tile_offset &= 0x7FFF;                                             \
+      tile_ptr = obj_tile_base + obj_tile_offset;                             \
+      tile_##flip_op##_##color_depth(combine_op, alpha_op);                   \
+      obj_advance_##flip_op##_##color_depth();                               \
+      advance_dest_ptr_##combine_op(8);                                       \
+      obj_tile_offset &= 0x7FFF;                                             \
+      tile_ptr = obj_tile_base + obj_tile_offset;                             \
+      tile_##flip_op##_##color_depth(combine_op, alpha_op);                   \
+      obj_advance_##flip_op##_##color_depth();                               \
+      advance_dest_ptr_##combine_op(8);                                       \
+      obj_tile_offset &= 0x7FFF;                                             \
+      tile_ptr = obj_tile_base + obj_tile_offset;                             \
+      tile_##flip_op##_##color_depth(combine_op, alpha_op);                   \
+      obj_advance_##flip_op##_##color_depth();                               \
+      advance_dest_ptr_##combine_op(8);                                       \
+      obj_tile_offset &= 0x7FFF;                                             \
+      tile_ptr = obj_tile_base + obj_tile_offset;                             \
+      tile_##flip_op##_##color_depth(combine_op, alpha_op);                   \
+      obj_advance_##flip_op##_##color_depth();                               \
+      advance_dest_ptr_##combine_op(8);                                       \
+    }                                                                         \
+    for (i = 0; i < remainder; i++) {                                         \
+      obj_tile_offset &= 0x7FFF;                                             \
+      tile_ptr = obj_tile_base + obj_tile_offset;                             \
+      tile_##flip_op##_##color_depth(combine_op, alpha_op);                   \
+      obj_advance_##flip_op##_##color_depth();                               \
+      advance_dest_ptr_##combine_op(8);                                       \
+    }                                                                         \
+  } else {                                                                    \
+    for (i = 0; i < tile_run; i++)                                            \
+    {                                                                         \
+      obj_tile_offset &= 0x7FFF;                                             \
+      tile_ptr = obj_tile_base + obj_tile_offset;                             \
+      tile_##flip_op##_##color_depth(combine_op, alpha_op);                   \
+      obj_advance_##flip_op##_##color_depth();                               \
+      advance_dest_ptr_##combine_op(8);                                       \
+    }                                                                         \
+  }
+#else
 #define multiple_tile_obj(combine_op, color_depth, alpha_op, flip_op)         \
   for (i = 0; i < tile_run; i++)                                              \
   {                                                                           \
@@ -848,7 +894,8 @@ static void order_layers(u8 layer_flags);
     tile_##flip_op##_##color_depth(combine_op, alpha_op);                     \
     obj_advance_##flip_op##_##color_depth();                                  \
     advance_dest_ptr_##combine_op(8);                                         \
-  }                                                                           \
+  }
+#endif                                                                           \
 
 
 // Draws an obj's tile clipped against the left side of the screen
@@ -2063,6 +2110,10 @@ static void render_scanline_obj_##alpha_op##_##map_space(u32 priority, u32 start
                                                                               \
     obj_x = (s32)(obj_attribute_1 << 23) >> 23;                               \
     obj_width = obj_width_table[obj_size];                                    \
+                                                                              \
+    /* PSP sprite culling optimization - skip sprites completely off-screen */ \
+    if (option_advanced_opts && (obj_x >= (s32)end || (obj_x + obj_width) <= (s32)start)) \
+      continue;                                                               \
                                                                               \
     render_scanline_obj_prologue_##combine_op(alpha_op);                      \
                                                                               \
