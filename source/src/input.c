@@ -411,9 +411,26 @@ u32 update_input(void)
           return 0;
 
         case BUTTON_ID_FASTFORWARD:
-          synchronize_flag ^= 1;
-          if (synchronize_flag == 0)
-            fast_forward_speed = 0;  // Start at 2x when enabling
+          if (synchronize_flag == 0)  // Fast forward is active
+          {
+            if (fast_forward_speed == 1)  // Currently at 3x
+            {
+              // Go back to 1x (disable fast forward)
+              synchronize_flag = 1;
+              fast_forward_speed = 0;
+            }
+            else
+            {
+              // Go from 2x to 3x
+              fast_forward_speed = 1;
+            }
+          }
+          else
+          {
+            // Enable fast forward at 2x speed
+            synchronize_flag = 0;
+            fast_forward_speed = 0;  // Start at 2x
+          }
           return 0;
 
         case BUTTON_ID_FPS:

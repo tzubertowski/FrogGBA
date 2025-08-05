@@ -949,7 +949,6 @@ u32 menu(void)
 
   const char *gamepad_config_buttons[] =
   {
-    "none",
     "Up", 
     "Down",
     "Left",
@@ -968,7 +967,8 @@ u32 menu(void)
     "RAPID FIRE B",
     "RAPID FIRE L",
     "RAPID FIRE R",
-    "show fps"
+    "show fps",
+    "none"
   };
 
   auto void choose_menu(MenuType *new_menu);
