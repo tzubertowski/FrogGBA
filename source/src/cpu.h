@@ -177,9 +177,13 @@ u8 *block_lookup_address_dual(u32 pc);
 
 
 #define MAX_IDLE_LOOPS 8
+#define MAX_TRANSLATION_GATES 8
 
 extern s32 idle_loop_targets;
 extern u32 idle_loop_target_pc[MAX_IDLE_LOOPS];
+
+extern u32 translation_gate_targets;
+extern u32 translation_gate_target_pc[MAX_TRANSLATION_GATES];
 
 extern u32 iwram_stack_optimize;
 
