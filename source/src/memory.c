@@ -20,6 +20,8 @@
 
 #include "common.h"
 
+extern u32 option_advanced_opts;
+
 
 #define CONFIG_FILENAME  "game_config.txt"
 
@@ -1169,15 +1171,39 @@ static void waitstate_control(u32 value)
   const u8 gamepak_ws1_seq[2] = { 4, 1 };
   const u8 gamepak_ws2_seq[2] = { 8, 1 };
 
-  // Wait State First Access (8/16bit)
-  pMEMORY_WS16N(0x08) = pMEMORY_WS16N(0x09) = waitstate_table[(value >> 2) & 0x03];
-  pMEMORY_WS16N(0x0A) = pMEMORY_WS16N(0x0B) = waitstate_table[(value >> 5) & 0x03];
-  pMEMORY_WS16N(0x0C) = pMEMORY_WS16N(0x0D) = waitstate_table[(value >> 8) & 0x03];
+#ifdef PSP_MEMORY_OPTIMIZATIONS
+  // SF2000 memory optimization: Reduce waitstates when advanced optimizations enabled
+  // This provides better performance while maintaining compatibility
+  if (option_advanced_opts == 1) {
+    // Optimized waitstate tables for performance mode
+    const u8 opt_waitstate_table[4] = { 2, 2, 1, 4 };  // Reduced by ~50%
+    const u8 opt_gamepak_ws0_seq[2] = { 1, 1 };
+    const u8 opt_gamepak_ws1_seq[2] = { 2, 1 };
+    const u8 opt_gamepak_ws2_seq[2] = { 4, 1 };
+    
+    // Wait State First Access (8/16bit) - Optimized
+    pMEMORY_WS16N(0x08) = pMEMORY_WS16N(0x09) = opt_waitstate_table[(value >> 2) & 0x03];
+    pMEMORY_WS16N(0x0A) = pMEMORY_WS16N(0x0B) = opt_waitstate_table[(value >> 5) & 0x03];
+    pMEMORY_WS16N(0x0C) = pMEMORY_WS16N(0x0D) = opt_waitstate_table[(value >> 8) & 0x03];
 
-  // Wait State Second Access (8/16bit)
-  pMEMORY_WS16S(0x08) = pMEMORY_WS16S(0x09) = gamepak_ws0_seq[(value >>  4) & 0x01];
-  pMEMORY_WS16S(0x0A) = pMEMORY_WS16S(0x0B) = gamepak_ws1_seq[(value >>  7) & 0x01];
-  pMEMORY_WS16S(0x0C) = pMEMORY_WS16S(0x0D) = gamepak_ws2_seq[(value >> 10) & 0x01];
+    // Wait State Second Access (8/16bit) - Optimized
+    pMEMORY_WS16S(0x08) = pMEMORY_WS16S(0x09) = opt_gamepak_ws0_seq[(value >>  4) & 0x01];
+    pMEMORY_WS16S(0x0A) = pMEMORY_WS16S(0x0B) = opt_gamepak_ws1_seq[(value >>  7) & 0x01];
+    pMEMORY_WS16S(0x0C) = pMEMORY_WS16S(0x0D) = opt_gamepak_ws2_seq[(value >> 10) & 0x01];
+  } else {
+#endif
+    // Wait State First Access (8/16bit) - Normal
+    pMEMORY_WS16N(0x08) = pMEMORY_WS16N(0x09) = waitstate_table[(value >> 2) & 0x03];
+    pMEMORY_WS16N(0x0A) = pMEMORY_WS16N(0x0B) = waitstate_table[(value >> 5) & 0x03];
+    pMEMORY_WS16N(0x0C) = pMEMORY_WS16N(0x0D) = waitstate_table[(value >> 8) & 0x03];
+
+    // Wait State Second Access (8/16bit) - Normal
+    pMEMORY_WS16S(0x08) = pMEMORY_WS16S(0x09) = gamepak_ws0_seq[(value >>  4) & 0x01];
+    pMEMORY_WS16S(0x0A) = pMEMORY_WS16S(0x0B) = gamepak_ws1_seq[(value >>  7) & 0x01];
+    pMEMORY_WS16S(0x0C) = pMEMORY_WS16S(0x0D) = gamepak_ws2_seq[(value >> 10) & 0x01];
+#ifdef PSP_MEMORY_OPTIMIZATIONS
+  }
+#endif
 
   // SRAM Wait Control (8bit)
   pMEMORY_WS16N(0x0e) = pMEMORY_WS16S(0x0e) =
