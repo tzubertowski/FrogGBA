@@ -347,10 +347,27 @@ typedef enum
   mips_emit_imm(sltiu, rs, rt, imm)                                           \
 
 #define mips_emit_ext(rt, rs, pos, size)                                      \
-  mips_emit_special3(ext, rs, rt, (size) - 1, pos)                            \
+  mips_emit_special3(ext, rs, rt, (size) - 1, pos)
 
+#ifdef PSP_MIPS32_INSTRUCTION_OPTIMIZATIONS
+// PSP Allegrex insert instruction for efficient bit field operations
 #define mips_emit_ins(rt, rs, pos, size)                                      \
-  mips_emit_special3(ins, rs, rt, (pos) + (size) - 1, pos)                    \
+  mips_emit_special3(ins, rs, rt, ((pos) + (size) - 1), pos)
+
+// PSP Allegrex word swap bytes within halfwords for endian conversion
+#define mips_emit_wsbh(rd, rt)                                                \
+  mips_emit_special3(bshfl, 0, rt, rd, 2)
+
+// PSP Allegrex sign extend byte/halfword
+#define mips_emit_seb(rd, rt)                                                 \
+  mips_emit_special3(bshfl, 0, rt, rd, 16)
+
+#define mips_emit_seh(rd, rt)                                                 \
+  mips_emit_special3(bshfl, 0, rt, rd, 24)
+#else
+#define mips_emit_ins(rt, rs, pos, size)                                      \
+  mips_emit_special3(ins, rs, rt, (pos) + (size) - 1, pos)
+#endif                    \
 
 // Breaks down if the backpatch offset is greater than 16bits, take care
 // when using (should be okay if limited to conditional instructions)
@@ -736,7 +753,16 @@ extern u32 option_advanced_opts;
   }                                                                           \
   else                                                                        \
   {                                                                           \
-    cycle_count += pFETCH_WS32S(pc >> 24);                                    \
+#ifdef PSP_MEMORY_OPTIMIZATIONS
+    if (option_advanced_opts) {
+      /* Reduce fetch waitstates for better performance */
+      cycle_count += (pFETCH_WS32S(pc >> 24) >> 1);
+    } else {
+      cycle_count += pFETCH_WS32S(pc >> 24);
+    }
+#else
+    cycle_count += pFETCH_WS32S(pc >> 24);
+#endif                                    \
   }                                                                           \
 
 #define check_store_reg_pc_flags(reg_index)                                   \
@@ -747,7 +773,16 @@ extern u32 option_advanced_opts;
   }                                                                           \
   else                                                                        \
   {                                                                           \
-    cycle_count += pFETCH_WS32S(pc >> 24);                                    \
+#ifdef PSP_MEMORY_OPTIMIZATIONS
+    if (option_advanced_opts) {
+      /* Reduce fetch waitstates for better performance */
+      cycle_count += (pFETCH_WS32S(pc >> 24) >> 1);
+    } else {
+      cycle_count += pFETCH_WS32S(pc >> 24);
+    }
+#else
+    cycle_count += pFETCH_WS32S(pc >> 24);
+#endif                                    \
   }                                                                           \
 
 #define generate_shift_imm_lsl_no_flags(arm_reg, _rm, _shift)                 \
@@ -1138,7 +1173,16 @@ u32 execute_spsr_restore_body(u32 address)
 
 /* NV  never */
 #define generate_condition_nv()                                               \
-  cycle_count += pMEMORY_WS32S(pc >> 24);                                     \
+#ifdef PSP_MEMORY_OPTIMIZATIONS
+  if (option_advanced_opts) {
+    /* Reduce memory waitstates for better performance */
+    cycle_count += (pMEMORY_WS32S(pc >> 24) >> 1);
+  } else {
+    cycle_count += pMEMORY_WS32S(pc >> 24);
+  }
+#else
+  cycle_count += pMEMORY_WS32S(pc >> 24);
+#endif                                     \
   mips_emit_b_filler(beq, reg_zero, reg_zero, backpatch_address);             \
   generate_cycle_update_force();                                              \
 
@@ -1321,7 +1365,7 @@ u32 execute_spsr_restore_body(u32 address)
   }                                                                           \
   if (check_generate_z_flag != 0)                                             \
   {                                                                           \
-    mips_emit_sltiu(reg_z_cache, _rd, 1);                                     \
+    mips_emit_sltiu(reg_z_cache, _rd, 1);
   }                                                                           \
 
 #define generate_op_sub_flags_prologue(_rn, _rm)                              \
@@ -1552,7 +1596,16 @@ u32 execute_spsr_restore_body(u32 address)
   }                                                                           \
   else                                                                        \
   {                                                                           \
-    cycle_count += pFETCH_WS32S(pc >> 24);                                    \
+#ifdef PSP_MEMORY_OPTIMIZATIONS
+    if (option_advanced_opts) {
+      /* Reduce fetch waitstates for better performance */
+      cycle_count += (pFETCH_WS32S(pc >> 24) >> 1);
+    } else {
+      cycle_count += pFETCH_WS32S(pc >> 24);
+    }
+#else
+    cycle_count += pFETCH_WS32S(pc >> 24);
+#endif                                    \
   }                                                                           \
 
 #define check_store_reg_pc_reg_flags(reg_index)                               \
@@ -1563,7 +1616,16 @@ u32 execute_spsr_restore_body(u32 address)
   }                                                                           \
   else                                                                        \
   {                                                                           \
-    cycle_count += pFETCH_WS32S(pc >> 24);                                    \
+#ifdef PSP_MEMORY_OPTIMIZATIONS
+    if (option_advanced_opts) {
+      /* Reduce fetch waitstates for better performance */
+      cycle_count += (pFETCH_WS32S(pc >> 24) >> 1);
+    } else {
+      cycle_count += pFETCH_WS32S(pc >> 24);
+    }
+#else
+    cycle_count += pFETCH_WS32S(pc >> 24);
+#endif                                    \
   }                                                                           \
 
 #define check_store_reg_pc_reg_flags_flags(reg_index)                         \
@@ -1576,7 +1638,16 @@ u32 execute_spsr_restore_body(u32 address)
   }                                                                           \
   else                                                                        \
   {                                                                           \
-    cycle_count += pMEMORY_WS32S(pc >> 24);                                   \
+  #ifdef PSP_MEMORY_OPTIMIZATIONS
+  if (option_advanced_opts) {
+    /* Reduce memory waitstates for better performance */
+    cycle_count += (pMEMORY_WS32S(pc >> 24) >> 1);
+  } else {
+    cycle_count += pMEMORY_WS32S(pc >> 24);
+  }
+#else
+  cycle_count += pMEMORY_WS32S(pc >> 24);
+#endif                                   \
   }                                                                           \
 
 #define check_store_reg_pc_imm_flags(reg_index)                               \
@@ -1587,7 +1658,16 @@ u32 execute_spsr_restore_body(u32 address)
   }                                                                           \
   else                                                                        \
   {                                                                           \
-    cycle_count += pMEMORY_WS32S(pc >> 24);                                   \
+  #ifdef PSP_MEMORY_OPTIMIZATIONS
+  if (option_advanced_opts) {
+    /* Reduce memory waitstates for better performance */
+    cycle_count += (pMEMORY_WS32S(pc >> 24) >> 1);
+  } else {
+    cycle_count += pMEMORY_WS32S(pc >> 24);
+  }
+#else
+  cycle_count += pMEMORY_WS32S(pc >> 24);
+#endif                                   \
   }                                                                           \
 
 #define check_store_reg_pc_imm_flags_flags(reg_index)                         \
@@ -1738,7 +1818,16 @@ u32 execute_store_cpsr_body(u32 _cpsr, u32 store_mask)
 #define arm_psr(op_type, transfer_type, psr_reg)                              \
 {                                                                             \
   arm_decode_psr_##transfer_type##_##op_type();                               \
-  cycle_count += pMEMORY_WS32S(pc >> 24);                                     \
+#ifdef PSP_MEMORY_OPTIMIZATIONS
+  if (option_advanced_opts) {
+    /* Reduce memory waitstates for better performance */
+    cycle_count += (pMEMORY_WS32S(pc >> 24) >> 1);
+  } else {
+    cycle_count += pMEMORY_WS32S(pc >> 24);
+  }
+#else
+  cycle_count += pMEMORY_WS32S(pc >> 24);
+#endif                                     \
                                                                               \
   arm_psr_##transfer_type(op_type, psr_reg);                                  \
 }                                                                             \

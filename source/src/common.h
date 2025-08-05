@@ -76,6 +76,9 @@
 // Enable sprite rendering optimizations for better performance
 #define PSP_SPRITE_OPTIMIZATIONS
 
+// Enable MIPS32 Allegrex-specific instruction optimizations
+#define PSP_MIPS32_INSTRUCTION_OPTIMIZATIONS
+
 // Enable memory optimization (skip waitstates for performance)
 #define PSP_MEMORY_OPTIMIZATIONS
 
