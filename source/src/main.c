@@ -42,7 +42,8 @@ u32 option_update_backup = 0;
 u32 option_screen_capture_format = 0;
 u32 option_enable_analog = 0;
 u32 option_analog_sensitivity = 4;
-u32 option_language = 0;
+u32 option_language = 1;
+u32 option_advanced_opts = 0;  // 0 = No, 1 = Yes
 
 u32 option_frameskip_type = FRAMESKIP_AUTO;
 u32 option_frameskip_value = 9;
@@ -181,7 +182,19 @@ CPU_ALERT_TYPE timer_control_high(u8 timer_number, u32 value)
       else
       {
         tm->status = TIMER_PRESCALE;
-        tm->prescale = prescale_table[value & 0x03];
+        u32 prescale_index = value & 0x03;
+        tm->prescale = prescale_table[prescale_index];
+        
+#ifdef PSP_TIMER_OPTIMIZATIONS
+        // Timer prescaling optimization - RE-ENABLED FOR TESTING
+        // Testing to see if this causes timing issues
+        if (option_advanced_opts == 1) {
+          // For prescale values 64+ (index 2,3), reduce precision for performance
+          if (prescale_index >= 2 && timer_number >= 2) {
+            tm->prescale = prescale_table[prescale_index] >> 1;  // Half prescale for better performance
+          }
+        }
+#endif
       }
 
       tm->irq = (value >> 6) & 0x01;
@@ -443,6 +456,22 @@ u32 update_gba(void)
 
     reg[EXECUTE_CYCLES] = video_count;
 
+#ifdef PSP_CYCLE_BATCHING
+    // PSP MIPS32 Conservative Cycle Optimization
+    // Only apply minor optimizations when user enables advanced optimizations
+    if (option_advanced_opts == 1) {
+      u32 execute_cycles = reg[EXECUTE_CYCLES];
+      
+      // Very conservative optimization - only small adjustments for specific ranges
+      if (execute_cycles >= 200 && execute_cycles <= 500) {
+        // Small performance boost for common execution cycle ranges
+        execute_cycles = execute_cycles + (execute_cycles / 10);  // +10% only
+        if (execute_cycles > 600) execute_cycles = 600;  // Cap it
+        reg[EXECUTE_CYCLES] = execute_cycles;
+      }
+    }
+#endif
+
     for (i = 0; i < 4; i++)
     {
       CHECK_TIMER(i);
@@ -537,9 +566,6 @@ static void synchronize(void)
     if (reg[CPU_HALT_STATE] == CPU_STOP)
     {
       clear_screen(0);
-	  if (option_language == 0)
-      print_string(MSG[MSG_GBA_SLEEP_MODE], X_POS_CENTER, 130, COLOR15_WHITE, BG_NO_FILL);
-	  else
       print_string_gbk(MSG[MSG_GBA_SLEEP_MODE], X_POS_CENTER, 130, COLOR15_WHITE, BG_NO_FILL);
     }
 
@@ -560,20 +586,14 @@ static void synchronize(void)
   if (!synchronize_flag)
   {
     char turbo_msg[32];
-    sprintf(turbo_msg, "%s %dx", MSG[MSG_TURBO], fast_forward_speed + 2);
+    sprintf(turbo_msg, "%s %lux", MSG[MSG_TURBO], fast_forward_speed + 2);
     
     if (psp_fps_debug != 0)
 	{
-		if (option_language == 0)
-			print_string(turbo_msg, 0, 12, COLOR15_WHITE, COLOR15_BLACK);
-		else
 			print_string_gbk(turbo_msg, 0, 12, COLOR15_WHITE, COLOR15_BLACK);
 	}
 	else
 	{
-		if (option_language == 0)
-		print_string(turbo_msg, 0, 0, COLOR15_WHITE, COLOR15_BLACK);
-		else
 		print_string_gbk(turbo_msg, 0, 0, COLOR15_WHITE, COLOR15_BLACK);
 	}
     used_frameskip_type = FRAMESKIP_MANUAL;
@@ -1022,9 +1042,6 @@ void error_msg(const char *text, u8 confirm)
       sprintf(text_buff, "%s\n\n%s", text, MSG[MSG_ERR_QUIT]);
       break;
   }
-  if (option_language == 0)
-  print_string(text_buff, 6, 6, COLOR15_WHITE, COLOR15_BLACK);
-  else
   print_string_gbk(text_buff, 6, 6, COLOR15_WHITE, COLOR15_BLACK);
   flip_screen(1);
 

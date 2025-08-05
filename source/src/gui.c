@@ -260,6 +260,15 @@ char dir_snap[MAX_PATH];
 char dir_cheat[MAX_PATH];//cheat
 
 u32 menu_cheat_page = 0;
+
+// Explicit declaration to ensure visibility
+extern u32 option_optimization_level;
+
+const char *optimization_level_options[] =
+{
+  "Maximum Accuracy", "Safe Optimizations", "Moderate Performance", "Maximum Performance"
+};
+
 u32 ALIGN_DATA gamepad_config_line_to_button[] =
 {
  8,
@@ -947,6 +956,11 @@ u32 menu(void)
     MSG[MSG_LANG_JAPANESE], MSG[MSG_LANG_ENGLISH]
   };
 
+  const char *optimization_level_options_local[] =
+  {
+    "Maximum Accuracy", "Safe Optimizations", "Moderate Performance", "Maximum Performance"
+  };
+
   const char *gamepad_config_buttons[] =
   {
     "Up", 
@@ -1472,9 +1486,11 @@ u32 menu(void)
 
     STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_10], language_options, &option_language, 2, MSG_OPTION_MENU_HELP_10, 13),
 
-    ACTION_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_DEFAULT], MSG_OPTION_MENU_HELP_DEFAULT, 16),
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_OPTIMIZATIONS], on_off_options, &option_advanced_opts, 2, MSG_OPTION_MENU_HELP_OPTIMIZATIONS, 14),
 
-    ACTION_SUBMENU_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_11], MSG_OPTION_MENU_HELP_11, 17)
+    ACTION_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_DEFAULT], MSG_OPTION_MENU_HELP_DEFAULT, 17),
+
+    ACTION_SUBMENU_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_11], MSG_OPTION_MENU_HELP_11, 18)
   };
 
   MAKE_MENU(emulator, NULL, NULL);
@@ -2120,10 +2136,11 @@ s32 save_config_file(void)
     file_options[12]  = option_enable_analog;
     file_options[13]  = option_analog_sensitivity;
     file_options[14]  = option_language;
+    file_options[15]  = option_advanced_opts;
 
     for (i = 0; i < 16; i++)
     {
-      file_options[15 + i] = gamepad_config_map[i];
+      file_options[16 + i] = gamepad_config_map[i];
     }
 
     FILE_WRITE_ARRAY(config_file, file_options);
@@ -2245,10 +2262,11 @@ s32 load_config_file(void)
       option_enable_analog  = file_options[12] % 2;
       option_analog_sensitivity = file_options[13] % 10;
       option_language = file_options[14] % 2;  // Only Japanese (0) and English (1)
+      option_advanced_opts = file_options[15] % 2;  // 0 = No, 1 = Yes
 
       for (i = 0; i < 16; i++)
       {
-        gamepad_config_map[i] = file_options[15 + i] % (BUTTON_ID_NONE + 1);
+        gamepad_config_map[i] = file_options[16 + i] % (BUTTON_ID_NONE + 1);
 
         if (gamepad_config_map[i] == BUTTON_ID_MENU)
           menu_button = i;
@@ -2275,6 +2293,7 @@ s32 load_config_file(void)
   option_enable_analog = 0;
   option_analog_sensitivity = 4;
   option_language = 1;  // Default to English
+  option_advanced_opts = 0;  // Default to No
 
   return -1;
 }
