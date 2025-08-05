@@ -225,34 +225,34 @@
     "Gamepad config",
 
     // MSG_PAD_MENU_0
-    "↑　　 : %s",
+    "Up     : %s",
 
     // MSG_PAD_MENU_1
-    "↓　　 : %s",
+    "Down   : %s",
 
     // MSG_PAD_MENU_2
-    "←　　 : %s",
+    "Left   : %s",
 
     // MSG_PAD_MENU_3
-    "→　　 : %s",
+    "Right  : %s",
 
     // MSG_PAD_MENU_4
-    "○　　 : %s",
+    "O     : %s",
 
     // MSG_PAD_MENU_5
-    "×　　 : %s",
+    "X     : %s",
 
     // MSG_PAD_MENU_6
-    "□　　 : %s",
+    "[]    : %s",
 
     // MSG_PAD_MENU_7
-    "△　　 : %s",
+    "/\\    : %s",
 
     // MSG_PAD_MENU_8
-    FONT_L_TRIGGER_GBK "　　 : %s",
+    "L     : %s",
 
     // MSG_PAD_MENU_9
-    FONT_R_TRIGGER_GBK "　　 : %s",
+    "R     : %s",
 
     // MSG_PAD_MENU_10
     "START  : %s",
@@ -272,16 +272,16 @@
     //PADの設定 コンフィグ
 
     // MSG_PAD_MENU_CFG_0
-    "↑",
+    "Up",
 
     // MSG_PAD_MENU_CFG_1
-    "↓",
+    "Down",
 
     // MSG_PAD_MENU_CFG_2
-    "←",
+    "Left",
 
     // MSG_PAD_MENU_CFG_3
-    "→",
+    "Right",
 
     // MSG_PAD_MENU_CFG_4
     "A",
@@ -335,16 +335,16 @@
     "Analog stick config",
 
     // MSG_A_PAD_MENU_0
-    "Analog ↑ : %s",
+    "Analog Up : %s",
 
     // MSG_A_PAD_MENU_1
-    "Analog ↓ : %s",
+    "Analog Down : %s",
 
     // MSG_A_PAD_MENU_2
-    "Analog ← : %s",
+    "Analog Left : %s",
 
     // MSG_A_PAD_MENU_3
-    "Analog → : %s",
+    "Analog Right : %s",
 
     // MSG_A_PAD_MENU_4
     "Enable analog input : %s",
@@ -356,10 +356,10 @@
     "Back",
 
     // MSG_A_PAD_MENU_HELP_0
-    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select",
+    "Left/Right:Select",
 
     // MSG_A_PAD_MENU_HELP_1
-    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select",
+    "Left/Right:Select",
 
     // MSG_A_PAD_MENU_HELP_2
     "○:Main menu",
@@ -770,16 +770,16 @@
     "按键设定",
 
     // MSG_PAD_MENU_0
-    "↑　　 : %s",
+    "Up     : %s",
 
     // MSG_PAD_MENU_1
-    "↓　　 : %s",
+    "Down   : %s",
 
     // MSG_PAD_MENU_2
-    "←　　 : %s",
+    "Left   : %s",
 
     // MSG_PAD_MENU_3
-    "→　　 : %s",
+    "Right  : %s",
 
     // MSG_PAD_MENU_4
     "○　　 : %s",
@@ -817,16 +817,16 @@
     //PADの设定 コンフィグ
 
     // MSG_PAD_MENU_CFG_0
-    "↑",
+    "Up",
 
     // MSG_PAD_MENU_CFG_1
-    "↓",
+    "Down",
 
     // MSG_PAD_MENU_CFG_2
-    "←",
+    "Left",
 
     // MSG_PAD_MENU_CFG_3
-    "→",
+    "Right",
 
     // MSG_PAD_MENU_CFG_4
     "A",
@@ -847,58 +847,58 @@
     "SELECT",
 
     // MSG_PAD_MENU_CFG_10
-    "菜单",
+    "menu",
 
     // MSG_PAD_MENU_CFG_11
-    "加速",
+    "fast forward",
 
     // MSG_PAD_MENU_CFG_12
-    "即时读档",
+    "load state",
 
     // MSG_PAD_MENU_CFG_13
-    "即时存档",
+    "save state",
 
     // MSG_PAD_MENU_CFG_14
-    "A连射",
+    "RAPID FIRE A",
 
     // MSG_PAD_MENU_CFG_15
-    "B连射",
+    "RAPID FIRE B",
 
     // MSG_PAD_MENU_CFG_16
-    "L连射",
+    "RAPID FIRE L",
 
     // MSG_PAD_MENU_CFG_17
-    "R连射",
+    "RAPID FIRE R",
 
     // MSG_PAD_MENU_CFG_18
-    "显示FPS",
+    "show fps",
 
     // MSG_PAD_MENU_CFG_19
-    "无",
+    "none",
 
     // MSG_A_PAD_MENU_TITLE
     "摇杆设定",
 
     // MSG_A_PAD_MENU_0
-    "摇杆 ↑ : %s",
+    "Analog Up : %s",
 
     // MSG_A_PAD_MENU_1
-    "摇杆 ↓ : %s",
+    "Analog Down : %s",
 
     // MSG_A_PAD_MENU_2
-    "摇杆 ← : %s",
+    "Analog Left : %s",
 
     // MSG_A_PAD_MENU_3
-    "摇杆 → : %s",
+    "Analog Right : %s",
 
     // MSG_A_PAD_MENU_4
-    "使用摇杆: %s",
+    "Analog input enabled: %s",
 
     // MSG_A_PAD_MENU_5
-    "摇杆灵敏度: %d",
+    "Analog input sensitivity: %d",
 
     // MSG_A_PAD_MENU_6
-    "返回",
+    "Back",
 
     // MSG_A_PAD_MENU_HELP_0
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择",
@@ -1315,16 +1315,16 @@
     "按鍵設定",
 
     // MSG_PAD_MENU_0
-    "↑　　 : %s",
+    "Up     : %s",
 
     // MSG_PAD_MENU_1
-    "↓　　 : %s",
+    "Down   : %s",
 
     // MSG_PAD_MENU_2
-    "←　　 : %s",
+    "Left   : %s",
 
     // MSG_PAD_MENU_3
-    "→　　 : %s",
+    "Right  : %s",
 
     // MSG_PAD_MENU_4
     "○　　 : %s",
@@ -1362,16 +1362,16 @@
     //PADの設定 コンフィグ
 
     // MSG_PAD_MENU_CFG_0
-    "↑",
+    "Up",
 
     // MSG_PAD_MENU_CFG_1
-    "↓",
+    "Down",
 
     // MSG_PAD_MENU_CFG_2
-    "←",
+    "Left",
 
     // MSG_PAD_MENU_CFG_3
-    "→",
+    "Right",
 
     // MSG_PAD_MENU_CFG_4
     "A",
@@ -1392,58 +1392,58 @@
     "SELECT",
 
     // MSG_PAD_MENU_CFG_10
-    "菜單",
+    "menu",
 
     // MSG_PAD_MENU_CFG_11
-    "加速",
+    "fast forward",
 
     // MSG_PAD_MENU_CFG_12
-    "即時讀档",
+    "load state",
 
     // MSG_PAD_MENU_CFG_13
-    "即時存档",
+    "save state",
 
     // MSG_PAD_MENU_CFG_14
-    "A連射",
+    "RAPID FIRE A",
 
     // MSG_PAD_MENU_CFG_15
-    "B連射",
+    "RAPID FIRE B",
 
     // MSG_PAD_MENU_CFG_16
-    "L連射",
+    "RAPID FIRE L",
 
     // MSG_PAD_MENU_CFG_17
-    "R連射",
+    "RAPID FIRE R",
 
     // MSG_PAD_MENU_CFG_18
-    "顯示FPS",
+    "show fps",
 
     // MSG_PAD_MENU_CFG_19
-    "無",
+    "none",
 
     // MSG_A_PAD_MENU_TITLE
     "搖杆設定",
 
     // MSG_A_PAD_MENU_0
-    "搖杆 ↑ : %s",
+    "Analog Up : %s",
 
     // MSG_A_PAD_MENU_1
-    "搖杆 ↓ : %s",
+    "Analog Down : %s",
 
     // MSG_A_PAD_MENU_2
-    "搖杆 ← : %s",
+    "Analog Left : %s",
 
     // MSG_A_PAD_MENU_3
-    "搖杆 → : %s",
+    "Analog Right : %s",
 
     // MSG_A_PAD_MENU_4
-    "使用搖杆: %s",
+    "Analog input enabled: %s",
 
     // MSG_A_PAD_MENU_5
-    "搖杆靈敏度: %d",
+    "Analog input sensitivity: %d",
 
     // MSG_A_PAD_MENU_6
-    "返回",
+    "Back",
 
     // MSG_A_PAD_MENU_HELP_0
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇",
