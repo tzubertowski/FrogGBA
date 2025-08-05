@@ -539,9 +539,8 @@ s32 load_file(const char **wildcards, char *result, char *default_dir_name)
 
 	  print_string(MSG[MSG_BROWSER_HELP], 30, 258, COLOR_HELP_TEXT, BG_NO_FILL);
 
-      char str_buffer_size[32];
-      sprintf(str_buffer_size, MSG[MSG_BUFFER], gamepak_ram_buffer_size >> 20);
-		print_string(str_buffer_size, 384, 258, COLOR_HELP_TEXT, BG_NO_FILL);
+      // Show mod credit instead of ROM Buffer
+      print_string("TempGBA mod by Prosty", 312, 258, COLOR_HELP_TEXT, BG_NO_FILL);
 
       // PSP controller - hold
       if (get_pad_input(PSP_CTRL_HOLD) != 0)
@@ -1712,9 +1711,6 @@ u32 menu(void)
     }
 
 	print_string(MSG[current_option->help_string], 30, 258, COLOR_HELP_TEXT, BG_NO_FILL);
-
-    // Mod credit in bottom right corner
-    print_string("TempGBA mod by Prosty", PSP_SCREEN_WIDTH - 168, 258, COLOR_HELP_TEXT, BG_NO_FILL);
 
     // PSP controller - hold
     if (get_pad_input(PSP_CTRL_HOLD) != 0)
