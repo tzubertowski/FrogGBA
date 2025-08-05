@@ -64,6 +64,7 @@
 #ifdef PSP_MIPS32_OPTIMIZATIONS
 // Enable cycle batching to reduce dynarec overhead
 #define PSP_CYCLE_BATCHING
+#define PSP_CYCLE_BATCH_THRESHOLD 128
 
 // Enable cache invalidation reduction for better performance  
 #define PSP_REDUCE_CACHE_INVALIDATION

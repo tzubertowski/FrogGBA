@@ -599,7 +599,17 @@ const u8 arm_to_mips_reg[] =
   mips_emit_b(bgtz, reg_cycles, reg_zero, 3);                                 \
   mips_emit_lui(reg_temp, (_pc) >> 16);                                       \
   mips_emit_jal(mips_absolute_offset(mips_update_gba));                       \
-  mips_emit_ori(reg_a0, reg_temp, (_pc) & 0xFFFF);                            \
+  mips_emit_ori(reg_a0, reg_temp, (_pc) & 0xFFFF);
+
+#ifdef PSP_CYCLE_BATCHING
+extern u32 option_advanced_opts;
+#define check_cycle_counter_batched(_pc)                                      \
+  if (option_advanced_opts == 0 || cycle_count >= PSP_CYCLE_BATCH_THRESHOLD) { \
+    check_cycle_counter(_pc);                                                 \
+  }
+#else
+#define check_cycle_counter_batched(_pc) check_cycle_counter(_pc)
+#endif
 
 #define generate_branch_patch_conditional(dest, offset)                       \
   *((u16 *)(dest)) = mips_relative_offset(dest, offset)                       \
