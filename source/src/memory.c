@@ -520,6 +520,7 @@ static CPU_ALERT_TYPE write32_palette_ram(u32 address, u32 value);
 static CPU_ALERT_TYPE write32_vram(u32 address, u32 value);
 static CPU_ALERT_TYPE write32_oam_ram(u32 address, u32 value);
 
+
 static CPU_ALERT_TYPE (*mem_write8[16])(u32, u32) =
 {
   write_null,           // 0
@@ -963,7 +964,13 @@ static CPU_ALERT_TYPE write32_ewram(u32 address, u32 value)
 #define WRITE_IWRAM(type)                                                     \
   address &= 0x7FFF;                                                          \
   ADDRESS##type(iwram, address) = value;                                      \
-  return check_smc_write(iwram_metadata, address, 0x03);                      \
+  {                                                                           \
+    CPU_ALERT_TYPE smc_result = check_smc_write(iwram_metadata, address, 0x03); \
+    if (smc_result & CPU_ALERT_SMC) {                                         \
+      partial_flush_ram_stub(address, 0x03);                                 \
+    }                                                                         \
+    return smc_result;                                                        \
+  }                      \
 
 static CPU_ALERT_TYPE write8_iwram(u32 address, u32 value)
 {

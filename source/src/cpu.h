@@ -184,6 +184,7 @@ extern u32 idle_loop_target_pc[MAX_IDLE_LOOPS];
 extern u32 iwram_stack_optimize;
 
 void partial_clear_metadata(u32 offset, u8 region);
+void partial_flush_ram_stub(u32 offset, u8 region);
 void flush_translation_cache(TRANSLATION_REGION_TYPE translation_region, CACHE_FLUSH_REASON_TYPE flush_reason);
 void clear_metadata_area(METADATA_AREA_TYPE metadata_area, METADATA_CLEAR_REASON_TYPE clear_reason);
 void dump_translation_cache(void);
