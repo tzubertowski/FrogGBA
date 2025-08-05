@@ -1713,6 +1713,9 @@ u32 menu(void)
 
 	print_string(MSG[current_option->help_string], 30, 258, COLOR_HELP_TEXT, BG_NO_FILL);
 
+    // Mod credit in bottom right corner
+    print_string("TempGBA mod by Prosty", PSP_SCREEN_WIDTH - 168, 258, COLOR_HELP_TEXT, BG_NO_FILL);
+
     // PSP controller - hold
     if (get_pad_input(PSP_CTRL_HOLD) != 0)
       print_string(FONT_KEY_ICON, 6, 258, COLOR15_YELLOW, BG_NO_FILL);
