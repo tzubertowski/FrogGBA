@@ -88,7 +88,11 @@ u32 ALIGN_DATA spsr[7];
 #define rom_metadata_area   METADATA_AREA_ROM
 #define bios_metadata_area  METADATA_AREA_BIOS
 
+#ifdef PSP_BLOCK_COALESCING
+#define MAX_BLOCK_SIZE (16384)
+#else
 #define MAX_BLOCK_SIZE (8192)
+#endif
 #define MAX_EXITS      (256)
 
 
@@ -3283,7 +3287,9 @@ static s32 BinarySearch(u32 *Array, u32 Value, s32 Size)
     block_data.type[block_data_position].update_cycles = 0;                   \
     block_data_position++;                                                    \
                                                                               \
-    if ((block_data_position == MAX_BLOCK_SIZE) ||                            \
+    u32 effective_max_block_size = MAX_BLOCK_SIZE;                            \
+    if (!option_advanced_opts) effective_max_block_size = 8192;               \
+    if ((block_data_position >= effective_max_block_size) ||                  \
         ((block_end_pc & 0xFF03FFFF) == 0x0203FFF0) ||                        \
         ((block_end_pc & 0xFF007FFF) == 0x03007F00))                          \
     {                                                                         \
