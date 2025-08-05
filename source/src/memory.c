@@ -944,7 +944,13 @@ inline static CPU_ALERT_TYPE check_smc_write(u16 *metadata, u32 offset, u8 regio
 #define WRITE_EWRAM(type)                                                     \
   address &= 0x3FFFF;                                                         \
   ADDRESS##type(ewram, address) = value;                                      \
-  return check_smc_write(ewram_metadata, address, 0x02);                      \
+  {                                                                           \
+    CPU_ALERT_TYPE smc_result = check_smc_write(ewram_metadata, address, 0x02); \
+    if (smc_result & CPU_ALERT_SMC) {                                         \
+      partial_flush_ram_stub(address, 0x02);                                 \
+    }                                                                         \
+    return smc_result;                                                        \
+  }                      \
 
 static CPU_ALERT_TYPE write8_ewram(u32 address, u32 value)
 {
@@ -1036,7 +1042,13 @@ static CPU_ALERT_TYPE write32_palette_ram(u32 address, u32 value)
     address &= 0x0FFFF;                                                       \
                                                                               \
   ADDRESS##type(vram, address) = value;                                       \
-  return check_smc_write(vram_metadata, address, 0x06);                       \
+  {                                                                           \
+    CPU_ALERT_TYPE smc_result = check_smc_write(vram_metadata, address, 0x06); \
+    if (smc_result & CPU_ALERT_SMC) {                                         \
+      partial_flush_ram_stub(address, 0x06);                                 \
+    }                                                                         \
+    return smc_result;                                                        \
+  }                       \
 
 static CPU_ALERT_TYPE write8_vram(u32 address, u32 value)
 {
