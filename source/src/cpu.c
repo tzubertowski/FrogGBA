@@ -3958,6 +3958,13 @@ void flush_translation_cache(TRANSLATION_REGION_TYPE translation_region, CACHE_F
   }
 }
 
+// Minimal pflush stub - does absolutely nothing but can be called safely
+void partial_flush_ram_stub(u32 offset, u8 region)
+{
+  // Do nothing - just a safe stub for testing
+  return;
+}
+
 void dump_translation_cache(void)
 {
   SceUID fp;
