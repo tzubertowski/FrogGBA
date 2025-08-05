@@ -1,0 +1,911 @@
+failed to get console mode for stdout: The handle is invalid.
+failed to get console mode for stdout: The handle is invalid.
+[1A[1B[0G[?25l[+] Running 1/0
+ [32m✔[0m Container froggba-psp-dev  [32mCreated[0m[34m0.0s [0m
+[?25hAttaching to froggba-psp-dev
+froggba-psp-dev  | === FrogGBA Build Script ===
+froggba-psp-dev  | Setting up PSP development environment...
+froggba-psp-dev  | Checking PSP toolchain...
+froggba-psp-dev  | PSP GCC version:
+froggba-psp-dev  | psp-gcc (GCC) 15.1.1 20250425
+froggba-psp-dev  | PSP SDK path: /usr/local/pspdev/psp/sdk
+froggba-psp-dev  | PSP DEV path: /usr/local/pspdev
+froggba-psp-dev  | === Building FrogGBA ===
+froggba-psp-dev  | Cleaning previous build...
+froggba-psp-dev  | rm -f FrogGBA.prx FrogGBA.elf cpu.o memory.o video.o input.o sound.o main.o message.o mh_print.o gui.o zip.o png.o mips_stub.o ku_bridge.o exception.o cheats.o ch_print.o adler32.o crc32.o deflate.o infback.o inffast.o inflate.o inftrees.o trees.o zutil.o compress.o uncompr.o gzclose.o gzlib.o gzread.o gzwrite.o PARAM.SFO EBOOT.PBP EBOOT.PBP
+froggba-psp-dev  | Starting compilation...
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o cpu.o src/cpu.c
+froggba-psp-dev  | [01m[Ksrc/cpu.c:[m[K In function '[01m[Ktranslate_block_arm[m[K':
+froggba-psp-dev  | [01m[Ksrc/cpu.c:3295:30:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Ks32[m[K' {aka [m[K'[01m[Klong int[m[K'} and '[01m[Ku32[m[K' {aka [m[K'[01m[Klong unsigned int[m[K'} [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  3295 |     if ((block_data_position [01;35m[K>=[m[K effective_max_block_size) ||                  \
+froggba-psp-dev  |       |                              [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/cpu.c:3403:5:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Kscan_block[m[K'
+froggba-psp-dev  |  3403 |     [01;36m[Kscan_block[m[K(type, yes);                                                    \
+froggba-psp-dev  |       |     [01;36m[K^~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/cpu.c:3593:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Ktranslate_block_builder[m[K'
+froggba-psp-dev  |  3593 | [01;36m[Ktranslate_block_builder[m[K(arm);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/cpu.c:3295:30:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Ks32[m[K' {aka [m[K'[01m[Klong int[m[K'} and '[01m[Ku32[m[K' {aka [m[K'[01m[Klong unsigned int[m[K'} [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  3295 |     if ((block_data_position [01;35m[K>=[m[K effective_max_block_size) ||                  \
+froggba-psp-dev  |       |                              [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/cpu.c:3472:5:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Kscan_block[m[K'
+froggba-psp-dev  |  3472 |     [01;36m[Kscan_block[m[K(type, no);                                                     \
+froggba-psp-dev  |       |     [01;36m[K^~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/cpu.c:3593:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Ktranslate_block_builder[m[K'
+froggba-psp-dev  |  3593 | [01;36m[Ktranslate_block_builder[m[K(arm);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/cpu.c:[m[K In function '[01m[Ktranslate_block_thumb[m[K':
+froggba-psp-dev  | [01m[Ksrc/cpu.c:3295:30:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Ks32[m[K' {aka [m[K'[01m[Klong int[m[K'} and '[01m[Ku32[m[K' {aka [m[K'[01m[Klong unsigned int[m[K'} [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  3295 |     if ((block_data_position [01;35m[K>=[m[K effective_max_block_size) ||                  \
+froggba-psp-dev  |       |                              [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/cpu.c:3403:5:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Kscan_block[m[K'
+froggba-psp-dev  |  3403 |     [01;36m[Kscan_block[m[K(type, yes);                                                    \
+froggba-psp-dev  |       |     [01;36m[K^~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/cpu.c:3594:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Ktranslate_block_builder[m[K'
+froggba-psp-dev  |  3594 | [01;36m[Ktranslate_block_builder[m[K(thumb);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/cpu.c:3295:30:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Ks32[m[K' {aka [m[K'[01m[Klong int[m[K'} and '[01m[Ku32[m[K' {aka [m[K'[01m[Klong unsigned int[m[K'} [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  3295 |     if ((block_data_position [01;35m[K>=[m[K effective_max_block_size) ||                  \
+froggba-psp-dev  |       |                              [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/cpu.c:3472:5:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Kscan_block[m[K'
+froggba-psp-dev  |  3472 |     [01;36m[Kscan_block[m[K(type, no);                                                     \
+froggba-psp-dev  |       |     [01;36m[K^~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/cpu.c:3594:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Ktranslate_block_builder[m[K'
+froggba-psp-dev  |  3594 | [01;36m[Ktranslate_block_builder[m[K(thumb);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o memory.o src/memory.c
+froggba-psp-dev  | [01m[Ksrc/memory.c:[m[K In function '[01m[Ksave_backup.part.0.constprop.isra[m[K':
+froggba-psp-dev  | [01m[Ksrc/memory.c:3178:29:[m[K [01;35m[Kwarning: [m[K'[01m[K%s[m[K' directive writing up to 255 bytes into a region of size between 1 and 512 [[01;35m[K-Wformat-overflow=[m[K]
+froggba-psp-dev  |  3178 |     sprintf(backup_path, "%s[01;32m[K%[m[K[01;32m[Ks[m[K", dir_save, name);
+froggba-psp-dev  |       |                             [01;32m[K^[m[K[01;32m[K~[m[K
+froggba-psp-dev  | [01m[Ksrc/memory.c:3178:5:[m[K [01;36m[Knote: [m[K'[01m[Ksprintf[m[K' output between 1 and 767 bytes into a destination of size 512
+froggba-psp-dev  |  3178 |     [01;36m[Ksprintf(backup_path, "%s%s", dir_save, name)[m[K;
+froggba-psp-dev  |       |     [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/memory.c:[m[K In function '[01m[Kload_gamepak[m[K':
+froggba-psp-dev  | [01m[Ksrc/memory.c:3489:40:[m[K [01;35m[Kwarning: [m[K'[01m[K%s[m[K' directive writing up to 511 bytes into a region of size 256 [[01;35m[K-Wformat-overflow=[m[K]
+froggba-psp-dev  |  3489 |         sprintf(gamepak_filename_raw, "[01;32m[K%[m[K[01;32m[Ks[m[K/%s", [01;34m[Kc[m[K[01;34m[Ku[m[K[01;34m[Kr[m[K[01;34m[Kr[m[K[01;34m[Ke[m[K[01;34m[Kn[m[K[01;34m[Kt[m[K[01;34m[K_[m[K[01;34m[Kd[m[K[01;34m[Ki[m[K[01;34m[Kr[m[K, name);
+froggba-psp-dev  |       |                                        [01;32m[K^[m[K[01;32m[K~[m[K      [01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K
+froggba-psp-dev  | In function '[01m[Kload_gamepak_raw[m[K',
+froggba-psp-dev  |     inlined from '[01m[Kload_gamepak[m[K' at [01m[Ksrc/memory.c:3532:17[m[K:
+froggba-psp-dev  | [01m[Ksrc/memory.c:3489:9:[m[K [01;36m[Knote: [m[K'[01m[Ksprintf[m[K' output 2 or more bytes (assuming 513) into a destination of size 256
+froggba-psp-dev  |  3489 |         [01;36m[Ksprintf(gamepak_filename_raw, "%s/%s", current_dir, name)[m[K;
+froggba-psp-dev  |       |         [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/memory.c:[m[K In function '[01m[Kload_gamepak[m[K':
+froggba-psp-dev  | [01m[Ksrc/memory.c:3355:27:[m[K [01;35m[Kwarning: [m[K'[01m[K%s[m[K' directive writing 15 bytes into a region of size between 1 and 512 [[01;35m[K-Wformat-overflow=[m[K]
+froggba-psp-dev  |  3355 |   sprintf(config_path, "%s[01;32m[K%[m[K[01;32m[Ks[m[K", main_path, CONFIG_FILENAME);
+froggba-psp-dev  |       |                           [01;32m[K^[m[K[01;32m[K~[m[K
+froggba-psp-dev  | In function '[01m[Kload_game_config[m[K',
+froggba-psp-dev  |     inlined from '[01m[Kload_gamepak[m[K' at [01m[Ksrc/memory.c:3561:5[m[K:
+froggba-psp-dev  | [01m[Ksrc/memory.c:3355:3:[m[K [01;36m[Knote: [m[K'[01m[Ksprintf[m[K' output between 16 and 527 bytes into a destination of size 512
+froggba-psp-dev  |  3355 |   [01;36m[Ksprintf(config_path, "%s%s", main_path, CONFIG_FILENAME)[m[K;
+froggba-psp-dev  |       |   [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/memory.c:[m[K In function '[01m[Krewind_load_state[m[K':
+froggba-psp-dev  | [01m[Ksrc/memory.c:3799:29:[m[K [01;35m[Kwarning: [m[K'[01m[Ktemp_rewind.svs[m[K' directive writing 15 bytes into a region of size between 1 and 512 [[01;35m[K-Wformat-overflow=[m[K]
+froggba-psp-dev  |  3799 |   sprintf(temp_filename, "%s[01;32m[Kt[m[K[01;32m[Ke[m[K[01;32m[Km[m[K[01;32m[Kp[m[K[01;32m[K_[m[K[01;32m[Kr[m[K[01;32m[Ke[m[K[01;32m[Kw[m[K[01;32m[Ki[m[K[01;32m[Kn[m[K[01;32m[Kd[m[K[01;32m[K.[m[K[01;32m[Ks[m[K[01;32m[Kv[m[K[01;32m[Ks[m[K", main_path);
+froggba-psp-dev  |       |                             [01;32m[K^[m[K[01;32m[K~[m[K[01;32m[K~[m[K[01;32m[K~[m[K[01;32m[K~[m[K[01;32m[K~[m[K[01;32m[K~[m[K[01;32m[K~[m[K[01;32m[K~[m[K[01;32m[K~[m[K[01;32m[K~[m[K[01;32m[K~[m[K[01;32m[K~[m[K[01;32m[K~[m[K[01;32m[K~[m[K
+froggba-psp-dev  | [01m[Ksrc/memory.c:3799:3:[m[K [01;36m[Knote: [m[K'[01m[Ksprintf[m[K' output between 16 and 527 bytes into a destination of size 512
+froggba-psp-dev  |  3799 |   [01;36m[Ksprintf(temp_filename, "%stemp_rewind.svs", main_path)[m[K;
+froggba-psp-dev  |       |   [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o video.o src/video.c
+froggba-psp-dev  | [01m[Ksrc/video.c:[m[K In function '[01m[Krender_scanline_obj_normal_1D[m[K':
+froggba-psp-dev  | [01m[Ksrc/video.c:2115:75:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Klong unsigned int[m[K' and '[01m[Klong int[m[K' [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  2115 |     if (option_advanced_opts && (obj_x >= (s32)end || (obj_x + obj_width) [01;35m[K<=[m[K (s32)start)) \
+froggba-psp-dev  |       |                                                                           [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:2131:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Krender_scanline_obj_builder[m[K'
+froggba-psp-dev  |  2131 | [01;36m[Krender_scanline_obj_builder[m[K(transparent, normal, 1D, no_partial_alpha);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:[m[K In function '[01m[Krender_scanline_obj_normal_2D[m[K':
+froggba-psp-dev  | [01m[Ksrc/video.c:2115:75:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Klong unsigned int[m[K' and '[01m[Klong int[m[K' [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  2115 |     if (option_advanced_opts && (obj_x >= (s32)end || (obj_x + obj_width) [01;35m[K<=[m[K (s32)start)) \
+froggba-psp-dev  |       |                                                                           [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:2132:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Krender_scanline_obj_builder[m[K'
+froggba-psp-dev  |  2132 | [01;36m[Krender_scanline_obj_builder[m[K(transparent, normal, 2D, no_partial_alpha);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:[m[K In function '[01m[Krender_scanline_obj_color16_1D[m[K':
+froggba-psp-dev  | [01m[Ksrc/video.c:2115:75:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Klong unsigned int[m[K' and '[01m[Klong int[m[K' [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  2115 |     if (option_advanced_opts && (obj_x >= (s32)end || (obj_x + obj_width) [01;35m[K<=[m[K (s32)start)) \
+froggba-psp-dev  |       |                                                                           [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:2133:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Krender_scanline_obj_builder[m[K'
+froggba-psp-dev  |  2133 | [01;36m[Krender_scanline_obj_builder[m[K(transparent, color16, 1D, no_partial_alpha);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:[m[K In function '[01m[Krender_scanline_obj_color16_2D[m[K':
+froggba-psp-dev  | [01m[Ksrc/video.c:2115:75:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Klong unsigned int[m[K' and '[01m[Klong int[m[K' [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  2115 |     if (option_advanced_opts && (obj_x >= (s32)end || (obj_x + obj_width) [01;35m[K<=[m[K (s32)start)) \
+froggba-psp-dev  |       |                                                                           [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:2134:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Krender_scanline_obj_builder[m[K'
+froggba-psp-dev  |  2134 | [01;36m[Krender_scanline_obj_builder[m[K(transparent, color16, 2D, no_partial_alpha);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:[m[K In function '[01m[Krender_scanline_obj_color32_1D[m[K':
+froggba-psp-dev  | [01m[Ksrc/video.c:2115:75:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Klong unsigned int[m[K' and '[01m[Klong int[m[K' [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  2115 |     if (option_advanced_opts && (obj_x >= (s32)end || (obj_x + obj_width) [01;35m[K<=[m[K (s32)start)) \
+froggba-psp-dev  |       |                                                                           [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:2135:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Krender_scanline_obj_builder[m[K'
+froggba-psp-dev  |  2135 | [01;36m[Krender_scanline_obj_builder[m[K(transparent, color32, 1D, no_partial_alpha);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:[m[K In function '[01m[Krender_scanline_obj_color32_2D[m[K':
+froggba-psp-dev  | [01m[Ksrc/video.c:2115:75:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Klong unsigned int[m[K' and '[01m[Klong int[m[K' [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  2115 |     if (option_advanced_opts && (obj_x >= (s32)end || (obj_x + obj_width) [01;35m[K<=[m[K (s32)start)) \
+froggba-psp-dev  |       |                                                                           [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:2136:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Krender_scanline_obj_builder[m[K'
+froggba-psp-dev  |  2136 | [01;36m[Krender_scanline_obj_builder[m[K(transparent, color32, 2D, no_partial_alpha);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:[m[K In function '[01m[Krender_scanline_obj_alpha_obj_1D[m[K':
+froggba-psp-dev  | [01m[Ksrc/video.c:2115:75:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Klong unsigned int[m[K' and '[01m[Klong int[m[K' [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  2115 |     if (option_advanced_opts && (obj_x >= (s32)end || (obj_x + obj_width) [01;35m[K<=[m[K (s32)start)) \
+froggba-psp-dev  |       |                                                                           [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:2137:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Krender_scanline_obj_builder[m[K'
+froggba-psp-dev  |  2137 | [01;36m[Krender_scanline_obj_builder[m[K(transparent, alpha_obj, 1D, no_partial_alpha);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:[m[K In function '[01m[Krender_scanline_obj_alpha_obj_2D[m[K':
+froggba-psp-dev  | [01m[Ksrc/video.c:2115:75:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Klong unsigned int[m[K' and '[01m[Klong int[m[K' [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  2115 |     if (option_advanced_opts && (obj_x >= (s32)end || (obj_x + obj_width) [01;35m[K<=[m[K (s32)start)) \
+froggba-psp-dev  |       |                                                                           [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:2138:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Krender_scanline_obj_builder[m[K'
+froggba-psp-dev  |  2138 | [01;36m[Krender_scanline_obj_builder[m[K(transparent, alpha_obj, 2D, no_partial_alpha);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:[m[K In function '[01m[Krender_scanline_obj_partial_alpha_1D[m[K':
+froggba-psp-dev  | [01m[Ksrc/video.c:2115:75:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Klong unsigned int[m[K' and '[01m[Klong int[m[K' [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  2115 |     if (option_advanced_opts && (obj_x >= (s32)end || (obj_x + obj_width) [01;35m[K<=[m[K (s32)start)) \
+froggba-psp-dev  |       |                                                                           [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:2139:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Krender_scanline_obj_builder[m[K'
+froggba-psp-dev  |  2139 | [01;36m[Krender_scanline_obj_builder[m[K(transparent, partial_alpha, 1D, partial_alpha);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:[m[K In function '[01m[Krender_scanline_obj_partial_alpha_2D[m[K':
+froggba-psp-dev  | [01m[Ksrc/video.c:2115:75:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Klong unsigned int[m[K' and '[01m[Klong int[m[K' [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  2115 |     if (option_advanced_opts && (obj_x >= (s32)end || (obj_x + obj_width) [01;35m[K<=[m[K (s32)start)) \
+froggba-psp-dev  |       |                                                                           [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:2140:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Krender_scanline_obj_builder[m[K'
+froggba-psp-dev  |  2140 | [01;36m[Krender_scanline_obj_builder[m[K(transparent, partial_alpha, 2D, partial_alpha);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:[m[K In function '[01m[Krender_scanline_obj_copy_tile_1D[m[K':
+froggba-psp-dev  | [01m[Ksrc/video.c:2115:75:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Klong unsigned int[m[K' and '[01m[Klong int[m[K' [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  2115 |     if (option_advanced_opts && (obj_x >= (s32)end || (obj_x + obj_width) [01;35m[K<=[m[K (s32)start)) \
+froggba-psp-dev  |       |                                                                           [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:2141:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Krender_scanline_obj_builder[m[K'
+froggba-psp-dev  |  2141 | [01;36m[Krender_scanline_obj_builder[m[K(copy, copy_tile, 1D, no_partial_alpha);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:[m[K In function '[01m[Krender_scanline_obj_copy_tile_2D[m[K':
+froggba-psp-dev  | [01m[Ksrc/video.c:2115:75:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Klong unsigned int[m[K' and '[01m[Klong int[m[K' [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  2115 |     if (option_advanced_opts && (obj_x >= (s32)end || (obj_x + obj_width) [01;35m[K<=[m[K (s32)start)) \
+froggba-psp-dev  |       |                                                                           [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:2142:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Krender_scanline_obj_builder[m[K'
+froggba-psp-dev  |  2142 | [01;36m[Krender_scanline_obj_builder[m[K(copy, copy_tile, 2D, no_partial_alpha);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:[m[K In function '[01m[Krender_scanline_obj_copy_bitmap_1D[m[K':
+froggba-psp-dev  | [01m[Ksrc/video.c:2115:75:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Klong unsigned int[m[K' and '[01m[Klong int[m[K' [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  2115 |     if (option_advanced_opts && (obj_x >= (s32)end || (obj_x + obj_width) [01;35m[K<=[m[K (s32)start)) \
+froggba-psp-dev  |       |                                                                           [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:2143:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Krender_scanline_obj_builder[m[K'
+froggba-psp-dev  |  2143 | [01;36m[Krender_scanline_obj_builder[m[K(copy, copy_bitmap, 1D, no_partial_alpha);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:[m[K In function '[01m[Krender_scanline_obj_copy_bitmap_2D[m[K':
+froggba-psp-dev  | [01m[Ksrc/video.c:2115:75:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: '[01m[Klong unsigned int[m[K' and '[01m[Klong int[m[K' [[01;35m[K-Wsign-compare[m[K]
+froggba-psp-dev  |  2115 |     if (option_advanced_opts && (obj_x >= (s32)end || (obj_x + obj_width) [01;35m[K<=[m[K (s32)start)) \
+froggba-psp-dev  |       |                                                                           [01;35m[K^~[m[K
+froggba-psp-dev  | [01m[Ksrc/video.c:2144:1:[m[K [01;36m[Knote: [m[Kin expansion of macro '[01m[Krender_scanline_obj_builder[m[K'
+froggba-psp-dev  |  2144 | [01;36m[Krender_scanline_obj_builder[m[K(copy, copy_bitmap, 2D, no_partial_alpha);
+froggba-psp-dev  |       | [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o input.o src/input.c
+froggba-psp-dev  | [01m[Ksrc/input.c:[m[K In function '[01m[Kupdate_input[m[K':
+froggba-psp-dev  | [01m[Ksrc/input.c:515:20:[m[K [01;35m[Kwarning: [m[Kvariable '[01m[Krewind_button_counter[m[K' set but not used [[01;35m[K-Wunused-but-set-variable[m[K]
+froggba-psp-dev  |   515 |         static u32 [01;35m[Krewind_button_counter[m[K = 0;
+froggba-psp-dev  |       |                    [01;35m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o sound.o src/sound.c
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o main.o src/main.c
+froggba-psp-dev  | [01m[Ksrc/main.c:[m[K In function '[01m[Kupdate_gba[m[K':
+froggba-psp-dev  | [01m[Ksrc/main.c:522:1:[m[K [01;35m[Kwarning: [m[Klabel '[01m[Kskip_normal_execution[m[K' defined but not used [[01;35m[K-Wunused-label[m[K]
+froggba-psp-dev  |   522 | [01;35m[Kskip_normal_execution[m[K:
+froggba-psp-dev  |       | [01;35m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o message.o src/message.c
+froggba-psp-dev  | [01m[Ksrc/message.c:354:25:[m[K [01;35m[Kwarning: [m[Kunknown escape sequence: '[01m[K\357[m[K'
+froggba-psp-dev  |   354 |     "<U+FFFD>t<U+FFFD><U+FFFD><U+FFFD>[<U+FFFD><U+FFFD><U+FFFD><U+FFFD><U+FFFD>[<U+FFFD>g<U+FFFD>\<U+FFFD><U+FFFD>"[01;35m[K,[m[K
+froggba-psp-dev  |       |                                                                                                                    [01;35m[K^[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o mh_print.o src/mh_print.c
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o gui.o src/gui.c
+froggba-psp-dev  | [01m[Ksrc/gui.c:[m[K In function '[01m[Kmenu[m[K':
+froggba-psp-dev  | [01m[Ksrc/gui.c:958:15:[m[K [01;35m[Kwarning: [m[Kunused variable '[01m[Koptimization_level_options_local[m[K' [[01;35m[K-Wunused-variable[m[K]
+froggba-psp-dev  |   958 |   const char *[01;35m[Koptimization_level_options_local[m[K[] =
+froggba-psp-dev  |       |               [01;35m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:851:13:[m[K [01;35m[Kwarning: [m[Kunused variable '[01m[Kid_language[m[K' [[01;35m[K-Wunused-variable[m[K]
+froggba-psp-dev  |   851 |         int [01;35m[Kid_language[m[K;
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:[m[K At top level:
+froggba-psp-dev  | [01m[Ksrc/gui.c:1968:13:[m[K [01;35m[Kwarning: [m[K'[01m[Kupdate_status_string_gbk[m[K' defined but not used [[01;35m[K-Wunused-function[m[K]
+froggba-psp-dev  |  1968 | static void [01;35m[Kupdate_status_string_gbk[m[K(char *time_str, char *batt_str, u16 *color_batt)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:1353:8:[m[K [01;35m[Kwarning: [m[K'[01m[Ksubmenu_main[m[K' defined but not used [[01;35m[K-Wunused-function[m[K]
+froggba-psp-dev  |  1353 |   void [01;35m[Ksubmenu_main[m[K(void)
+froggba-psp-dev  |       |        [01;35m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:1327:8:[m[K [01;35m[Kwarning: [m[K'[01m[Ksubmenu_savestate[m[K' defined but not used [[01;35m[K-Wunused-function[m[K]
+froggba-psp-dev  |  1327 |   void [01;35m[Ksubmenu_savestate[m[K(void)
+froggba-psp-dev  |       |        [01;35m[K^~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:1319:8:[m[K [01;35m[Kwarning: [m[K'[01m[Ksubmenu_analog[m[K' defined but not used [[01;35m[K-Wunused-function[m[K]
+froggba-psp-dev  |  1319 |   void [01;35m[Ksubmenu_analog[m[K(void)
+froggba-psp-dev  |       |        [01;35m[K^~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:1313:8:[m[K [01;35m[Kwarning: [m[K'[01m[Ksubmenu_gamepad[m[K' defined but not used [[01;35m[K-Wunused-function[m[K]
+froggba-psp-dev  |  1313 |   void [01;35m[Ksubmenu_gamepad[m[K(void)
+froggba-psp-dev  |       |        [01;35m[K^~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:1308:8:[m[K [01;35m[Kwarning: [m[K'[01m[Ksubmenu_cheats_misc[m[K' defined but not used [[01;35m[K-Wunused-function[m[K]
+froggba-psp-dev  |  1308 |   void [01;35m[Ksubmenu_cheats_misc[m[K(void)
+froggba-psp-dev  |       |        [01;35m[K^~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:1302:8:[m[K [01;35m[Kwarning: [m[K'[01m[Ksubmenu_emulator[m[K' defined but not used [[01;35m[K-Wunused-function[m[K]
+froggba-psp-dev  |  1302 |   void [01;35m[Ksubmenu_emulator[m[K(void)
+froggba-psp-dev  |       |        [01;35m[K^~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:1203:8:[m[K [01;35m[Kwarning: [m[K'[01m[Kmenu_default[m[K' defined but not used [[01;35m[K-Wunused-function[m[K]
+froggba-psp-dev  |  1203 |   void [01;35m[Kmenu_default[m[K(void)
+froggba-psp-dev  |       |        [01;35m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:1185:8:[m[K [01;35m[Kwarning: [m[K'[01m[Kmenu_load_state_file[m[K' defined but not used [[01;35m[K-Wunused-function[m[K]
+froggba-psp-dev  |  1185 |   void [01;35m[Kmenu_load_state_file[m[K(void)
+froggba-psp-dev  |       |        [01;35m[K^~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:1121:8:[m[K [01;35m[Kwarning: [m[K'[01m[Kmenu_screen_capture[m[K' defined but not used [[01;35m[K-Wunused-function[m[K]
+froggba-psp-dev  |  1121 |   void [01;35m[Kmenu_screen_capture[m[K(void)
+froggba-psp-dev  |       |        [01;35m[K^~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:1109:8:[m[K [01;35m[Kwarning: [m[K'[01m[Kmenu_reset[m[K' defined but not used [[01;35m[K-Wunused-function[m[K]
+froggba-psp-dev  |  1109 |   void [01;35m[Kmenu_reset[m[K(void)
+froggba-psp-dev  |       |        [01;35m[K^~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:1059:8:[m[K [01;35m[Kwarning: [m[K'[01m[Kmenu_suspend[m[K' defined but not used [[01;35m[K-Wunused-function[m[K]
+froggba-psp-dev  |  1059 |   void [01;35m[Kmenu_suspend[m[K(void)
+froggba-psp-dev  |       |        [01;35m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:1053:8:[m[K [01;35m[Kwarning: [m[K'[01m[Kmenu_quit[m[K' defined but not used [[01;35m[K-Wunused-function[m[K]
+froggba-psp-dev  |  1053 |   void [01;35m[Kmenu_quit[m[K(void)
+froggba-psp-dev  |       |        [01;35m[K^~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:[m[K In function '[01m[Ksave_config_file[m[K':
+froggba-psp-dev  | [01m[Ksrc/gui.c:2146:28:[m[K [01;35m[Kwarning: [m[Kiteration 15 invokes undefined behavior [[01;35m[K-Waggressive-loop-optimizations[m[K]
+froggba-psp-dev  |  2146 |       [01;35m[Kfile_options[17 + i] = gamepad_config_map[i][m[K;
+froggba-psp-dev  |       |       [01;35m[K~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:2144:19:[m[K [01;36m[Knote: [m[Kwithin this loop
+froggba-psp-dev  |  2144 |     for (i = 0; [01;36m[Ki < 16[m[K; i++)
+froggba-psp-dev  |       |                 [01;36m[K~~^~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:[m[K In function '[01m[Kupdate_status_string[m[K':
+froggba-psp-dev  | [01m[Ksrc/gui.c:1952:7:[m[K [01;35m[Kwarning: [m[K'[01m[Ksprintf[m[K' argument 3 overlaps destination object '[01m[Kbatt_str[m[K' [[01;35m[K-Wrestrict[m[K]
+froggba-psp-dev  |  1952 |       [01;35m[Ksprintf(batt_str, "%s[%2d:%02d]", batt_str, (batt_life_time / 60) % 100, batt_life_time % 60)[m[K;
+froggba-psp-dev  |       |       [01;35m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:1903:56:[m[K [01;36m[Knote: [m[Kdestination object referenced by '[01m[Krestrict[m[K'-qualified argument 1 was declared here
+froggba-psp-dev  |  1903 | static void update_status_string(char *time_str, [01;36m[Kchar *batt_str[m[K, u16 *color_batt)
+froggba-psp-dev  |       |                                                  [01;36m[K~~~~~~^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:1950:7:[m[K [01;35m[Kwarning: [m[K'[01m[Ksprintf[m[K' argument 3 overlaps destination object '[01m[Kbatt_str[m[K' [[01;35m[K-Wrestrict[m[K]
+froggba-psp-dev  |  1950 |       [01;35m[Ksprintf(batt_str, "%s%s", batt_str, "[--:--]")[m[K;
+froggba-psp-dev  |       |       [01;35m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:1903:56:[m[K [01;36m[Knote: [m[Kdestination object referenced by '[01m[Krestrict[m[K'-qualified argument 1 was declared here
+froggba-psp-dev  |  1903 | static void update_status_string(char *time_str, [01;36m[Kchar *batt_str[m[K, u16 *color_batt)
+froggba-psp-dev  |       |                                                  [01;36m[K~~~~~~^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:1943:5:[m[K [01;35m[Kwarning: [m[K'[01m[Ksprintf[m[K' argument 3 overlaps destination object '[01m[Kbatt_str[m[K' [[01;35m[K-Wrestrict[m[K]
+froggba-psp-dev  |  1943 |     [01;35m[Ksprintf(batt_str, "%s%s", batt_str, MSG[MSG_CHARGE])[m[K;
+froggba-psp-dev  |       |     [01;35m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:1903:56:[m[K [01;36m[Knote: [m[Kdestination object referenced by '[01m[Krestrict[m[K'-qualified argument 1 was declared here
+froggba-psp-dev  |  1903 | static void update_status_string(char *time_str, [01;36m[Kchar *batt_str[m[K, u16 *color_batt)
+froggba-psp-dev  |       |                                                  [01;36m[K~~~~~~^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:[m[K In function '[01m[Ksave_game_config_file.isra[m[K':
+froggba-psp-dev  | [01m[Ksrc/gui.c:2071:32:[m[K [01;35m[Kwarning: [m[K'[01m[K%s[m[K' directive writing up to 255 bytes into a region of size between 1 and 512 [[01;35m[K-Wformat-overflow=[m[K]
+froggba-psp-dev  |  2071 |   sprintf(game_config_path, "%s[01;32m[K%[m[K[01;32m[Ks[m[K", dir_cfg, [01;34m[Kg[m[K[01;34m[Ka[m[K[01;34m[Km[m[K[01;34m[Ke[m[K[01;34m[K_[m[K[01;34m[Kc[m[K[01;34m[Ko[m[K[01;34m[Kn[m[K[01;34m[Kf[m[K[01;34m[Ki[m[K[01;34m[Kg[m[K[01;34m[K_[m[K[01;34m[Kf[m[K[01;34m[Ki[m[K[01;34m[Kl[m[K[01;34m[Ke[m[K[01;34m[Kn[m[K[01;34m[Ka[m[K[01;34m[Km[m[K[01;34m[Ke[m[K);
+froggba-psp-dev  |       |                                [01;32m[K^[m[K[01;32m[K~[m[K            [01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:2071:3:[m[K [01;36m[Knote: [m[K'[01m[Ksprintf[m[K' output between 1 and 767 bytes into a destination of size 512
+froggba-psp-dev  |  2071 |   [01;36m[Ksprintf(game_config_path, "%s%s", dir_cfg, game_config_filename)[m[K;
+froggba-psp-dev  |       |   [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:[m[K In function '[01m[Ksave_config_file[m[K':
+froggba-psp-dev  | [01m[Ksrc/gui.c:2115:27:[m[K [01;35m[Kwarning: [m[K'[01m[K%s[m[K' directive writing 11 bytes into a region of size between 1 and 512 [[01;35m[K-Wformat-overflow=[m[K]
+froggba-psp-dev  |  2115 |   sprintf(config_path, "%s[01;32m[K%[m[K[01;32m[Ks[m[K", main_path, GPSP_CONFIG_FILENAME);
+froggba-psp-dev  |       |                           [01;32m[K^[m[K[01;32m[K~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:2115:3:[m[K [01;36m[Knote: [m[K'[01m[Ksprintf[m[K' output between 12 and 523 bytes into a destination of size 512
+froggba-psp-dev  |  2115 |   [01;36m[Ksprintf(config_path, "%s%s", main_path, GPSP_CONFIG_FILENAME)[m[K;
+froggba-psp-dev  |       |   [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:2146:28:[m[K [01;35m[Kwarning: [m[K'[01m[K__builtin_memcpy[m[K' forming offset [128, 131] is out of the bounds [0, 128] of object '[01m[Kfile_options[m[K' with type '[01m[Ku32[32][m[K' {aka [m[K'[01m[Klong unsigned int[32][m[K'} [[01;35m[K-Warray-bounds=[m[K]
+froggba-psp-dev  |  2146 |       [01;35m[Kfile_options[17 + i] = gamepad_config_map[i][m[K;
+froggba-psp-dev  |       |       [01;35m[K~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:2124:9:[m[K [01;36m[Knote: [m[K'[01m[Kfile_options[m[K' declared here
+froggba-psp-dev  |  2124 |     u32 [01;36m[Kfile_options[m[K[GPSP_CONFIG_NUM];
+froggba-psp-dev  |       |         [01;36m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:[m[K In function '[01m[Kload_game_config_file[m[K':
+froggba-psp-dev  | [01m[Ksrc/gui.c:2172:32:[m[K [01;35m[Kwarning: [m[K'[01m[K%s[m[K' directive writing up to 255 bytes into a region of size between 1 and 512 [[01;35m[K-Wformat-overflow=[m[K]
+froggba-psp-dev  |  2172 |   sprintf(game_config_path, "%s[01;32m[K%[m[K[01;32m[Ks[m[K", dir_cfg, [01;34m[Kg[m[K[01;34m[Ka[m[K[01;34m[Km[m[K[01;34m[Ke[m[K[01;34m[K_[m[K[01;34m[Kc[m[K[01;34m[Ko[m[K[01;34m[Kn[m[K[01;34m[Kf[m[K[01;34m[Ki[m[K[01;34m[Kg[m[K[01;34m[K_[m[K[01;34m[Kf[m[K[01;34m[Ki[m[K[01;34m[Kl[m[K[01;34m[Ke[m[K[01;34m[Kn[m[K[01;34m[Ka[m[K[01;34m[Km[m[K[01;34m[Ke[m[K);
+froggba-psp-dev  |       |                                [01;32m[K^[m[K[01;32m[K~[m[K            [01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:2172:3:[m[K [01;36m[Knote: [m[K'[01m[Ksprintf[m[K' output between 1 and 767 bytes into a destination of size 512
+froggba-psp-dev  |  2172 |   [01;36m[Ksprintf(game_config_path, "%s%s", dir_cfg, game_config_filename)[m[K;
+froggba-psp-dev  |       |   [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:[m[K In function '[01m[Kload_config_file[m[K':
+froggba-psp-dev  | [01m[Ksrc/gui.c:2236:27:[m[K [01;35m[Kwarning: [m[K'[01m[K%s[m[K' directive writing 11 bytes into a region of size between 1 and 512 [[01;35m[K-Wformat-overflow=[m[K]
+froggba-psp-dev  |  2236 |   sprintf(config_path, "%s[01;32m[K%[m[K[01;32m[Ks[m[K", main_path, GPSP_CONFIG_FILENAME);
+froggba-psp-dev  |       |                           [01;32m[K^[m[K[01;32m[K~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:2236:3:[m[K [01;36m[Knote: [m[K'[01m[Ksprintf[m[K' output between 12 and 523 bytes into a destination of size 512
+froggba-psp-dev  |  2236 |   [01;36m[Ksprintf(config_path, "%s%s", main_path, GPSP_CONFIG_FILENAME)[m[K;
+froggba-psp-dev  |       |   [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:[m[K In function '[01m[Kload_dir_cfg[m[K':
+froggba-psp-dev  | [01m[Ksrc/gui.c:2413:27:[m[K [01;35m[Kwarning: [m[K'[01m[K
+froggba-psp-dev  | 
+froggba-psp-dev  |    [m[K' directive writing 2 bytes into a region of size between 1 and 256 [[01;35m[K-Wformat-overflow=[m[K]
+froggba-psp-dev  |  2413 |       sprintf(str_buf, "%s[01;32m[K\[m[K[01;32m[Kn[m[K[01;32m[K\[m[K[01;32m[Kn[m[K%s", str_buf, MSG[MSG_ERR_CONT]);
+froggba-psp-dev  |       |                           [01;32m[K^[m[K[01;32m[K~[m[K[01;32m[K~[m[K[01;32m[K~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:2413:7:[m[K [01;36m[Knote: [m[K'[01m[Ksprintf[m[K' output 3 or more bytes (assuming 258) into a destination of size 256
+froggba-psp-dev  |  2413 |       [01;36m[Ksprintf(str_buf, "%s\n\n%s", str_buf, MSG[MSG_ERR_CONT])[m[K;
+froggba-psp-dev  |       |       [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:2413:7:[m[K [01;35m[Kwarning: [m[K'[01m[Ksprintf[m[K' argument 3 overlaps destination object '[01m[KFRAME[m[K' [[01;35m[K-Wrestrict[m[K]
+froggba-psp-dev  | [01m[Ksrc/gui.c:2306:5:[m[K [01;36m[Knote: [m[Kdestination object referenced by '[01m[Krestrict[m[K'-qualified argument 1 was declared here
+froggba-psp-dev  |  2306 | s32 [01;36m[Kload_dir_cfg[m[K(char *file_name)
+froggba-psp-dev  |       |     [01;36m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/gui.c:2334:31:[m[K [01;35m[Kwarning: [m[K'[01m[K%s[m[K' directive writing up to 511 bytes into a region of size 256 [[01;35m[K-Wformat-overflow=[m[K]
+froggba-psp-dev  |  2334 |       sprintf(current_value, "[01;32m[K%[m[K[01;32m[Ks[m[K%s", [01;34m[Km[m[K[01;34m[Ka[m[K[01;34m[Ki[m[K[01;34m[Kn[m[K[01;34m[K_[m[K[01;34m[Kp[m[K[01;34m[Ka[m[K[01;34m[Kt[m[K[01;34m[Kh[m[K, str_buf);
+froggba-psp-dev  |       |                               [01;32m[K^[m[K[01;32m[K~[m[K     [01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K
+froggba-psp-dev  | In function '[01m[Kadd_launch_directory[m[K',
+froggba-psp-dev  |     inlined from '[01m[Kload_dir_cfg[m[K' at [01m[Ksrc/gui.c:2390:9[m[K:
+froggba-psp-dev  | [01m[Ksrc/gui.c:2334:7:[m[K [01;36m[Knote: [m[K'[01m[Ksprintf[m[K' output 1 or more bytes (assuming 512) into a destination of size 256
+froggba-psp-dev  |  2334 |       [01;36m[Ksprintf(current_value, "%s%s", main_path, str_buf)[m[K;
+froggba-psp-dev  |       |       [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o zip.o src/zip.c
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o png.o src/png.c
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST   -c -o mips_stub.o src/mips_stub.S
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST   -c -o ku_bridge.o src/ku_bridge.S
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o exception.o src/exception.c
+froggba-psp-dev  | [01m[Ksrc/exception.c:[m[K In function '[01m[KExceptionHandler[m[K':
+froggba-psp-dev  | [01m[Ksrc/exception.c:56:32:[m[K [01;35m[Kwarning: [m[K'[01m[K%s[m[K' directive writing up to 511 bytes into a region of size 256 [[01;35m[K-Wformat-overflow=[m[K]
+froggba-psp-dev  |    56 |             sprintf(filename, "[01;32m[K%[m[K[01;32m[Ks[m[Kexception.log", [01;34m[Km[m[K[01;34m[Ka[m[K[01;34m[Ki[m[K[01;34m[Kn[m[K[01;34m[K_[m[K[01;34m[Kp[m[K[01;34m[Ka[m[K[01;34m[Kt[m[K[01;34m[Kh[m[K);
+froggba-psp-dev  |       |                                [01;32m[K^[m[K[01;32m[K~[m[K                [01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K[01;34m[K~[m[K
+froggba-psp-dev  | [01m[Ksrc/exception.c:56:13:[m[K [01;36m[Knote: [m[K'[01m[Ksprintf[m[K' output between 14 and 525 bytes into a destination of size 256
+froggba-psp-dev  |    56 |             [01;36m[Ksprintf(filename, "%sexception.log", main_path)[m[K;
+froggba-psp-dev  |       |             [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o cheats.o src/cheats.c
+froggba-psp-dev  | [01m[Ksrc/cheats.c:[m[K In function '[01m[Kadd_cheats[m[K':
+froggba-psp-dev  | [01m[Ksrc/cheats.c:79:29:[m[K [01;35m[Kwarning: [m[K'[01m[Ksprintf[m[K' may write a terminating nul past the end of the destination [[01;35m[K-Wformat-overflow=[m[K]
+froggba-psp-dev  |    79 |   sprintf(cheat_path, "%s/%s[01;32m[K"[m[K, dir_cheat, cheats_filename);
+froggba-psp-dev  |       |                             [01;32m[K^[m[K
+froggba-psp-dev  | [01m[Ksrc/cheats.c:79:3:[m[K [01;36m[Knote: [m[K'[01m[Ksprintf[m[K' output 2 or more bytes (assuming 513) into a destination of size 512
+froggba-psp-dev  |    79 |   [01;36m[Ksprintf(cheat_path, "%s/%s", dir_cheat, cheats_filename)[m[K;
+froggba-psp-dev  |       |   [01;36m[K^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o ch_print.o src/ch_print.c
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o adler32.o src/zlib/adler32.c
+froggba-psp-dev  | [01m[Ksrc/zlib/adler32.c:[m[K In function '[01m[Kadler32[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/adler32.c:65:15:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |    65 | uLong ZEXPORT [01;35m[Kadler32[m[K(adler, buf, len)
+froggba-psp-dev  |       |               [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/adler32.c:[m[K In function '[01m[Kadler32_combine_[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/adler32.c:136:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   136 | local uLong [01;35m[Kadler32_combine_[m[K(adler1, adler2, len2)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/adler32.c:[m[K In function '[01m[Kadler32_combine[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/adler32.c:165:15:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   165 | uLong ZEXPORT [01;35m[Kadler32_combine[m[K(adler1, adler2, len2)
+froggba-psp-dev  |       |               [01;35m[K^~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/adler32.c:[m[K In function '[01m[Kadler32_combine64[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/adler32.c:173:15:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   173 | uLong ZEXPORT [01;35m[Kadler32_combine64[m[K(adler1, adler2, len2)
+froggba-psp-dev  |       |               [01;35m[K^~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o crc32.o src/zlib/crc32.c
+froggba-psp-dev  | [01m[Ksrc/zlib/crc32.c:[m[K In function '[01m[Kcrc32[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/crc32.c:204:23:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   204 | unsigned long ZEXPORT [01;35m[Kcrc32[m[K(crc, buf, len)
+froggba-psp-dev  |       |                       [01;35m[K^~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/crc32.c:[m[K In function '[01m[Kcrc32_little[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/crc32.c:247:21:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   247 | local unsigned long [01;35m[Kcrc32_little[m[K(crc, buf, len)
+froggba-psp-dev  |       |                     [01;35m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/crc32.c:[m[K In function '[01m[Kcrc32_big[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/crc32.c:287:21:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   287 | local unsigned long [01;35m[Kcrc32_big[m[K(crc, buf, len)
+froggba-psp-dev  |       |                     [01;35m[K^~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/crc32.c:[m[K In function '[01m[Kgf2_matrix_times[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/crc32.c:327:21:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   327 | local unsigned long [01;35m[Kgf2_matrix_times[m[K(mat, vec)
+froggba-psp-dev  |       |                     [01;35m[K^~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/crc32.c:[m[K In function '[01m[Kgf2_matrix_square[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/crc32.c:344:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   344 | local void [01;35m[Kgf2_matrix_square[m[K(square, mat)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/crc32.c:[m[K In function '[01m[Kcrc32_combine_[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/crc32.c:355:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   355 | local uLong [01;35m[Kcrc32_combine_[m[K(crc1, crc2, len2)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/crc32.c:[m[K In function '[01m[Kcrc32_combine[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/crc32.c:411:15:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   411 | uLong ZEXPORT [01;35m[Kcrc32_combine[m[K(crc1, crc2, len2)
+froggba-psp-dev  |       |               [01;35m[K^~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/crc32.c:[m[K In function '[01m[Kcrc32_combine64[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/crc32.c:419:15:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   419 | uLong ZEXPORT [01;35m[Kcrc32_combine64[m[K(crc1, crc2, len2)
+froggba-psp-dev  |       |               [01;35m[K^~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o deflate.o src/zlib/deflate.c
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[KdeflateInit_[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:201:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   201 | int ZEXPORT [01;35m[KdeflateInit_[m[K(strm, level, version, stream_size)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[KdeflateInit2_[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:213:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   213 | int ZEXPORT [01;35m[KdeflateInit2_[m[K(strm, level, method, windowBits, memLevel, strategy,
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[KdeflateSetDictionary[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:323:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   323 | int ZEXPORT [01;35m[KdeflateSetDictionary[m[K (strm, dictionary, dictLength)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[KdeflateResetKeep[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:392:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   392 | int ZEXPORT [01;35m[KdeflateResetKeep[m[K (strm)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[KdeflateReset[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:427:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   427 | int ZEXPORT [01;35m[KdeflateReset[m[K (strm)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[KdeflateSetHeader[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:439:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   439 | int ZEXPORT [01;35m[KdeflateSetHeader[m[K (strm, head)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[KdeflatePending[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:450:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   450 | int ZEXPORT [01;35m[KdeflatePending[m[K (strm, pending, bits)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[KdeflatePrime[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:464:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   464 | int ZEXPORT [01;35m[KdeflatePrime[m[K (strm, bits, value)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[KdeflateParams[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:490:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   490 | int ZEXPORT [01;35m[KdeflateParams[m[K(strm, level, strategy)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[KdeflateTune[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:531:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   531 | int ZEXPORT [01;35m[KdeflateTune[m[K(strm, good_length, max_lazy, nice_length, max_chain)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[KdeflateBound[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:566:15:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   566 | uLong ZEXPORT [01;35m[KdeflateBound[m[K(strm, sourceLen)
+froggba-psp-dev  |       |               [01;35m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[KputShortMSB[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:628:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   628 | local void [01;35m[KputShortMSB[m[K (s, b)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[Kflush_pending[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:642:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   642 | local void [01;35m[Kflush_pending[m[K(strm)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[Kdeflate[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:665:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   665 | int ZEXPORT [01;35m[Kdeflate[m[K (strm, flush)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[KdeflateEnd[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:979:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   979 | int ZEXPORT [01;35m[KdeflateEnd[m[K (strm)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[KdeflateCopy[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:1014:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1014 | int ZEXPORT [01;35m[KdeflateCopy[m[K (dest, source)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[Kread_buf[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:1076:11:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1076 | local int [01;35m[Kread_buf[m[K(strm, buf, size)
+froggba-psp-dev  |       |           [01;35m[K^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[Klm_init[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:1106:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1106 | local void [01;35m[Klm_init[m[K (s)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[Klongest_match[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:1148:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1148 | local uInt [01;35m[Klongest_match[m[K(s, cur_match)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[Kfill_window[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:1390:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1390 | local void [01;35m[Kfill_window[m[K(s)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[Kdeflate_stored[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:1564:19:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1564 | local block_state [01;35m[Kdeflate_stored[m[K(s, flush)
+froggba-psp-dev  |       |                   [01;35m[K^~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[Kdeflate_fast[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:1628:19:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1628 | local block_state [01;35m[Kdeflate_fast[m[K(s, flush)
+froggba-psp-dev  |       |                   [01;35m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[Kdeflate_slow[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:1730:19:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1730 | local block_state [01;35m[Kdeflate_slow[m[K(s, flush)
+froggba-psp-dev  |       |                   [01;35m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[Kdeflate_rle[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:1861:19:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1861 | local block_state [01;35m[Kdeflate_rle[m[K(s, flush)
+froggba-psp-dev  |       |                   [01;35m[K^~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:[m[K In function '[01m[Kdeflate_huff[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/deflate.c:1934:19:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1934 | local block_state [01;35m[Kdeflate_huff[m[K(s, flush)
+froggba-psp-dev  |       |                   [01;35m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o infback.o src/zlib/infback.c
+froggba-psp-dev  | [01m[Ksrc/zlib/infback.c:[m[K In function '[01m[KinflateBackInit_[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/infback.c:28:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |    28 | int ZEXPORT [01;35m[KinflateBackInit_[m[K(strm, windowBits, window, version, stream_size)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/infback.c:[m[K In function '[01m[Kfixedtables[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/infback.c:82:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |    82 | local void [01;35m[Kfixedtables[m[K(state)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/infback.c:[m[K In function '[01m[KinflateBack[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/infback.c:250:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   250 | int ZEXPORT [01;35m[KinflateBack[m[K(strm, in, in_desc, out, out_desc)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/infback.c:[m[K In function '[01m[KinflateBackEnd[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/infback.c:631:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   631 | int ZEXPORT [01;35m[KinflateBackEnd[m[K(strm)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o inffast.o src/zlib/inffast.c
+froggba-psp-dev  | [01m[Ksrc/zlib/inffast.c:[m[K In function '[01m[Kinflate_fast[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inffast.c:67:20:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |    67 | void ZLIB_INTERNAL [01;35m[Kinflate_fast[m[K(strm, start)
+froggba-psp-dev  |       |                    [01;35m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o inflate.o src/zlib/inflate.c
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[KinflateResetKeep[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:104:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   104 | int ZEXPORT [01;35m[KinflateResetKeep[m[K(strm)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[KinflateReset[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:129:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   129 | int ZEXPORT [01;35m[KinflateReset[m[K(strm)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[KinflateReset2[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:142:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   142 | int ZEXPORT [01;35m[KinflateReset2[m[K(strm, windowBits)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[KinflateInit2_[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:180:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   180 | int ZEXPORT [01;35m[KinflateInit2_[m[K(strm, windowBits, version, stream_size)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[KinflateInit_[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:222:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   222 | int ZEXPORT [01;35m[KinflateInit_[m[K(strm, version, stream_size)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[KinflatePrime[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:230:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   230 | int ZEXPORT [01;35m[KinflatePrime[m[K(strm, bits, value)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[Kfixedtables[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:261:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   261 | local void [01;35m[Kfixedtables[m[K(state)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[Kupdatewindow[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:379:11:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   379 | local int [01;35m[Kupdatewindow[m[K(strm, end, copy)
+froggba-psp-dev  |       |           [01;35m[K^~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[Kinflate[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:605:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   605 | int ZEXPORT [01;35m[Kinflate[m[K(strm, flush)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[KinflateEnd[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:1254:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1254 | int ZEXPORT [01;35m[KinflateEnd[m[K(strm)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[KinflateGetDictionary[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:1268:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1268 | int ZEXPORT [01;35m[KinflateGetDictionary[m[K(strm, dictionary, dictLength)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[KinflateSetDictionary[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:1291:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1291 | int ZEXPORT [01;35m[KinflateSetDictionary[m[K(strm, dictionary, dictLength)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[KinflateGetHeader[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:1326:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1326 | int ZEXPORT [01;35m[KinflateGetHeader[m[K(strm, head)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[Ksyncsearch[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:1354:16:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1354 | local unsigned [01;35m[Ksyncsearch[m[K(have, buf, len)
+froggba-psp-dev  |       |                [01;35m[K^~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[KinflateSync[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:1377:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1377 | int ZEXPORT [01;35m[KinflateSync[m[K(strm)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[KinflateSyncPoint[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:1428:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1428 | int ZEXPORT [01;35m[KinflateSyncPoint[m[K(strm)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[KinflateCopy[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:1438:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1438 | int ZEXPORT [01;35m[KinflateCopy[m[K(dest, source)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[KinflateUndermine[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:1485:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1485 | int ZEXPORT [01;35m[KinflateUndermine[m[K(strm, subvert)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:[m[K In function '[01m[KinflateMark[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inflate.c:1502:14:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1502 | long ZEXPORT [01;35m[KinflateMark[m[K(strm)
+froggba-psp-dev  |       |              [01;35m[K^~~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o inftrees.o src/zlib/inftrees.c
+froggba-psp-dev  | [01m[Ksrc/zlib/inftrees.c:[m[K In function '[01m[Kinflate_table[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/inftrees.c:32:19:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |    32 | int ZLIB_INTERNAL [01;35m[Kinflate_table[m[K(type, lens, codes, table, bits, work)
+froggba-psp-dev  |       |                   [01;35m[K^~~~~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o trees.o src/zlib/trees.c
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[K_tr_init[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:381:20:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   381 | void ZLIB_INTERNAL [01;35m[K_tr_init[m[K(s)
+froggba-psp-dev  |       |                    [01;35m[K^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[Kinit_block[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:409:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   409 | local void [01;35m[Kinit_block[m[K(s)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[Kpqdownheap[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:453:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   453 | local void [01;35m[Kpqdownheap[m[K(s, tree, k)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[Kgen_bitlen[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:488:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   488 | local void [01;35m[Kgen_bitlen[m[K(s, desc)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[Kgen_codes[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:575:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   575 | local void [01;35m[Kgen_codes[m[K (tree, max_code, bl_count)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[Kbuild_tree[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:617:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   617 | local void [01;35m[Kbuild_tree[m[K(s, desc)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[Kscan_tree[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:705:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   705 | local void [01;35m[Kscan_tree[m[K (s, tree, max_code)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[Ksend_tree[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:750:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   750 | local void [01;35m[Ksend_tree[m[K (s, tree, max_code)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[Kbuild_bl_tree[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:801:11:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   801 | local int [01;35m[Kbuild_bl_tree[m[K(s)
+froggba-psp-dev  |       |           [01;35m[K^~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[Ksend_all_trees[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:836:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   836 | local void [01;35m[Ksend_all_trees[m[K(s, lcodes, dcodes, blcodes)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[K_tr_stored_block[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:865:20:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   865 | void ZLIB_INTERNAL [01;35m[K_tr_stored_block[m[K(s, buf, stored_len, last)
+froggba-psp-dev  |       |                    [01;35m[K^~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[K_tr_flush_bits[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:882:20:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   882 | void ZLIB_INTERNAL [01;35m[K_tr_flush_bits[m[K(s)
+froggba-psp-dev  |       |                    [01;35m[K^~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[K_tr_align[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:892:20:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   892 | void ZLIB_INTERNAL [01;35m[K_tr_align[m[K(s)
+froggba-psp-dev  |       |                    [01;35m[K^~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[K_tr_flush_block[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:907:20:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   907 | void ZLIB_INTERNAL [01;35m[K_tr_flush_block[m[K(s, buf, stored_len, last)
+froggba-psp-dev  |       |                    [01;35m[K^~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[K_tr_tally[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:1010:19:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1010 | int ZLIB_INTERNAL [01;35m[K_tr_tally[m[K (s, dist, lc)
+froggba-psp-dev  |       |                   [01;35m[K^~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[Kcompress_block[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:1060:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1060 | local void [01;35m[Kcompress_block[m[K(s, ltree, dtree)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[Kdetect_data_type[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:1120:11:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1120 | local int [01;35m[Kdetect_data_type[m[K(s)
+froggba-psp-dev  |       |           [01;35m[K^~~~~~~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[Kbi_reverse[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:1154:16:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1154 | local unsigned [01;35m[Kbi_reverse[m[K(code, len)
+froggba-psp-dev  |       |                [01;35m[K^~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[Kbi_flush[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:1169:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1169 | local void [01;35m[Kbi_flush[m[K(s)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[Kbi_windup[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:1186:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1186 | local void [01;35m[Kbi_windup[m[K(s)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:[m[K In function '[01m[Kcopy_block[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/trees.c:1205:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |  1205 | local void [01;35m[Kcopy_block[m[K(s, buf, len, header)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o zutil.o src/zlib/zutil.c
+froggba-psp-dev  | [01m[Ksrc/zlib/zutil.c:[m[K In function '[01m[KzError[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/zutil.c:136:22:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   136 | const char * ZEXPORT [01;35m[KzError[m[K(err)
+froggba-psp-dev  |       |                      [01;35m[K^~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/zutil.c:[m[K In function '[01m[Kzcalloc[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/zutil.c:304:22:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   304 | voidpf ZLIB_INTERNAL [01;35m[Kzcalloc[m[K (opaque, items, size)
+froggba-psp-dev  |       |                      [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/zutil.c:[m[K In function '[01m[Kzcfree[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/zutil.c:314:20:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   314 | void ZLIB_INTERNAL [01;35m[Kzcfree[m[K (opaque, ptr)
+froggba-psp-dev  |       |                    [01;35m[K^~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o compress.o src/zlib/compress.c
+froggba-psp-dev  | [01m[Ksrc/zlib/compress.c:[m[K In function '[01m[Kcompress2[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/compress.c:22:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |    22 | int ZEXPORT [01;35m[Kcompress2[m[K (dest, destLen, source, sourceLen, level)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/compress.c:[m[K In function '[01m[Kcompress[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/compress.c:62:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |    62 | int ZEXPORT [01;35m[Kcompress[m[K (dest, destLen, source, sourceLen)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/compress.c:[m[K In function '[01m[KcompressBound[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/compress.c:75:15:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |    75 | uLong ZEXPORT [01;35m[KcompressBound[m[K (sourceLen)
+froggba-psp-dev  |       |               [01;35m[K^~~~~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o uncompr.o src/zlib/uncompr.c
+froggba-psp-dev  | [01m[Ksrc/zlib/uncompr.c:[m[K In function '[01m[Kuncompress[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/uncompr.c:24:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |    24 | int ZEXPORT [01;35m[Kuncompress[m[K (dest, destLen, source, sourceLen)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o gzclose.o src/zlib/gzclose.c
+froggba-psp-dev  | [01m[Ksrc/zlib/gzclose.c:[m[K In function '[01m[Kgzclose[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzclose.c:11:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |    11 | int ZEXPORT [01;35m[Kgzclose[m[K(file)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o gzlib.o src/zlib/gzlib.c
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:[m[K In function '[01m[Kgz_reset[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:75:12:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |    75 | local void [01;35m[Kgz_reset[m[K(state)
+froggba-psp-dev  |       |            [01;35m[K^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:[m[K In function '[01m[Kgz_open[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:91:14:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |    91 | local gzFile [01;35m[Kgz_open[m[K(path, fd, mode)
+froggba-psp-dev  |       |              [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:[m[K In function '[01m[Kgzopen[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:268:16:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   268 | gzFile ZEXPORT [01;35m[Kgzopen[m[K(path, mode)
+froggba-psp-dev  |       |                [01;35m[K^~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:[m[K In function '[01m[Kgzopen64[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:276:16:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   276 | gzFile ZEXPORT [01;35m[Kgzopen64[m[K(path, mode)
+froggba-psp-dev  |       |                [01;35m[K^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:[m[K In function '[01m[Kgzdopen[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:284:16:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   284 | gzFile ZEXPORT [01;35m[Kgzdopen[m[K(fd, mode)
+froggba-psp-dev  |       |                [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:[m[K In function '[01m[Kgzbuffer[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:314:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   314 | int ZEXPORT [01;35m[Kgzbuffer[m[K(file, size)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:[m[K In function '[01m[Kgzrewind[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:339:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   339 | int ZEXPORT [01;35m[Kgzrewind[m[K(file)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:[m[K In function '[01m[Kgzseek64[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:362:19:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   362 | z_off64_t ZEXPORT [01;35m[Kgzseek64[m[K(file, offset, whence)
+froggba-psp-dev  |       |                   [01;35m[K^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:[m[K In function '[01m[Kgzseek[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:439:17:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   439 | z_off_t ZEXPORT [01;35m[Kgzseek[m[K(file, offset, whence)
+froggba-psp-dev  |       |                 [01;35m[K^~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:[m[K In function '[01m[Kgztell64[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:451:19:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   451 | z_off64_t ZEXPORT [01;35m[Kgztell64[m[K(file)
+froggba-psp-dev  |       |                   [01;35m[K^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:[m[K In function '[01m[Kgztell[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:468:17:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   468 | z_off_t ZEXPORT [01;35m[Kgztell[m[K(file)
+froggba-psp-dev  |       |                 [01;35m[K^~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:[m[K In function '[01m[Kgzoffset64[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:478:19:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   478 | z_off64_t ZEXPORT [01;35m[Kgzoffset64[m[K(file)
+froggba-psp-dev  |       |                   [01;35m[K^~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:[m[K In function '[01m[Kgzoffset[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:501:17:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   501 | z_off_t ZEXPORT [01;35m[Kgzoffset[m[K(file)
+froggba-psp-dev  |       |                 [01;35m[K^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:[m[K In function '[01m[Kgzeof[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:511:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   511 | int ZEXPORT [01;35m[Kgzeof[m[K(file)
+froggba-psp-dev  |       |             [01;35m[K^~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:[m[K In function '[01m[Kgzerror[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:528:22:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   528 | const char * ZEXPORT [01;35m[Kgzerror[m[K(file, errnum)
+froggba-psp-dev  |       |                      [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:[m[K In function '[01m[Kgzclearerr[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:549:14:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   549 | void ZEXPORT [01;35m[Kgzclearerr[m[K(file)
+froggba-psp-dev  |       |              [01;35m[K^~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:[m[K In function '[01m[Kgz_error[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzlib.c:575:20:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   575 | void ZLIB_INTERNAL [01;35m[Kgz_error[m[K(state, err, msg)
+froggba-psp-dev  |       |                    [01;35m[K^~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o gzread.o src/zlib/gzread.c
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:[m[K In function '[01m[Kgz_load[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:20:11:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |    20 | local int [01;35m[Kgz_load[m[K(state, buf, len, have)
+froggba-psp-dev  |       |           [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:[m[K In function '[01m[Kgz_avail[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:51:11:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |    51 | local int [01;35m[Kgz_avail[m[K(state)
+froggba-psp-dev  |       |           [01;35m[K^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:[m[K In function '[01m[Kgz_look[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:86:11:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |    86 | local int [01;35m[Kgz_look[m[K(state)
+froggba-psp-dev  |       |           [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:[m[K In function '[01m[Kgz_decomp[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:172:11:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   172 | local int [01;35m[Kgz_decomp[m[K(state)
+froggba-psp-dev  |       |           [01;35m[K^~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:[m[K In function '[01m[Kgz_fetch[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:226:11:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   226 | local int [01;35m[Kgz_fetch[m[K(state)
+froggba-psp-dev  |       |           [01;35m[K^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:[m[K In function '[01m[Kgz_skip[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:256:11:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   256 | local int [01;35m[Kgz_skip[m[K(state, len)
+froggba-psp-dev  |       |           [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:[m[K In function '[01m[Kgzread[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:288:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   288 | int ZEXPORT [01;35m[Kgzread[m[K(file, buf, len)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:[m[K In function '[01m[Kgzgetc[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:387:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   387 | int ZEXPORT [01;35m[Kgzgetc[m[K(file)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:[m[K In function '[01m[Kgzgetc_[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:416:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   416 | int ZEXPORT [01;35m[Kgzgetc_[m[K(file)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:[m[K In function '[01m[Kgzungetc[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:423:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   423 | int ZEXPORT [01;35m[Kgzungetc[m[K(c, file)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:[m[K In function '[01m[Kgzgets[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:483:16:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   483 | char * ZEXPORT [01;35m[Kgzgets[m[K(file, buf, len)
+froggba-psp-dev  |       |                [01;35m[K^~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:[m[K In function '[01m[Kgzdirect[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:547:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   547 | int ZEXPORT [01;35m[Kgzdirect[m[K(file)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:[m[K In function '[01m[Kgzclose_r[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzread.c:567:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   567 | int ZEXPORT [01;35m[Kgzclose_r[m[K(file)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371   -c -o gzwrite.o src/zlib/gzwrite.c
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:[m[K In function '[01m[Kgz_init[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:15:11:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |    15 | local int [01;35m[Kgz_init[m[K(state)
+froggba-psp-dev  |       |           [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:[m[K In function '[01m[Kgz_comp[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:70:11:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |    70 | local int [01;35m[Kgz_comp[m[K(state, flush)
+froggba-psp-dev  |       |           [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:[m[K In function '[01m[Kgz_zero[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:133:11:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   133 | local int [01;35m[Kgz_zero[m[K(state, len)
+froggba-psp-dev  |       |           [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:[m[K In function '[01m[Kgzwrite[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:165:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   165 | int ZEXPORT [01;35m[Kgzwrite[m[K(file, buf, len)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:[m[K In function '[01m[Kgzputc[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:245:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   245 | int ZEXPORT [01;35m[Kgzputc[m[K(file, c)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:[m[K In function '[01m[Kgzputs[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:293:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   293 | int ZEXPORT [01;35m[Kgzputs[m[K(file, str)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:[m[K In function '[01m[Kgzflush[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:465:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   465 | int ZEXPORT [01;35m[Kgzflush[m[K(file, flush)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:[m[K In function '[01m[Kgzsetparams[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:497:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   497 | int ZEXPORT [01;35m[Kgzsetparams[m[K(file, level, strategy)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~~~[m[K
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:[m[K In function '[01m[Kgzclose_w[m[K':
+froggba-psp-dev  | [01m[Ksrc/zlib/gzwrite.c:539:13:[m[K [01;35m[Kwarning: [m[Kold-style function definition [[01;35m[K-Wold-style-definition[m[K]
+froggba-psp-dev  |   539 | int ZEXPORT [01;35m[Kgzclose_w[m[K(file)
+froggba-psp-dev  |       |             [01;35m[K^~~~~~~~~[m[K
+froggba-psp-dev  | psp-gcc -ISDK/include -Isrc -Isrc/zlib -Isrc/libpower -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -O3 -G0 -march=allegrex -mfp32 -mgp32 -mlong32 -mllsc -mbranch-likely -mno-check-zero-division -fomit-frame-pointer -fstrict-aliasing -fno-split-wide-types -fgcse-after-reload -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables -falign-functions=32 -falign-loops -falign-labels -falign-jumps -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare -DZLIB_CONST -D_PSP_FW_VERSION=371  -LSDK/lib -L. -L/usr/local/pspdev/psp/lib -L/usr/local/pspdev/psp/sdk/lib -specs=/usr/local/pspdev/psp/sdk/lib/prxspecs -Wl,-q,-T/usr/local/pspdev/psp/sdk/lib/linkfile.prx  -Wl,-zmax-page-size=128  cpu.o memory.o video.o input.o sound.o main.o message.o mh_print.o gui.o zip.o png.o mips_stub.o ku_bridge.o exception.o cheats.o ch_print.o adler32.o crc32.o deflate.o infback.o inffast.o inflate.o inftrees.o trees.o zutil.o compress.o uncompr.o gzclose.o gzlib.o gzread.o gzwrite.o /usr/local/pspdev/psp/sdk/lib/prxexports.o src/libpower/libpsppower.a -lpspgu -lpsprtc -lpspaudio -lpspkubridge -lpspdebug -lpspdisplay -lpspge -lpspctrl -lpspnet -lpspnet_apctl -o FrogGBA.elf
+froggba-psp-dev  | psp-fixup-imports FrogGBA.elf
+froggba-psp-dev  | psp-prxgen FrogGBA.elf FrogGBA.prx
+froggba-psp-dev  | mksfoex -d MEMSIZE=1  'FrogGBA' PARAM.SFO
+froggba-psp-dev  | PrxEncrypter FrogGBA.prx FrogGBA.prx
+froggba-psp-dev  | pack-pbp EBOOT.PBP PARAM.SFO res/ICON0.png  \
+froggba-psp-dev  | 	NULL NULL NULL  \
+froggba-psp-dev  | 	NULL  FrogGBA.prx NULL
+froggba-psp-dev  | [0]        312 bytes | PARAM.SFO
+froggba-psp-dev  | [1]      20818 bytes | res/ICON0.png
+froggba-psp-dev  | [2]          0 bytes | NULL
+froggba-psp-dev  | [3]          0 bytes | NULL
+froggba-psp-dev  | [4]          0 bytes | NULL
+froggba-psp-dev  | [5]          0 bytes | NULL
+froggba-psp-dev  | [6]    5583952 bytes | FrogGBA.prx
+froggba-psp-dev  | [7]          0 bytes | NULL
+froggba-psp-dev  | === BUILD SUCCESSFUL ===
+froggba-psp-dev  | Generated files:
+froggba-psp-dev  | -rw-r--r--    1 root     root       5605122 Aug  5 17:27 [0;0mEBOOT.PBP[m
+froggba-psp-dev  | -rw-r--r--    1 root     root       5583952 Aug  5 17:27 [0;0mFrogGBA.prx[m
+froggba-psp-dev  | Build artifacts copied to build/ directory
+froggba-psp-dev  | You can now copy EBOOT.PBP to your PSP's PSP/GAME/FrogGBA/ folder
+froggba-psp-dev exited with code 0

@@ -20,6 +20,9 @@
 
 #include "common.h"
 
+// External declarations
+extern int rewind_load_state(void);
+
 
 #define PSP_ALL_BUTTON_MASK 0xFFFF
 
@@ -356,6 +359,37 @@ u32 update_input(void)
     psp_fps_debug ^= 1;
     return 0;
   }
+  
+  // Check for SELECT + L combination for rewind (hold to rewind)
+  static u32 rewind_active = 0;
+  static u32 rewind_frame_counter = 0;
+  
+  if ((buttons & PSP_CTRL_SELECT) && (buttons & PSP_CTRL_LTRIGGER) && option_enable_rewind)
+  {
+    if (!rewind_active)
+    {
+      rewind_active = 1;
+      rewind_frame_counter = 0;
+    }
+    
+    // Rewind at 15fps (every 4 frames of 60fps)
+    rewind_frame_counter++;
+    if (rewind_frame_counter >= 4)
+    {
+      rewind_frame_counter = 0;
+      if (rewind_load_state())
+      {
+        // Successfully rewound
+        return 0;
+      }
+    }
+    return 0;
+  }
+  else
+  {
+    rewind_active = 0;
+    rewind_frame_counter = 0;
+  }
 
   if ((enable_home_menu != 0) && ((non_repeat_buttons & PSP_CTRL_HOME) != 0))
   {
@@ -436,13 +470,17 @@ u32 update_input(void)
         case BUTTON_ID_FPS:
           psp_fps_debug ^= 1;
           return 0;
+          
+        case BUTTON_ID_REWIND:
+          // Handled by holding the button, not single press
+          return 0;
       }
     }
 
+    button_id = gamepad_config_map[i];
+    
     if ((buttons & button_psp_mask_to_config[i]) != 0)
     {
-      button_id = gamepad_config_map[i];
-
       if (button_id < BUTTON_ID_MENU)
       {
         new_key |= button_id_to_gba_mask[button_id];
@@ -457,6 +495,28 @@ u32 update_input(void)
             new_key |= button_id_to_gba_mask[button_id - BUTTON_ID_RAPIDFIRE_A + BUTTON_ID_A];
           }
         }
+        else if (button_id == BUTTON_ID_REWIND && option_enable_rewind)
+        {
+          // Handle rewind when button is held
+          static u32 rewind_button_counter = 0;
+          
+          // Rewind at 15fps (every 4 frames of 60fps)
+          rewind_button_counter++;
+          if (rewind_button_counter >= 4)
+          {
+            rewind_button_counter = 0;
+            rewind_load_state();
+          }
+        }
+      }
+    }
+    else
+    {
+      // Reset rewind counter when button is released
+      if (button_id == BUTTON_ID_REWIND)
+      {
+        static u32 rewind_button_counter = 0;
+        rewind_button_counter = 0;
       }
     }
   }
