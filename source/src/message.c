@@ -161,6 +161,12 @@ const char *message[4][MSG_END] =
 
     // MSG_OPTION_MENU_10
     "����@�@�@�@�@�@�@: %s",
+    
+    // MSG_OPTION_MENU_12  
+    "�����œK��@�@�@: %s",
+    
+    // MSG_OPTION_MENU_REWIND
+    "���C���h�L��(SEL+L): %s",
 
     // MSG_OPTION_MENU_HELP_DEFAULT
     "�ݒ�̏�����",
@@ -179,6 +185,12 @@ const char *message[4][MSG_END] =
 
     // MSG_OPTION_MENU_HELP_SHOW_FPS
     FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":�I��   �G�~�����[�^",
+    
+    // MSG_OPTION_MENU_HELP_OPTIMIZATIONS
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":�I��   �p�t�H�[�}���X�œK��",
+    
+    // MSG_OPTION_MENU_HELP_REWIND
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":�I��   SEL+L�����C���h (�������g��)",
 
     // MSG_OPTION_MENU_HELP_3
     FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":�I��   ����",

@@ -923,7 +923,12 @@ static void init_noise_table(u32 *table, u32 period, u32 bit_length)
   u32 mask = ~(1 << bit_length);
   s32 table_pos, bit_pos;
   u32 current_entry;
+#ifdef PSP_MIPS32_OPTIMIZATIONS
+  // SF2000 optimization: Use bit shift instead of division for better performance on soft FPU MIPS
+  s32 table_period = (period + 31) >> 5;  // >> 5 equivalent to / 32
+#else
   s32 table_period = (period + 31) / 32;
+#endif
 
   // Bits are stored in reverse order so they can be more easily moved to
   // bit 31, for sign extended shift down.
@@ -945,7 +950,14 @@ static void init_noise_table(u32 *table, u32 period, u32 bit_length)
 
 void set_sound_volume(void)
 {
+#ifdef PSP_MIPS32_OPTIMIZATIONS
+  // SF2000 optimization: Use bit shift instead of division for better performance on soft FPU MIPS
+  // /100 ≈ /128 >> 7, with small correction factor to maintain accuracy
+  sound_volume = (PSP_AUDIO_VOLUME_MAX * (option_sound_volume * 10)) >> 7;  // >> 7 ≈ / 128
+  sound_volume = sound_volume + (sound_volume >> 5);  // Add ~3% correction to approximate /100
+#else
   sound_volume = PSP_AUDIO_VOLUME_MAX * (option_sound_volume * 10) / 100;
+#endif
 }
 
 static void fill_sound_buffer(s16 *stream, u16 length)

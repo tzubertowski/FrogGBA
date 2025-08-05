@@ -148,6 +148,9 @@
 
     // MSG_OPTION_MENU_12
     "Advanced Optimizations: %s",
+    
+    // MSG_OPTION_MENU_REWIND
+    "Enable Rewind (SEL+L): %s",
 
     // MSG_OPTION_MENU_HELP_0
     "Left/Right:Select   Description:Settings",
@@ -163,6 +166,9 @@
 
     // MSG_OPTION_MENU_HELP_OPTIMIZATIONS
     "O     :Enable performance optimizations",
+    
+    // MSG_OPTION_MENU_HELP_REWIND
+    "O     :Hold SEL+L to rewind gameplay (uses memory)",
 
     // MSG_OPTION_MENU_HELP_3
     "Left/Right:Select   Description:Settings",
@@ -705,6 +711,9 @@
 
     // MSG_OPTION_MENU_12
     "高级优化: %s",
+    
+    // MSG_OPTION_MENU_REWIND
+    "启用倒带 (SEL+L): %s",
 
     // MSG_OPTION_MENU_HELP_0
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择   游戏/模拟器配置",
@@ -720,6 +729,9 @@
 
     // MSG_OPTION_MENU_HELP_OPTIMIZATIONS
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择   性能优化开关",
+    
+    // MSG_OPTION_MENU_HELP_REWIND
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择   按住SEL+L倒带 (消耗内存)",
 
     // MSG_OPTION_MENU_HELP_3
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择   游戏/模拟器配置",
@@ -1262,6 +1274,9 @@
 
     // MSG_OPTION_MENU_12
     "高級優化: %s",
+    
+    // MSG_OPTION_MENU_REWIND
+    "啟用倒帶 (SEL+L): %s",
 
     // MSG_OPTION_MENU_HELP_0
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇   遊戲/模擬器配置",
@@ -1277,6 +1292,9 @@
 
     // MSG_OPTION_MENU_HELP_OPTIMIZATIONS
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇   性能優化開關",
+    
+    // MSG_OPTION_MENU_HELP_REWIND
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇   按住SEL+L倒帶 (消耗內存)",
 
     // MSG_OPTION_MENU_HELP_3
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇   遊戲/模擬器配置",
