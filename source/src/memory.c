@@ -3455,14 +3455,14 @@ s32 load_gamepak(char *name)
 
   draw_box_alpha(110, 50, 370, 220, 0xBF000000);
   draw_box_line(120, 60, 360, 210, COLOR15_WHITE);
-  if (option_language == 0)
+  if (option_language == 0 || option_language == 1)
 	print_string(MSG[MSG_LOADING_ROM], X_POS_CENTER, 100, COLOR15_WHITE, BG_NO_FILL);
   else
 	print_string_gbk(MSG[MSG_LOADING_ROM], X_POS_CENTER, 100, COLOR15_WHITE, BG_NO_FILL);
   flip_screen(1);
   draw_box_alpha(110, 50, 370, 220, 0xBF000000);
   draw_box_line(120, 60, 360, 210, COLOR15_WHITE);
-  if (option_language == 0)
+  if (option_language == 0 || option_language == 1)
 	print_string(MSG[MSG_LOADING_ROM], X_POS_CENTER, 100, COLOR15_WHITE, BG_NO_FILL);
   else
 	print_string_gbk(MSG[MSG_LOADING_ROM], X_POS_CENTER, 100, COLOR15_WHITE, BG_NO_FILL);
@@ -3479,7 +3479,7 @@ s32 load_gamepak(char *name)
   if (!strcasecmp(dot_position, ".gba") || !strcasecmp(dot_position, ".agb") || !strcasecmp(dot_position, ".bin"))
   {
     file_size = load_gamepak_raw(name);
-	if (option_language == 0)
+	if (option_language == 0 || option_language == 1)
 		print_string(MSG[MSG_SEARCHING_BACKUP_ID], X_POS_CENTER, 148, COLOR15_WHITE, BG_NO_FILL);
     else
 		print_string_gbk(MSG[MSG_SEARCHING_BACKUP_ID], X_POS_CENTER, 148, COLOR15_WHITE, BG_NO_FILL);

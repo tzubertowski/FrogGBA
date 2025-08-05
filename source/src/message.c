@@ -250,28 +250,28 @@ const char *message[4][MSG_END] =
 	#include "text/pad_menu_t.h"
 
     // MSG_PAD_MENU_0
-    "���@�@ : %s",
+    "Up     : %s",
 
     // MSG_PAD_MENU_1
-    "���@�@ : %s",
+    "Down   : %s",
 
     // MSG_PAD_MENU_2
-    "���@�@ : %s",
+    "Left   : %s",
 
     // MSG_PAD_MENU_3
-    "���@�@ : %s",
+    "Right  : %s",
 
     // MSG_PAD_MENU_4
-    "���@�@ : %s",
+    "△     : %s",
 
     // MSG_PAD_MENU_5
-    "�~�@�@ : %s",
+    "○     : %s",
 
     // MSG_PAD_MENU_6
-    "���@�@ : %s",
+    "×     : %s",
 
     // MSG_PAD_MENU_7
-    "���@�@ : %s",
+    "□     : %s",
 
     // MSG_PAD_MENU_8
     FONT_L_TRIGGER "�@�@ : %s",
@@ -286,13 +286,13 @@ const char *message[4][MSG_END] =
     "SELECT : %s",
 
     // MSG_PAD_MENU_12
-    "�߂�",
+    "Back",
 
     // MSG_PAD_MENU_HELP_0
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":�I��",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":Select",
 
     // MSG_PAD_MENU_HELP_1
-    "��:���C�����j���[",
+    "X:Return to main menu",
 
     //PAD�̐ݒ� �R���t�B�O
 
@@ -351,7 +351,7 @@ const char *message[4][MSG_END] =
     "R�A��",
 
     // MSG_PAD_MENU_CFG_18
-    "�t���[�����[�g�\\��",
+    "�t���[�����[�g�\��",
 
     // MSG_PAD_MENU_CFG_19
     "�Ȃ�",
@@ -360,34 +360,34 @@ const char *message[4][MSG_END] =
 	#include "text/a_pad_menu_t.h"
 
     // MSG_A_PAD_MENU_0
-    "�A�i���O �� : %s",
+    "Analog Up : %s",
 
     // MSG_A_PAD_MENU_1
-    "�A�i���O �� : %s",
+    "Analog Down : %s",
 
     // MSG_A_PAD_MENU_2
-    "�A�i���O �� : %s",
+    "Analog Left : %s",
 
     // MSG_A_PAD_MENU_3
-    "�A�i���O �� : %s",
+    "Analog Right : %s",
 
     // MSG_A_PAD_MENU_4
-    "�A�i���O���͂�L��: %s",
+    "Analog input enabled: %s",
 
     // MSG_A_PAD_MENU_5
-    "�A�i���O���͂̊��x: %d",
+    "Analog input sensitivity: %d",
 
     // MSG_A_PAD_MENU_6
-    "�߂�",
+    "Back",
 
     // MSG_A_PAD_MENU_HELP_0
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":�I��",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":Select",
 
     // MSG_A_PAD_MENU_HELP_1
-    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":�I��",
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":Select",
 
     // MSG_A_PAD_MENU_HELP_2
-    "��:���C�����j���[",
+    "X:Return to main menu",
 
 	//MSG_CHEAT_MENU_TITLE,
 	#include "text/cheat_menu_t.h"

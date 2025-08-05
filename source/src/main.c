@@ -456,21 +456,6 @@ u32 update_gba(void)
 
     reg[EXECUTE_CYCLES] = video_count;
 
-#ifdef PSP_CYCLE_BATCHING
-    // PSP MIPS32 Conservative Cycle Optimization
-    // Only apply minor optimizations when user enables advanced optimizations
-    if (option_advanced_opts == 1) {
-      u32 execute_cycles = reg[EXECUTE_CYCLES];
-      
-      // Very conservative optimization - only small adjustments for specific ranges
-      if (execute_cycles >= 200 && execute_cycles <= 500) {
-        // Small performance boost for common execution cycle ranges
-        execute_cycles = execute_cycles + (execute_cycles / 10);  // +10% only
-        if (execute_cycles > 600) execute_cycles = 600;  // Cap it
-        reg[EXECUTE_CYCLES] = execute_cycles;
-      }
-    }
-#endif
 
     for (i = 0; i < 4; i++)
     {
@@ -530,6 +515,7 @@ u32 update_gba(void)
   }
   while (reg[CPU_HALT_STATE] != CPU_ACTIVE);
 
+skip_normal_execution:
   return reg[EXECUTE_CYCLES];
 }
 
