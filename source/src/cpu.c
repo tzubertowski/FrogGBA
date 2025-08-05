@@ -3958,11 +3958,16 @@ void flush_translation_cache(TRANSLATION_REGION_TYPE translation_region, CACHE_F
   }
 }
 
-// Minimal pflush stub - does absolutely nothing but can be called safely
+// Phase 1 pflush - calls existing partial_clear_metadata
 void partial_flush_ram_stub(u32 offset, u8 region)
 {
-  // Do nothing - just a safe stub for testing
-  return;
+  // Validate region first
+  if (region != 0x02 && region != 0x03 && region != 0x06) {
+    return; // Invalid region
+  }
+  
+  // Call the existing metadata clearing function
+  partial_clear_metadata(offset, region);
 }
 
 void dump_translation_cache(void)
