@@ -518,47 +518,26 @@ s32 load_file(const char **wildcards, char *result, char *default_dir_name)
     while (repeat)
     {
       clear_screen(COLOR15_TO_32(COLOR_BG));
-		if (option_language == 0)
-			print_string(current_dir_short, 6, 2, COLOR_HELP_TEXT, BG_NO_FILL);
-		else
-			print_string_gbk(current_dir_short, 6, 2, COLOR_HELP_TEXT, BG_NO_FILL);
+		print_string(current_dir_short, 6, 2, COLOR_HELP_TEXT, BG_NO_FILL);
       if ((counter % 30) == 0)
 	  {
-	    if (option_language == 0)
-        update_status_string(time_str, batt_str, &color_batt_life);
-		else
-        update_status_string_gbk(time_str, batt_str, &color_batt_life);
+	    update_status_string(time_str, batt_str, &color_batt_life);
 	  }
       counter++;
-	  if (option_language == 0)
 	  print_string(time_str, TIME_STATUS_POS_X, 2, COLOR_HELP_TEXT, BG_NO_FILL);
-	  else
-	  print_string_gbk(time_str, TIME_STATUS_POS_X, 2, COLOR_HELP_TEXT, BG_NO_FILL);
  
-      if (option_language == 0)
-		print_string(batt_str, BATT_STATUS_POS_X, 2, color_batt_life, BG_NO_FILL);
-	  else
-		print_string_gbk(batt_str, BATT_STATUS_POS_X, 2, color_batt_life, BG_NO_FILL);
+	  print_string(batt_str, BATT_STATUS_POS_X, 2, color_batt_life, BG_NO_FILL);
 
-		if (option_language == 0)
-			print_string(MSG[MSG_BROWSER_HELP], 30, 258, COLOR_HELP_TEXT, BG_NO_FILL);
-		else
-			print_string_gbk(MSG[MSG_BROWSER_HELP], 30, 258, COLOR_HELP_TEXT, BG_NO_FILL);
+	  print_string(MSG[MSG_BROWSER_HELP], 30, 258, COLOR_HELP_TEXT, BG_NO_FILL);
 
       char str_buffer_size[32];
       sprintf(str_buffer_size, MSG[MSG_BUFFER], gamepak_ram_buffer_size >> 20);
-		if (option_language == 0)
-			print_string(str_buffer_size, 384, 258, COLOR_HELP_TEXT, BG_NO_FILL);
-		else
-			print_string_gbk(str_buffer_size, 384, 258, COLOR_HELP_TEXT, BG_NO_FILL);
+		print_string(str_buffer_size, 384, 258, COLOR_HELP_TEXT, BG_NO_FILL);
 
       // PSP controller - hold
       if (get_pad_input(PSP_CTRL_HOLD) != 0)
 		{
-		if (option_language == 0)
-			print_string(FONT_KEY_ICON_GBK, 6, 258, COLOR15_YELLOW, BG_NO_FILL);
-		else
-			print_string_gbk(FONT_KEY_ICON, 6, 258, COLOR15_YELLOW, BG_NO_FILL);
+		print_string(FONT_KEY_ICON_GBK, 6, 258, COLOR15_YELLOW, BG_NO_FILL);
 		}
       // draw scroll bar
       if (num[FILE_LIST] > FILE_LIST_ROWS)
@@ -818,10 +797,7 @@ static void get_savestate_info(char *filename, u16 *snapshot, char *timestamp)
     if (snapshot != NULL)
     {
       memset(snapshot, 0, GBA_SCREEN_SIZE);
-		if (option_language == 0)
-			print_string_ext(MSG[MSG_STATE_MENU_STATE_NONE], X_POS_CENTER, 74, COLOR15_WHITE, BG_NO_FILL, snapshot, GBA_SCREEN_WIDTH);
-		else
-			print_string_ext_gbk(MSG[MSG_STATE_MENU_STATE_NONE], X_POS_CENTER, 74, COLOR15_WHITE, BG_NO_FILL, snapshot, GBA_SCREEN_WIDTH);
+		print_string_ext(MSG[MSG_STATE_MENU_STATE_NONE], X_POS_CENTER, 74, COLOR15_WHITE, BG_NO_FILL, snapshot, GBA_SCREEN_WIDTH);
     }
 
     sprintf(timestamp, "%s", MSG[(date_format == 0) ? MSG_STATE_MENU_DATE_NONE_0 : MSG_STATE_MENU_DATE_NONE_1]);
@@ -904,8 +880,6 @@ u32 menu(void)
   u32 current_option_num = 0;
   u32 menu_main_option_num = 0;
 
-  // Bounds check option_language before using MSG macro
-  if (option_language < 0 || option_language >= 4) option_language = 1;
 
   const char *yes_no_options[] =
   {
@@ -952,13 +926,6 @@ u32 menu(void)
     MSG[MSG_AUTO]
   };
 
-  const char *language_option[] =
-  {
-    MSG[MSG_LANG_JAPANESE],
-    MSG[MSG_LANG_ENGLISH],
-    MSG[MSG_LANG_CHS],
-    MSG[MSG_LANG_CHT]
-  };
 
   const char *sound_volume_options[] =
   {
@@ -975,28 +942,33 @@ u32 menu(void)
     "PNG", "BMP"
   };
 
+  const char *language_options[] =
+  {
+    MSG[MSG_LANG_JAPANESE], MSG[MSG_LANG_ENGLISH]
+  };
+
   const char *gamepad_config_buttons[] =
   {
-    MSG[MSG_PAD_MENU_CFG_0],
-    MSG[MSG_PAD_MENU_CFG_1],
-    MSG[MSG_PAD_MENU_CFG_2],
-    MSG[MSG_PAD_MENU_CFG_3],
-    MSG[MSG_PAD_MENU_CFG_4],
-    MSG[MSG_PAD_MENU_CFG_5],
-    MSG[MSG_PAD_MENU_CFG_6],
-    MSG[MSG_PAD_MENU_CFG_7],
-    MSG[MSG_PAD_MENU_CFG_8],
-    MSG[MSG_PAD_MENU_CFG_9],
-    MSG[MSG_PAD_MENU_CFG_10],
-    MSG[MSG_PAD_MENU_CFG_11],
-    MSG[MSG_PAD_MENU_CFG_12],
-    MSG[MSG_PAD_MENU_CFG_13],
-    MSG[MSG_PAD_MENU_CFG_14],
-    MSG[MSG_PAD_MENU_CFG_15],
-    MSG[MSG_PAD_MENU_CFG_16],
-    MSG[MSG_PAD_MENU_CFG_17],
-    MSG[MSG_PAD_MENU_CFG_18],
-    MSG[MSG_PAD_MENU_CFG_19]
+    "none",
+    "Up", 
+    "Down",
+    "Left",
+    "Right",
+    "A",
+    "B",
+    "L",
+    "R",
+    "START",
+    "SELECT",
+    "menu",
+    "fast forward",
+    "load state",
+    "save state",
+    "RAPID FIRE A",
+    "RAPID FIRE B",
+    "RAPID FIRE L",
+    "RAPID FIRE R",
+    "show fps"
   };
 
   auto void choose_menu(MenuType *new_menu);
@@ -1038,6 +1010,7 @@ u32 menu(void)
   void menu_init(void)
   {
     menu_init_flag = 1;
+    
   }
 
   void menu_term(void)
@@ -1229,19 +1202,16 @@ u32 menu(void)
 	option_screen_capture_format = 0;
 	option_enable_analog = 0;
 	option_analog_sensitivity = 4;
-	//int id_language;
-	sceUtilityGetSystemParamInt(PSP_SYSTEMPARAM_ID_INT_LANGUAGE, &id_language);
-	if (id_language == PSP_SYSTEMPARAM_LANGUAGE_JAPANESE)
-		option_language = 0;
-	else if (id_language == PSP_SYSTEMPARAM_LANGUAGE_CHINESE_SIMPLIFIED)
-		option_language = 2;
-	else if (id_language == PSP_SYSTEMPARAM_LANGUAGE_CHINESE_TRADITIONAL)
-		option_language = 3;
-	else
-		option_language = 1;
 	
-	// Bounds check to prevent crashes
-	if (option_language < 0 || option_language >= 4) option_language = 1;
+	// Get system language setting
+	int id_language;
+	sceUtilityGetSystemParamInt(PSP_SYSTEMPARAM_ID_INT_LANGUAGE, &id_language);
+	// Map PSP system language to our supported languages
+	// 0 = Japanese, 1 = English, others default to English
+	if (id_language == 0)
+		option_language = 0;  // Japanese
+	else
+		option_language = 1;  // English (default for all other languages)
 
   }
 
@@ -1329,12 +1299,14 @@ u32 menu(void)
   void submenu_gamepad(void)
   {
     DRAW_TITLE_PAD_GBK(MSG_PAD_MENU_TITLE);
+    
   }
 
   void submenu_analog(void)
   {
     DRAW_TITLE_PAD_GBK(MSG_A_PAD_MENU_TITLE);
 
+    
     draw_analog_pad_range();
   }
 
@@ -1360,10 +1332,7 @@ u32 menu(void)
         savestate_slot = current_option_num;
         menu_change_state();
       }
-	if (option_language == 0)
-      print_string(MSG[savestate_action ? MSG_SAVE : MSG_LOAD], MENU_LIST_POS_X + ((strlen(savestate_timestamps[0]) + 1) * FONTWIDTH), (current_option_num * FONTHEIGHT) + 28, COLOR_ACTIVE_ITEM, BG_NO_FILL);
-	else
-      print_string_gbk(MSG[savestate_action ? MSG_SAVE : MSG_LOAD], MENU_LIST_POS_X + ((strlen(savestate_timestamps[0]) + 1) * FONTWIDTH), (current_option_num * FONTHEIGHT) + 28, COLOR_ACTIVE_ITEM, BG_NO_FILL);
+	print_string(MSG[savestate_action ? MSG_SAVE : MSG_LOAD], MENU_LIST_POS_X + ((strlen(savestate_timestamps[0]) + 1) * FONTWIDTH), (current_option_num * FONTHEIGHT) + 28, COLOR_ACTIVE_ITEM, BG_NO_FILL);
     }
   }
 
@@ -1442,7 +1411,7 @@ u32 menu(void)
     {
       get_savestate_filename(i, filename_buffer);
       get_savestate_info(filename_buffer, NULL, line_buffer);
-      sprintf(savestate_timestamps[i], "%d: %s", i, line_buffer);
+      sprintf(savestate_timestamps[i], "%lu: %s", i, line_buffer);
     }
   }
 
@@ -1454,10 +1423,7 @@ u32 menu(void)
     first_load = 1;
 
     memset(current_screen, 0x00, GBA_SCREEN_SIZE);
-	if (option_language == 0)
-    print_string_ext(MSG[MSG_NON_LOAD_GAME], X_POS_CENTER, 74, COLOR15_WHITE, BG_NO_FILL, current_screen, GBA_SCREEN_WIDTH);
-	else
-    print_string_ext_gbk(MSG[MSG_NON_LOAD_GAME], X_POS_CENTER, 74, COLOR15_WHITE, BG_NO_FILL, current_screen, GBA_SCREEN_WIDTH);
+	print_string_ext(MSG[MSG_NON_LOAD_GAME], X_POS_CENTER, 74, COLOR15_WHITE, BG_NO_FILL, current_screen, GBA_SCREEN_WIDTH);
   }
 
   void gamepak_file_reopen(void)
@@ -1504,7 +1470,7 @@ u32 menu(void)
 
     STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_9], update_backup_options, &option_update_backup, 2, MSG_OPTION_MENU_HELP_9, 12), 
 
-    STRING_SELECTION_ACTION_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_10], language_option, &option_language, 4, MSG_OPTION_MENU_HELP_10, 14), 
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_10], language_options, &option_language, 2, MSG_OPTION_MENU_HELP_10, 13),
 
     ACTION_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_DEFAULT], MSG_OPTION_MENU_HELP_DEFAULT, 16),
 
@@ -1690,21 +1656,12 @@ u32 menu(void)
 
     if ((counter % 30) == 0)
 	{
-	  if (option_language == 0)
-      update_status_string(time_str, batt_str, &color_batt_life);
-	  else
-      update_status_string_gbk(time_str, batt_str, &color_batt_life);
+	  update_status_string(time_str, batt_str, &color_batt_life);
 	}
     counter++;
-	if (option_language == 0)
-    print_string(time_str, TIME_STATUS_POS_X, 2, COLOR_HELP_TEXT, BG_NO_FILL);
-	else
-    print_string_gbk(time_str, TIME_STATUS_POS_X, 2, COLOR_HELP_TEXT, BG_NO_FILL);
+	print_string(time_str, TIME_STATUS_POS_X, 2, COLOR_HELP_TEXT, BG_NO_FILL);
 
-	if (option_language == 0)
-    print_string(batt_str, BATT_STATUS_POS_X, 2, color_batt_life, BG_NO_FILL);
-	else
-	print_string_gbk(batt_str, BATT_STATUS_POS_X, 2, color_batt_life, BG_NO_FILL);
+	print_string(batt_str, BATT_STATUS_POS_X, 2, color_batt_life, BG_NO_FILL);
 
     print_string(game_title, 228, 28, COLOR_INACTIVE_ITEM, BG_NO_FILL);
     blit_to_screen(screen_image_ptr, GBA_SCREEN_WIDTH, GBA_SCREEN_HEIGHT, SCREEN_IMAGE_POS_X, SCREEN_IMAGE_POS_Y);
@@ -1734,17 +1691,11 @@ u32 menu(void)
           strcpy(line_buffer, display_option->display_string);
       }
 /*file charset*/
-		if (option_language == 0)
-			print_string(line_buffer, MENU_LIST_POS_X, (display_option->line_number * FONTHEIGHT) + 28, (display_option == current_option) ? COLOR_ACTIVE_ITEM : COLOR_INACTIVE_ITEM, BG_NO_FILL);
-		else
-			print_string_gbk(line_buffer, MENU_LIST_POS_X, (display_option->line_number * FONTHEIGHT) + 28, (display_option == current_option) ? COLOR_ACTIVE_ITEM : COLOR_INACTIVE_ITEM, BG_NO_FILL);
+		print_string(line_buffer, MENU_LIST_POS_X, (display_option->line_number * FONTHEIGHT) + 28, (display_option == current_option) ? COLOR_ACTIVE_ITEM : COLOR_INACTIVE_ITEM, BG_NO_FILL);
       }
     }
 
-	if (option_language == 0)
-		print_string(MSG[current_option->help_string], 30, 258, COLOR_HELP_TEXT, BG_NO_FILL);
-	else
-		print_string_gbk(MSG[current_option->help_string], 30, 258, COLOR_HELP_TEXT, BG_NO_FILL);
+	print_string(MSG[current_option->help_string], 30, 258, COLOR_HELP_TEXT, BG_NO_FILL);
 
     // PSP controller - hold
     if (get_pad_input(PSP_CTRL_HOLD) != 0)
@@ -2168,7 +2119,7 @@ s32 save_config_file(void)
     file_options[11]  = option_screen_capture_format;
     file_options[12]  = option_enable_analog;
     file_options[13]  = option_analog_sensitivity;
-    file_options[14] = option_language;
+    file_options[14]  = option_language;
 
     for (i = 0; i < 16; i++)
     {
@@ -2293,8 +2244,7 @@ s32 load_config_file(void)
       option_screen_capture_format = file_options[11] % 2;
       option_enable_analog  = file_options[12] % 2;
       option_analog_sensitivity = file_options[13] % 10;
-      option_language       = file_options[14] % 4;
-      if (option_language < 0 || option_language >= 4) option_language = 1;
+      option_language = file_options[14] % 2;  // Only Japanese (0) and English (1)
 
       for (i = 0; i < 16; i++)
       {
@@ -2324,20 +2274,7 @@ s32 load_config_file(void)
   option_screen_capture_format = 0;
   option_enable_analog = 0;
   option_analog_sensitivity = 4;
-
-  int id_language;
-  sceUtilityGetSystemParamInt(PSP_SYSTEMPARAM_ID_INT_LANGUAGE, &id_language);
-  if (id_language == PSP_SYSTEMPARAM_LANGUAGE_JAPANESE)
-    option_language = 0;
-  else if (id_language == PSP_SYSTEMPARAM_LANGUAGE_CHINESE_SIMPLIFIED)
-    option_language = 2;
-  else if (id_language == PSP_SYSTEMPARAM_LANGUAGE_CHINESE_TRADITIONAL)
-    option_language = 3;
-  else
-    option_language = 1;
-  
-  // Bounds check to prevent crashes
-  if (option_language < 0 || option_language >= 4) option_language = 1;
+  option_language = 1;  // Default to English
 
   return -1;
 }
@@ -2392,10 +2329,7 @@ s32 load_dir_cfg(char *file_name)
       else
       {
         sprintf(str_buf, MSG[MSG_ERR_SET_DIR_0], current_variable);
-	    if (option_language == 0)
-        print_string(str_buf, 7, str_line, COLOR15_WHITE, COLOR15_BLACK);
-		else
-        print_string_gbk(str_buf, 7, str_line, COLOR15_WHITE, COLOR15_BLACK);
+	    print_string(str_buf, 7, str_line, COLOR15_WHITE, COLOR15_BLACK);
         str_line += FONTHEIGHT;
 
         strcpy(dir_name, main_path);
@@ -2408,10 +2342,7 @@ s32 load_dir_cfg(char *file_name)
     if (dir_name[0] == 0)
     {
       sprintf(str_buf, MSG[MSG_ERR_SET_DIR_1], item_name);
-	  if (option_language == 0)
-      print_string(str_buf, 7, str_line, COLOR15_WHITE, COLOR15_BLACK);
-	  else
-      print_string_gbk(str_buf, 7, str_line, COLOR15_WHITE, COLOR15_BLACK);
+	  print_string(str_buf, 7, str_line, COLOR15_WHITE, COLOR15_BLACK);
       str_line += FONTHEIGHT;
 
       strcpy(dir_name, main_path);
@@ -2459,10 +2390,7 @@ s32 load_dir_cfg(char *file_name)
       sprintf(str_buf, "%s\n\n%s", str_buf, MSG[MSG_ERR_CONT]);
 
       str_line += FONTHEIGHT;
-	  if (option_language == 0)
-      print_string(str_buf, 7, str_line, COLOR15_WHITE, COLOR15_BLACK);
-	  else
-      print_string_gbk(str_buf, 7, str_line, COLOR15_WHITE, COLOR15_BLACK);
+	  print_string(str_buf, 7, str_line, COLOR15_WHITE, COLOR15_BLACK);
       error_msg("", CONFIRMATION_NONE);
     }
 
