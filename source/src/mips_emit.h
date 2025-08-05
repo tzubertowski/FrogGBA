@@ -367,7 +367,7 @@ typedef enum
 #else
 #define mips_emit_ins(rt, rs, pos, size)                                      \
   mips_emit_special3(ins, rs, rt, (pos) + (size) - 1, pos)
-#endif                    \
+#endif
 
 // Breaks down if the backpatch offset is greater than 16bits, take care
 // when using (should be okay if limited to conditional instructions)
@@ -1338,7 +1338,7 @@ u32 execute_spsr_restore_body(u32 address)
   }                                                                           \
   if (check_generate_z_flag != 0)                                             \
   {                                                                           \
-    mips_emit_sltiu(reg_z_cache, _rd, 1);
+    mips_emit_sltiu(reg_z_cache, _rd, 1);                                     \
   }                                                                           \
 
 #define generate_op_sub_flags_prologue(_rn, _rm)                              \
