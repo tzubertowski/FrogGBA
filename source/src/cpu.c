@@ -28,6 +28,9 @@
 s32 idle_loop_targets = 0;
 u32 ALIGN_DATA idle_loop_target_pc[MAX_IDLE_LOOPS];
 
+u32 translation_gate_targets = 0;
+u32 ALIGN_DATA translation_gate_target_pc[MAX_TRANSLATION_GATES];
+
 u32 iwram_stack_optimize = 1;
 
 u32 ALIGN_DATA reg_mode[7][7];
@@ -3958,7 +3961,7 @@ void flush_translation_cache(TRANSLATION_REGION_TYPE translation_region, CACHE_F
   }
 }
 
-// Phase 1 pflush - calls existing partial_clear_metadata
+// Phase 3 pflush - partial flush with translation gates
 void partial_flush_ram_stub(u32 offset, u8 region)
 {
   // Validate region first
@@ -3966,8 +3969,25 @@ void partial_flush_ram_stub(u32 offset, u8 region)
     return; // Invalid region
   }
   
+  // Reset translation gates
+  translation_gate_targets = 0;
+  
   // Call the existing metadata clearing function
   partial_clear_metadata(offset, region);
+  
+  // Add translation gate for this memory location
+  if (translation_gate_targets < MAX_TRANSLATION_GATES) {
+    u32 base_address;
+    switch (region) {
+      case 0x02: base_address = 0x02000000; break; // EWRAM
+      case 0x03: base_address = 0x03000000; break; // IWRAM  
+      case 0x06: base_address = 0x06000000; break; // VRAM
+      default: return; // Should not happen due to validation above
+    }
+    
+    translation_gate_target_pc[translation_gate_targets] = base_address + offset;
+    translation_gate_targets++;
+  }
 }
 
 void dump_translation_cache(void)
