@@ -3875,8 +3875,30 @@ void clear_metadata_area(METADATA_AREA_TYPE metadata_area, METADATA_CLEAR_REASON
   }
 }
 
+#ifdef PSP_REDUCE_CACHE_INVALIDATION
+// PSP Cache Invalidation Reduction Counter
+static u32 psp_cache_flush_counter = 0;
+#endif
+
 void flush_translation_cache(TRANSLATION_REGION_TYPE translation_region, CACHE_FLUSH_REASON_TYPE flush_reason)
 {
+#ifdef PSP_REDUCE_CACHE_INVALIDATION
+  // PSP MIPS32 Cache Invalidation Reduction Optimization 
+  // Only enable when user explicitly enables optimizations
+  if (option_advanced_opts == 1) {
+    psp_cache_flush_counter++;
+    
+    // Conservative cache invalidation reduction - only skip non-critical flushes
+    if (flush_reason == FLUSH_REASON_NATIVE_BRANCHING) {
+      // Skip every 2nd flush for native branching (less critical)
+      if ((psp_cache_flush_counter % 2) != 0) {
+        return; // Skip this cache flush
+      }
+    }
+    // Always do full cache flushes - they're too important to skip
+  }
+#endif
+
   switch (translation_region)
   {
     case TRANSLATION_REGION_READONLY:

@@ -113,6 +113,9 @@
     // MSG_OPTION_MENU_SHOW_FPS
     "Show FPS        : %s",
 
+    // MSG_OPTION_MENU_OPTIMIZATIONS
+    "Optimizations   : %s",
+
     // MSG_OPTION_MENU_3
     "Frameskip type  : %s",
 
@@ -143,6 +146,9 @@
     // MSG_OPTION_MENU_11
     "Back",
 
+    // MSG_OPTION_MENU_12
+    "Advanced Optimizations: %s",
+
     // MSG_OPTION_MENU_HELP_0
     "Left/Right:Select   Description:Settings",
 
@@ -154,6 +160,9 @@
 
     // MSG_OPTION_MENU_HELP_SHOW_FPS
     "Left/Right:Select   Description:Show FPS toggle",
+
+    // MSG_OPTION_MENU_HELP_OPTIMIZATIONS
+    "O     :Enable performance optimizations",
 
     // MSG_OPTION_MENU_HELP_3
     "Left/Right:Select   Description:Settings",
@@ -184,6 +193,9 @@
 
     // MSG_OPTION_MENU_HELP_11
     "X:Main menu",
+
+    // MSG_OPTION_MENU_HELP_12
+    "O     :Select performance vs accuracy tradeoff level",
 
     // MSG_STATE_MENU_DATE_FMT_0
     "%4d/%2d/%2d %-3s %2d:%02d:%02d",
@@ -658,6 +670,9 @@
     // MSG_OPTION_MENU_SHOW_FPS
     "显示FPS : %s",
 
+    // MSG_OPTION_MENU_OPTIMIZATIONS
+    "优化选项 : %s",
+
     // MSG_OPTION_MENU_3
     "跳帧类型: %s",
 
@@ -688,6 +703,9 @@
     // MSG_OPTION_MENU_11
     "返回",
 
+    // MSG_OPTION_MENU_12
+    "高级优化: %s",
+
     // MSG_OPTION_MENU_HELP_0
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择   游戏/模拟器配置",
 
@@ -699,6 +717,9 @@
 
     // MSG_OPTION_MENU_HELP_SHOW_FPS
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择   模拟器配置",
+
+    // MSG_OPTION_MENU_HELP_OPTIMIZATIONS
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择   性能优化开关",
 
     // MSG_OPTION_MENU_HELP_3
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择   游戏/模拟器配置",
@@ -729,6 +750,9 @@
 
     // MSG_OPTION_MENU_HELP_11
     "○:主菜单",
+
+    // MSG_OPTION_MENU_HELP_12
+    "O     :Select performance vs accuracy tradeoff level",
 
     // MSG_STATE_MENU_DATE_FMT_0
     "%4d/%02d/%02d %-4s %2d:%02d:%02d",
@@ -1203,6 +1227,9 @@
     // MSG_OPTION_MENU_SHOW_FPS
     "顯示FPS : %s",
 
+    // MSG_OPTION_MENU_OPTIMIZATIONS
+    "優化選項 : %s",
+
     // MSG_OPTION_MENU_3
     "跳幀類型: %s",
 
@@ -1233,6 +1260,9 @@
     // MSG_OPTION_MENU_11
     "返回",
 
+    // MSG_OPTION_MENU_12
+    "高級優化: %s",
+
     // MSG_OPTION_MENU_HELP_0
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇   遊戲/模擬器配置",
 
@@ -1244,6 +1274,9 @@
 
     // MSG_OPTION_MENU_HELP_SHOW_FPS
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇   模擬器配置",
+
+    // MSG_OPTION_MENU_HELP_OPTIMIZATIONS
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇   性能優化開關",
 
     // MSG_OPTION_MENU_HELP_3
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇   遊戲/模擬器配置",
@@ -1274,6 +1307,9 @@
 
     // MSG_OPTION_MENU_HELP_11
     "○:主菜單",
+
+    // MSG_OPTION_MENU_HELP_12
+    "O     :Select performance vs accuracy tradeoff level",
 
     // MSG_STATE_MENU_DATE_FMT_0
     "%4d/%2d/%2d %-4s %2d:%02d:%02d",

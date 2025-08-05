@@ -57,6 +57,34 @@
 #define LIMIT_MIN(input, minout)                                              \
   __builtin_allegrex_max(input, minout)                                       \
 
+// PSP MIPS32 Performance Optimizations
+// Based on SF2000 MIPS optimizations, adapted for PSP Allegrex processor
+#define PSP_MIPS32_OPTIMIZATIONS
+
+#ifdef PSP_MIPS32_OPTIMIZATIONS
+// Enable cycle batching to reduce dynarec overhead
+#define PSP_CYCLE_BATCHING
+
+// Enable cache invalidation reduction for better performance  
+#define PSP_REDUCE_CACHE_INVALIDATION
+
+// Enable memory optimization (skip waitstates for performance)
+#define PSP_MEMORY_OPTIMIZATIONS
+
+// Enable timer prescaling optimizations
+#define PSP_TIMER_OPTIMIZATIONS
+#endif
+
+// Performance vs accuracy tradeoff levels
+#define PSP_OPTIMIZATION_NONE     0  // Maximum accuracy
+#define PSP_OPTIMIZATION_SAFE     1  // Safe optimizations, minimal accuracy loss
+#define PSP_OPTIMIZATION_MODERATE 2  // Moderate optimizations for 2D games
+#define PSP_OPTIMIZATION_AGGRESSIVE 3  // Maximum performance for sprite-heavy games
+
+// Default optimization level (can be changed via menu)
+#ifndef PSP_OPTIMIZATION_LEVEL
+#define PSP_OPTIMIZATION_LEVEL PSP_OPTIMIZATION_SAFE
+#endif
 
 #define PSP_FILE_OPEN_READ  "r"
 #define PSP_FILE_OPEN_WRITE "w"
