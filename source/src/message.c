@@ -138,8 +138,6 @@ const char *message[4][MSG_END] =
     // MSG_OPTION_MENU_SHOW_FPS
     "FPS�\\�� �@�@�@�@�@: %s",
 
-    // MSG_OPTION_MENU_OPTIMIZATIONS
-    "�ŏK�� �@�@�@�@�@: %s",
 
     // MSG_OPTION_MENU_COLOR_CORRECTION
     "���␳�@�@�@�@�@�@: %s",

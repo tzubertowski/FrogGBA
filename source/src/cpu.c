@@ -3290,8 +3290,7 @@ static s32 BinarySearch(u32 *Array, u32 Value, s32 Size)
     block_data.type[block_data_position].update_cycles = 0;                   \
     block_data_position++;                                                    \
                                                                               \
-    u32 effective_max_block_size = MAX_BLOCK_SIZE;                            \
-    if (!option_advanced_opts) effective_max_block_size = 8192;               \
+    u32 effective_max_block_size = MAX_BLOCK_SIZE;               \
     if ((block_data_position >= effective_max_block_size) ||                  \
         ((block_end_pc & 0xFF03FFFF) == 0x0203FFF0) ||                        \
         ((block_end_pc & 0xFF007FFF) == 0x03007F00))                          \
@@ -3894,18 +3893,16 @@ void flush_translation_cache(TRANSLATION_REGION_TYPE translation_region, CACHE_F
 #ifdef PSP_REDUCE_CACHE_INVALIDATION
   // PSP MIPS32 Cache Invalidation Reduction Optimization 
   // Only enable when user explicitly enables optimizations
-  if (option_advanced_opts == 1) {
-    psp_cache_flush_counter++;
-    
-    // Conservative cache invalidation reduction - only skip non-critical flushes
-    if (flush_reason == FLUSH_REASON_NATIVE_BRANCHING) {
-      // Skip every 2nd flush for native branching (less critical)
-      if ((psp_cache_flush_counter % 2) != 0) {
-        return; // Skip this cache flush
-      }
+  psp_cache_flush_counter++;
+  
+  // Conservative cache invalidation reduction - only skip non-critical flushes
+  if (flush_reason == FLUSH_REASON_NATIVE_BRANCHING) {
+    // Skip every 2nd flush for native branching (less critical)
+    if ((psp_cache_flush_counter % 2) != 0) {
+      return; // Skip this cache flush
     }
-    // Always do full cache flushes - they're too important to skip
   }
+  // Always do full cache flushes - they're too important to skip
 #endif
 
   switch (translation_region)
