@@ -58,6 +58,7 @@ u32 sleep_flag = 0;
 
 u32 synchronize_flag = 1;
 u32 psp_fps_debug = 0;
+u32 option_color_correction = 0;
 u32 fast_forward_speed = 0;  // 0 = 1x (off), 1 = 2x, 2 = 3x
 
 u32 real_frame_count = 0;

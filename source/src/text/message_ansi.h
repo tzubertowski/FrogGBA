@@ -116,6 +116,9 @@
     // MSG_OPTION_MENU_OPTIMIZATIONS
     "Optimizations   : %s",
 
+    // MSG_OPTION_MENU_COLOR_CORRECTION
+    "Color Correction: %s",
+
     // MSG_OPTION_MENU_3
     "Frameskip type  : %s",
 
@@ -163,6 +166,9 @@
 
     // MSG_OPTION_MENU_HELP_OPTIMIZATIONS
     "O     :Enable performance optimizations",
+
+    // MSG_OPTION_MENU_HELP_COLOR_CORRECTION
+    "Left/Right:Select   GBA color correction",
 
     // MSG_OPTION_MENU_HELP_3
     "Left/Right:Select   Description:Settings",
@@ -673,6 +679,9 @@
     // MSG_OPTION_MENU_OPTIMIZATIONS
     "优化选项 : %s",
 
+    // MSG_OPTION_MENU_COLOR_CORRECTION
+    "色彩校正 : %s",
+
     // MSG_OPTION_MENU_3
     "跳帧类型: %s",
 
@@ -720,6 +729,9 @@
 
     // MSG_OPTION_MENU_HELP_OPTIMIZATIONS
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择   性能优化开关",
+
+    // MSG_OPTION_MENU_HELP_COLOR_CORRECTION
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择   GBA色彩校正",
 
     // MSG_OPTION_MENU_HELP_3
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择   游戏/模拟器配置",
@@ -1230,6 +1242,9 @@
     // MSG_OPTION_MENU_OPTIMIZATIONS
     "優化選項 : %s",
 
+    // MSG_OPTION_MENU_COLOR_CORRECTION
+    "色彩校正 : %s",
+
     // MSG_OPTION_MENU_3
     "跳幀類型: %s",
 
@@ -1277,6 +1292,9 @@
 
     // MSG_OPTION_MENU_HELP_OPTIMIZATIONS
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇   性能優化開關",
+
+    // MSG_OPTION_MENU_HELP_COLOR_CORRECTION
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇   GBA色彩校正",
 
     // MSG_OPTION_MENU_HELP_3
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇   遊戲/模擬器配置",

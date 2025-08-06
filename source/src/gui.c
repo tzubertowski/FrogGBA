@@ -21,7 +21,7 @@
 #include "common.h"
 
 #define GPSP_CONFIG_FILENAME  "froggba.cfg"
-#define GPSP_CONFIG_NUM       (15 + 16) // options + game pad config
+#define GPSP_CONFIG_NUM       (17 + 16) // options + game pad config
 #define GPSP_GAME_CONFIG_NUM  (7 + 16)
 
 #define COLOR_BG            COLOR15( 8, 15, 12)  // Soft mint green background
@@ -922,6 +922,13 @@ u32 menu(void)
     MSG[MSG_OFF]
   };
 
+  const char *color_correction_options[] =
+  {
+    MSG[MSG_OFF],
+    "GPSP",
+    "Retro"
+  };
+
   const char *stack_optimize_options[] =
   {
     MSG[MSG_OFF],
@@ -1469,13 +1476,17 @@ u32 menu(void)
 
     STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_SHOW_FPS], on_off_options, &psp_fps_debug, 2, MSG_OPTION_MENU_HELP_SHOW_FPS, 3),
 
-    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_3], frameskip_options, &option_frameskip_type, 3, MSG_OPTION_MENU_HELP_3, 5),
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_OPTIMIZATIONS], on_off_options, &option_advanced_opts, 2, MSG_OPTION_MENU_HELP_OPTIMIZATIONS, 4),
 
-    NUMERIC_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_4], &option_frameskip_value, 10, MSG_OPTION_MENU_HELP_4, 6),
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_COLOR_CORRECTION], color_correction_options, &option_color_correction, 3, MSG_OPTION_MENU_HELP_COLOR_CORRECTION, 5),
 
-    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_5], clock_speed_options, &option_clock_speed, 4, MSG_OPTION_MENU_HELP_5, 7), 
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_3], frameskip_options, &option_frameskip_type, 3, MSG_OPTION_MENU_HELP_3, 6),
 
-    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_6], sound_volume_options, &option_sound_volume, 11, MSG_OPTION_MENU_HELP_6, 8),
+    NUMERIC_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_4], &option_frameskip_value, 10, MSG_OPTION_MENU_HELP_4, 7),
+
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_5], clock_speed_options, &option_clock_speed, 4, MSG_OPTION_MENU_HELP_5, 8), 
+
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_6], sound_volume_options, &option_sound_volume, 11, MSG_OPTION_MENU_HELP_6, 9),
 
     STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_7], stack_optimize_options, &option_stack_optimize, 2, MSG_OPTION_MENU_HELP_7, 10),
 
@@ -1485,11 +1496,9 @@ u32 menu(void)
 
     STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_10], language_options, &option_language, 2, MSG_OPTION_MENU_HELP_10, 13),
 
-    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_OPTIMIZATIONS], on_off_options, &option_advanced_opts, 2, MSG_OPTION_MENU_HELP_OPTIMIZATIONS, 14),
+    ACTION_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_DEFAULT], MSG_OPTION_MENU_HELP_DEFAULT, 14),
 
-    ACTION_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_DEFAULT], MSG_OPTION_MENU_HELP_DEFAULT, 17),
-
-    ACTION_SUBMENU_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_11], MSG_OPTION_MENU_HELP_11, 18)
+    ACTION_SUBMENU_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_11], MSG_OPTION_MENU_HELP_11, 15)
   };
 
   MAKE_MENU(emulator, NULL, NULL);
@@ -2136,10 +2145,11 @@ s32 save_config_file(void)
     file_options[13]  = option_analog_sensitivity;
     file_options[14]  = option_language;
     file_options[15]  = option_advanced_opts;
+    file_options[16]  = option_color_correction;
 
     for (i = 0; i < 16; i++)
     {
-      file_options[16 + i] = gamepad_config_map[i];
+      file_options[17 + i] = gamepad_config_map[i];
     }
 
     FILE_WRITE_ARRAY(config_file, file_options);
@@ -2262,10 +2272,11 @@ s32 load_config_file(void)
       option_analog_sensitivity = file_options[13] % 10;
       option_language = file_options[14] % 2;  // Only Japanese (0) and English (1)
       option_advanced_opts = file_options[15] % 2;  // 0 = No, 1 = Yes
+      option_color_correction = file_options[16] % 3;  // 0 = Off, 1 = GPSP, 2 = Retro
 
       for (i = 0; i < 16; i++)
       {
-        gamepad_config_map[i] = file_options[16 + i] % (BUTTON_ID_NONE + 1);
+        gamepad_config_map[i] = file_options[17 + i] % (BUTTON_ID_NONE + 1);
 
         if (gamepad_config_map[i] == BUTTON_ID_MENU)
           menu_button = i;
@@ -2293,6 +2304,7 @@ s32 load_config_file(void)
   option_analog_sensitivity = 4;
   option_language = 1;  // Default to English
   option_advanced_opts = 0;  // Default to No
+  option_color_correction = 0;  // Default to Off
 
   return -1;
 }

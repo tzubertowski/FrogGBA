@@ -138,6 +138,12 @@ const char *message[4][MSG_END] =
     // MSG_OPTION_MENU_SHOW_FPS
     "FPS�\\�� �@�@�@�@�@: %s",
 
+    // MSG_OPTION_MENU_OPTIMIZATIONS
+    "�ŏK�� �@�@�@�@�@: %s",
+
+    // MSG_OPTION_MENU_COLOR_CORRECTION
+    "���␳�@�@�@�@�@�@: %s",
+
     // MSG_OPTION_MENU_3
     "�t���[���X�L�b�v�@: %s",
 
@@ -179,6 +185,12 @@ const char *message[4][MSG_END] =
 
     // MSG_OPTION_MENU_HELP_SHOW_FPS
     FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":�I��   �G�~�����[�^",
+
+    // MSG_OPTION_MENU_HELP_OPTIMIZATIONS
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":�I��   �G�~�����[�^",
+
+    // MSG_OPTION_MENU_HELP_COLOR_CORRECTION
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":�I��   GBA�̐F�␳",
 
     // MSG_OPTION_MENU_HELP_3
     FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":�I��   ����",
