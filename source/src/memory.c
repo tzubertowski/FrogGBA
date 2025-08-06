@@ -2954,9 +2954,6 @@ void memory_term(void)
     free(gamepak_rom);
     gamepak_rom = NULL;
   }
-  
-  // Free rewind buffers
-  rewind_free();
 }
 
 
@@ -2971,9 +2968,6 @@ static void load_backup_id(void)
   u32 new_region = 0;
 
   init_memory_gamepak();
-
-  // Initialize rewind system if enabled
-  rewind_init();
 
   backup_type = BACKUP_NONE;
 
@@ -3668,171 +3662,6 @@ void save_state(char *savestate_filename, u16 *screen_capture)
   free(savestate_write_buffer);
 }
 
-// Rewind system implementation
-typedef struct {
-  u8 *state_buffer;
-  u32 buffer_size;
-  u32 valid;
-} RewindFrame;
-
-static RewindFrame *rewind_buffer = NULL;
-static u32 rewind_current_frame = 0;
-static u32 rewind_oldest_frame = 0;
-static u32 rewind_frame_count = 0;
-static u32 rewind_capture_counter = 0;
-static u8 rewind_initialized = 0;
-
-void rewind_init(void)
-{
-  if (rewind_initialized || !option_enable_rewind)
-    return;
-    
-  rewind_buffer = (RewindFrame *)safe_malloc(sizeof(RewindFrame) * REWIND_BUFFER_FRAMES);
-  
-  for (u32 i = 0; i < REWIND_BUFFER_FRAMES; i++)
-  {
-    rewind_buffer[i].state_buffer = (u8 *)safe_malloc(REWIND_BUFFER_SIZE);
-    rewind_buffer[i].buffer_size = 0;
-    rewind_buffer[i].valid = 0;
-  }
-  
-  rewind_current_frame = 0;
-  rewind_oldest_frame = 0;
-  rewind_frame_count = 0;
-  rewind_capture_counter = 0;
-  rewind_initialized = 1;
-}
-
-void rewind_free(void)
-{
-  if (!rewind_initialized)
-    return;
-    
-  for (u32 i = 0; i < REWIND_BUFFER_FRAMES; i++)
-  {
-    if (rewind_buffer[i].state_buffer)
-      free(rewind_buffer[i].state_buffer);
-  }
-  
-  if (rewind_buffer)
-    free(rewind_buffer);
-    
-  rewind_buffer = NULL;
-  rewind_initialized = 0;
-}
-
-void rewind_clear_buffer(void)
-{
-  if (!rewind_initialized)
-    return;
-    
-  for (u32 i = 0; i < REWIND_BUFFER_FRAMES; i++)
-  {
-    rewind_buffer[i].buffer_size = 0;
-    rewind_buffer[i].valid = 0;
-  }
-  
-  rewind_current_frame = 0;
-  rewind_oldest_frame = 0;
-  rewind_frame_count = 0;
-  rewind_capture_counter = 0;
-}
-
-void rewind_update_buffer(void)
-{
-  if (!rewind_initialized || !option_enable_rewind)
-    return;
-    
-  // Only capture every Nth frame for 15fps capture rate
-  rewind_capture_counter++;
-  if (rewind_capture_counter < REWIND_CAPTURE_INTERVAL)
-    return;
-    
-  rewind_capture_counter = 0;
-  
-  // Save current state to rewind buffer
-  write_mem_ptr = rewind_buffer[rewind_current_frame].state_buffer;
-  
-  // Use a dummy file ID for memory operations
-  SceUID savestate_file = 0x7FFFFFFF;
-  
-  // Save state components to memory manually
-  cpu_write_mem_savestate(savestate_file);
-  input_write_mem_savestate(savestate_file);
-  main_write_mem_savestate(savestate_file);
-  memory_write_mem_savestate(savestate_file);
-  sound_write_mem_savestate(savestate_file);
-  video_write_mem_savestate(savestate_file);
-  
-  // Calculate actual size used
-  rewind_buffer[rewind_current_frame].buffer_size = 
-    write_mem_ptr - rewind_buffer[rewind_current_frame].state_buffer;
-  rewind_buffer[rewind_current_frame].valid = 1;
-  
-  // Update circular buffer indices
-  rewind_current_frame = (rewind_current_frame + 1) % REWIND_BUFFER_FRAMES;
-  
-  if (rewind_frame_count < REWIND_BUFFER_FRAMES)
-    rewind_frame_count++;
-  else
-    rewind_oldest_frame = (rewind_oldest_frame + 1) % REWIND_BUFFER_FRAMES;
-}
-
-int rewind_load_state(void)
-{
-  if (!rewind_initialized || rewind_frame_count == 0)
-    return 0;
-    
-  // Find the frame to load (go back one frame)
-  u32 load_frame;
-  if (rewind_current_frame == 0)
-    load_frame = REWIND_BUFFER_FRAMES - 1;
-  else
-    load_frame = rewind_current_frame - 1;
-    
-  // Make sure we have a valid frame to load
-  if (!rewind_buffer[load_frame].valid)
-    return 0;
-    
-  // Create a temporary file in memory to load the state
-  char temp_filename[MAX_PATH];
-  sprintf(temp_filename, "%stemp_rewind.svs", main_path);
-  
-  // Write the buffer to a temporary file
-  SceUID temp_file;
-  FILE_OPEN(temp_file, temp_filename, WRITE);
-  if (FILE_CHECK_VALID(temp_file))
-  {
-    // Write dummy screen capture and timestamp
-    u16 dummy_screen[GBA_SCREEN_WIDTH * GBA_SCREEN_HEIGHT];
-    memset(dummy_screen, 0, sizeof(dummy_screen));
-    FILE_WRITE(temp_file, dummy_screen, GBA_SCREEN_SIZE);
-    
-    u64 dummy_time = 0;
-    FILE_WRITE_VARIABLE(temp_file, dummy_time);
-    
-    // Write the actual state data
-    FILE_WRITE(temp_file, rewind_buffer[load_frame].state_buffer, 
-               rewind_buffer[load_frame].buffer_size);
-    FILE_CLOSE(temp_file);
-    
-    // Now load the state using the existing function
-    char temp_filename_copy[] = "temp_rewind.svs";
-    load_state(temp_filename_copy);
-    
-    // Delete the temporary file
-    sceIoRemove(temp_filename);
-    
-    // Mark this frame as invalid so we can't rewind to it again
-    rewind_buffer[load_frame].valid = 0;
-    rewind_frame_count--;
-    rewind_current_frame = load_frame;
-    
-    return 1;
-  }
-  
-  return 0;
-}
 
 #define MEMORY_SAVESTATE_BODY(type)                                           \
 {                                                                             \

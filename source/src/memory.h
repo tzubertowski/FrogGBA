@@ -242,16 +242,6 @@ extern u8 *write_mem_ptr;
 void load_state(char *savestate_filename);
 void save_state(char *savestate_filename, u16 *screen_capture);
 
-// Rewind system
-#define REWIND_BUFFER_SIZE      (512 * 1024)  // 512KB per state
-#define REWIND_BUFFER_FRAMES    10            // Store last 10 frames (at 15fps = ~0.67 seconds)
-#define REWIND_CAPTURE_INTERVAL 4             // Capture every 4th frame (60fps/4 = 15fps)
-
-void rewind_init(void);
-void rewind_free(void);
-void rewind_update_buffer(void);
-int rewind_load_state(void);
-void rewind_clear_buffer(void);
 
 #define pIO_REG(offset) *(io_registers + (offset))
 
