@@ -3493,17 +3493,29 @@ s32 load_gamepak(char *name)
 
   draw_box_alpha(110, 50, 370, 220, 0xBF000000);
   draw_box_line(120, 60, 360, 210, COLOR15_WHITE);
+  
+  // Draw cute ASCII frog
+  print_string("     @ @", X_POS_CENTER, 75, COLOR15_GREEN, BG_NO_FILL);
+  print_string("    (   )", X_POS_CENTER, 85, COLOR15_GREEN, BG_NO_FILL);
+  print_string("   _) (_", X_POS_CENTER, 95, COLOR15_GREEN, BG_NO_FILL);
+  
   if (option_language == 0 || option_language == 1)
-	print_string(MSG[MSG_LOADING_ROM], X_POS_CENTER, 100, COLOR15_WHITE, BG_NO_FILL);
+	print_string(MSG[MSG_LOADING_ROM], X_POS_CENTER, 115, COLOR15_WHITE, BG_NO_FILL);
   else
-	print_string_gbk(MSG[MSG_LOADING_ROM], X_POS_CENTER, 100, COLOR15_WHITE, BG_NO_FILL);
+	print_string_gbk(MSG[MSG_LOADING_ROM], X_POS_CENTER, 115, COLOR15_WHITE, BG_NO_FILL);
   flip_screen(1);
   draw_box_alpha(110, 50, 370, 220, 0xBF000000);
   draw_box_line(120, 60, 360, 210, COLOR15_WHITE);
+  
+  // Draw cute ASCII frog
+  print_string("     @ @", X_POS_CENTER, 75, COLOR15_GREEN, BG_NO_FILL);
+  print_string("    (   )", X_POS_CENTER, 85, COLOR15_GREEN, BG_NO_FILL);
+  print_string("   _) (_", X_POS_CENTER, 95, COLOR15_GREEN, BG_NO_FILL);
+  
   if (option_language == 0 || option_language == 1)
-	print_string(MSG[MSG_LOADING_ROM], X_POS_CENTER, 100, COLOR15_WHITE, BG_NO_FILL);
+	print_string(MSG[MSG_LOADING_ROM], X_POS_CENTER, 115, COLOR15_WHITE, BG_NO_FILL);
   else
-	print_string_gbk(MSG[MSG_LOADING_ROM], X_POS_CENTER, 100, COLOR15_WHITE, BG_NO_FILL);
+	print_string_gbk(MSG[MSG_LOADING_ROM], X_POS_CENTER, 115, COLOR15_WHITE, BG_NO_FILL);
 
   scePowerLock(0);
   set_cpu_clock(PSP_CLOCK_333);
