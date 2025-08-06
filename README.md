@@ -1,6 +1,8 @@
-# TempGBA mod by Prosty
+# FrogGBA - TempGBA mod by Prosty
 
 ## Download & Installation
+![FrogGBA Icon](source/res/ICON0.png)
+
 **→ [Download the latest release here](https://github.com/tzubertowski/FrogGBA/releases) ←**
 
 You need to have a CFW installed on your PSP. 
