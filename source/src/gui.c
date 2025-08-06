@@ -1718,6 +1718,7 @@ u32 menu(void)
     }
 
 	print_string(MSG[current_option->help_string], 30, 258, COLOR_HELP_TEXT, BG_NO_FILL);
+    print_string("TempGBA mod by Prosty", 312, 258, COLOR_HELP_TEXT, BG_NO_FILL);
 
     // PSP controller - hold
     if (get_pad_input(PSP_CTRL_HOLD) != 0)
