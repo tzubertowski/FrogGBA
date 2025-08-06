@@ -843,7 +843,7 @@ static void order_layers(u8 layer_flags);
 
 #ifdef PSP_SPRITE_OPTIMIZATIONS
 #define multiple_tile_obj(combine_op, color_depth, alpha_op, flip_op)         \
-  if (option_advanced_opts && tile_run >= 4) {                               \
+  if (tile_run >= 4) {                               \
     /* Unrolled loop for better performance on sprite-heavy games */         \
     u32 unroll_count = tile_run >> 2;                                         \
     u32 remainder = tile_run & 3;                                             \
@@ -2113,7 +2113,7 @@ static void render_scanline_obj_##alpha_op##_##map_space(u32 priority, u32 start
     obj_width = obj_width_table[obj_size];                                    \
                                                                               \
     /* PSP sprite culling optimization - skip sprites completely off-screen */ \
-    if (option_advanced_opts && (obj_x >= (s32)end || (obj_x + obj_width) <= (s32)start)) \
+    if (obj_x >= (s32)end || (obj_x + obj_width) <= (s32)start) \
       continue;                                                               \
                                                                               \
     render_scanline_obj_prologue_##combine_op(alpha_op);                      \

@@ -113,8 +113,6 @@
     // MSG_OPTION_MENU_SHOW_FPS
     "Show FPS        : %s",
 
-    // MSG_OPTION_MENU_OPTIMIZATIONS
-    "Optimizations   : %s",
 
     // MSG_OPTION_MENU_COLOR_CORRECTION
     "Color Correction: %s",

@@ -43,7 +43,6 @@ u32 option_screen_capture_format = 0;
 u32 option_enable_analog = 0;
 u32 option_analog_sensitivity = 4;
 u32 option_language = 1;
-u32 option_advanced_opts = 0;  // 0 = No, 1 = Yes
 
 u32 option_frameskip_type = FRAMESKIP_AUTO;
 u32 option_frameskip_value = 9;
@@ -189,11 +188,9 @@ CPU_ALERT_TYPE timer_control_high(u8 timer_number, u32 value)
 #ifdef PSP_TIMER_OPTIMIZATIONS
         // Timer prescaling optimization - RE-ENABLED FOR TESTING
         // Testing to see if this causes timing issues
-        if (option_advanced_opts == 1) {
-          // For prescale values 64+ (index 2,3), reduce precision for performance
-          if (prescale_index >= 2 && timer_number >= 2) {
-            tm->prescale = prescale_table[prescale_index] >> 1;  // Half prescale for better performance
-          }
+        // For prescale values 64+ (index 2,3), reduce precision for performance
+        if (prescale_index >= 2 && timer_number >= 2) {
+          tm->prescale = prescale_table[prescale_index] >> 1;  // Half prescale for better performance
         }
 #endif
       }
