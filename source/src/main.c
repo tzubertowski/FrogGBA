@@ -21,9 +21,6 @@
 
 #include "common.h"
 
-// External declarations
-extern void rewind_update_buffer(void);
-
 
 // Main Thread Params
 #define PRIORITY       (32)
@@ -47,7 +44,6 @@ u32 option_enable_analog = 0;
 u32 option_analog_sensitivity = 4;
 u32 option_language = 1;
 u32 option_advanced_opts = 0;  // 0 = No, 1 = Yes
-u32 option_enable_rewind = 0;  // 0 = No, 1 = Yes
 
 u32 option_frameskip_type = FRAMESKIP_AUTO;
 u32 option_frameskip_value = 9;
@@ -433,9 +429,6 @@ u32 update_gba(void)
 
           if (draw_this_frame != 0)
             flip_screen(0);
-
-          // Update rewind buffer if enabled
-          rewind_update_buffer();
 
           vcount = 0;
         }

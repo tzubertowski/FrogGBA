@@ -21,7 +21,7 @@
 #include "common.h"
 
 #define GPSP_CONFIG_FILENAME  "froggba.cfg"
-#define GPSP_CONFIG_NUM       (16 + 16) // options + game pad config
+#define GPSP_CONFIG_NUM       (15 + 16) // options + game pad config
 #define GPSP_GAME_CONFIG_NUM  (7 + 16)
 
 #define COLOR_BG            COLOR15( 8, 15, 12)  // Soft mint green background
@@ -981,7 +981,6 @@ u32 menu(void)
     "RAPID FIRE L",
     "RAPID FIRE R",
     "show fps",
-    "rewind",
     "none"
   };
 
@@ -1487,12 +1486,10 @@ u32 menu(void)
     STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_10], language_options, &option_language, 2, MSG_OPTION_MENU_HELP_10, 13),
 
     STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_OPTIMIZATIONS], on_off_options, &option_advanced_opts, 2, MSG_OPTION_MENU_HELP_OPTIMIZATIONS, 14),
-    
-    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_REWIND], on_off_options, &option_enable_rewind, 2, MSG_OPTION_MENU_HELP_REWIND, 15),
 
-    ACTION_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_DEFAULT], MSG_OPTION_MENU_HELP_DEFAULT, 16),
+    ACTION_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_DEFAULT], MSG_OPTION_MENU_HELP_DEFAULT, 17),
 
-    ACTION_SUBMENU_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_11], MSG_OPTION_MENU_HELP_11, 17)
+    ACTION_SUBMENU_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_11], MSG_OPTION_MENU_HELP_11, 18)
   };
 
   MAKE_MENU(emulator, NULL, NULL);
@@ -2139,11 +2136,10 @@ s32 save_config_file(void)
     file_options[13]  = option_analog_sensitivity;
     file_options[14]  = option_language;
     file_options[15]  = option_advanced_opts;
-    file_options[16]  = option_enable_rewind;
 
     for (i = 0; i < 16; i++)
     {
-      file_options[17 + i] = gamepad_config_map[i];
+      file_options[16 + i] = gamepad_config_map[i];
     }
 
     FILE_WRITE_ARRAY(config_file, file_options);
@@ -2266,11 +2262,10 @@ s32 load_config_file(void)
       option_analog_sensitivity = file_options[13] % 10;
       option_language = file_options[14] % 2;  // Only Japanese (0) and English (1)
       option_advanced_opts = file_options[15] % 2;  // 0 = No, 1 = Yes
-      option_enable_rewind = file_options[16] % 2;  // 0 = No, 1 = Yes
 
       for (i = 0; i < 16; i++)
       {
-        gamepad_config_map[i] = file_options[17 + i] % (BUTTON_ID_NONE + 1);
+        gamepad_config_map[i] = file_options[16 + i] % (BUTTON_ID_NONE + 1);
 
         if (gamepad_config_map[i] == BUTTON_ID_MENU)
           menu_button = i;
