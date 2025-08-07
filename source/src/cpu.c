@@ -61,8 +61,9 @@ u32 ALIGN_DATA spsr[7];
 #define DCACHE_FILL_WITH_LOCK                   (0x1F) // Fill with Lock (D)
 
 
-#define READONLY_CODE_CACHE_SIZE          (1024 * 1024 * 4)
-#define WRITABLE_CODE_CACHE_SIZE          (1024 * 1024 * 2)
+// Moderately increased cache sizes for better block coalescing
+#define READONLY_CODE_CACHE_SIZE          (1024 * 1024 * 5)  // 4MB → 5MB (conservative increase)
+#define WRITABLE_CODE_CACHE_SIZE          (1024 * 1024 * 2)  // Keep at 2MB to avoid OOM
  /* The following parameter needs to be at least enough bytes to hold
   * the generated code for the largest instruction on your platform.
   * In most cases, that will be the ARM instruction
