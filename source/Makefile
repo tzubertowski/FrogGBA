@@ -46,7 +46,7 @@ CFLAGS = \
  -fno-split-wide-types -fgcse-after-reload \
  -funroll-loops -fno-unwind-tables -fno-asynchronous-unwind-tables \
  -falign-functions=32 -falign-loops -falign-labels -falign-jumps \
- -ffast-math -fmerge-all-constants \
+ -ffast-math -fmerge-all-constants -funsafe-loop-optimizations -funsigned-char \
  -Wall -Wundef -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Wsign-compare \
  -DZLIB_CONST
 
