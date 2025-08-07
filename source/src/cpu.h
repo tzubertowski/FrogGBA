@@ -203,6 +203,7 @@ extern u32 reg_mode[7][7];
 extern u32 spsr[7];
 
 void init_cpu(void);
+void cpu_term(void);
 
 void cpu_write_mem_savestate(SceUID savestate_file);
 void cpu_read_savestate(SceUID savestate_file);

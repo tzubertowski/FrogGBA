@@ -23,6 +23,7 @@
 // - block memory needs psr swapping and user mode reg swapping
 
 #include "common.h"
+#include "volatile_mem.h"
 
 // Default
 s32 idle_loop_targets = 0;
@@ -155,11 +156,12 @@ typedef union
 // u8 *bios_translation_ptr = bios_translation_cache;
 
 /* Fallback unified caches (for backward compatibility) */
-u8 ALIGN_DATA readonly_code_cache[READONLY_CODE_CACHE_SIZE];
-u8 *readonly_next_code = readonly_code_cache;
+// Static allocation replaced with dynamic allocation
+u8 *readonly_code_cache = NULL;
+u8 *readonly_next_code = NULL;
 
-u8 ALIGN_DATA writable_code_cache[WRITABLE_CODE_CACHE_SIZE];
-u8 *writable_next_code = writable_code_cache;
+u8 *writable_code_cache = NULL;
+u8 *writable_next_code = NULL;
 
 /* These represent Metadata Areas. */
 u32 *rom_branch_hash[ROM_BRANCH_HASH_SIZE];
@@ -4054,8 +4056,54 @@ void set_cpu_mode(CPU_MODE_TYPE new_mode)
 }
 
 
+static void init_translation_caches(void)
+{
+  static int caches_initialized = 0;
+  
+  if (caches_initialized)
+    return;
+    
+  // Try to initialize volatile memory for extra 4MB
+  if (volatile_mem_init()) {
+    // We have volatile memory! Allocate larger caches
+    // Use 6MB for readonly (ROM) and 2MB for writable (RAM)
+    size_t readonly_size = 1024 * 1024 * 6;  // 6MB
+    size_t writable_size = 1024 * 1024 * 2;  // 2MB
+    
+    readonly_code_cache = (u8*)volatile_mem_alloc(readonly_size);
+    if (readonly_code_cache) {
+      readonly_next_code = readonly_code_cache;
+      memset(readonly_code_cache, 0, readonly_size);
+    }
+    
+    writable_code_cache = (u8*)volatile_mem_alloc(writable_size);
+    if (writable_code_cache) {
+      writable_next_code = writable_code_cache;
+      memset(writable_code_cache, 0, writable_size);
+    }
+  }
+  
+  // Fallback to regular malloc if volatile memory failed
+  if (!readonly_code_cache) {
+    readonly_code_cache = (u8*)malloc(READONLY_CODE_CACHE_SIZE);
+    readonly_next_code = readonly_code_cache;
+    memset(readonly_code_cache, 0, READONLY_CODE_CACHE_SIZE);
+  }
+  
+  if (!writable_code_cache) {
+    writable_code_cache = (u8*)malloc(WRITABLE_CODE_CACHE_SIZE);
+    writable_next_code = writable_code_cache;
+    memset(writable_code_cache, 0, WRITABLE_CODE_CACHE_SIZE);
+  }
+  
+  caches_initialized = 1;
+}
+
 void init_cpu(void)
 {
+  // Initialize translation caches (with volatile memory if available)
+  init_translation_caches();
+  
   memset(reg, 0, sizeof(reg));
   memset(reg_mode, 0, sizeof(reg_mode));
   memset(spsr, 0, sizeof(spsr));
@@ -4103,6 +4151,25 @@ void cpu_read_savestate(SceUID savestate_file)
 void cpu_write_mem_savestate(SceUID savestate_file)
 {
   CPU_SAVESTATE_BODY(WRITE_MEM);
+}
+
+void cpu_term(void)
+{
+  // Free translation caches
+  if (readonly_code_cache) {
+    volatile_mem_free(readonly_code_cache);
+    readonly_code_cache = NULL;
+    readonly_next_code = NULL;
+  }
+  
+  if (writable_code_cache) {
+    volatile_mem_free(writable_code_cache);
+    writable_code_cache = NULL;
+    writable_next_code = NULL;
+  }
+  
+  // Shutdown volatile memory system
+  volatile_mem_shutdown();
 }
 
 
