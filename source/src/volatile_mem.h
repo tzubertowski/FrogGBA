@@ -11,6 +11,7 @@
 #include <pspkernel.h>
 #include <pspsysmem.h>
 #include <psppower.h>
+#include <pspsuspend.h>
 
 #ifdef __cplusplus
 extern "C" {
