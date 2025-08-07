@@ -22,8 +22,10 @@
 #define COMMON_H
 
 #include <kubridge.h>
+#include <fastmath.h>
 
 #include <pspgu.h>
+#include <pspgum.h>
 #include <pspdisplay.h>
 #include <pspaudio.h>
 #include <psprtc.h>

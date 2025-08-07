@@ -61,9 +61,9 @@ u32 ALIGN_DATA spsr[7];
 #define DCACHE_FILL_WITH_LOCK                   (0x1F) // Fill with Lock (D)
 
 
-// Moderately increased cache sizes for better block coalescing
-#define READONLY_CODE_CACHE_SIZE          (1024 * 1024 * 5)  // 4MB → 5MB (conservative increase)
-#define WRITABLE_CODE_CACHE_SIZE          (1024 * 1024 * 2)  // Keep at 2MB to avoid OOM
+// Optimized cache sizes - conservative approach without specialized caches
+#define READONLY_CODE_CACHE_SIZE          (1024 * 1024 * 4)  // 4MB for ROM/BIOS (increased from 2MB)  
+#define WRITABLE_CODE_CACHE_SIZE          (1024 * 512 * 1)   // 512KB for RAM (decreased from 1MB)
  /* The following parameter needs to be at least enough bytes to hold
   * the generated code for the largest instruction on your platform.
   * In most cases, that will be the ARM instruction
@@ -143,7 +143,18 @@ typedef union
 } OpcodeDataType;
 
 
-/* These represent code caches. */
+/* gpSP-kai specialized translation caches for optimal performance */
+// TEMPORARILY DISABLED - debugging bus error
+// u8 ALIGN_DATA rom_translation_cache[ROM_TRANSLATION_CACHE_SIZE];
+// u8 *rom_translation_ptr = rom_translation_cache;
+//
+// u8 ALIGN_DATA ram_translation_cache[RAM_TRANSLATION_CACHE_SIZE];
+// u8 *ram_translation_ptr = ram_translation_cache;
+//
+// u8 ALIGN_DATA bios_translation_cache[BIOS_TRANSLATION_CACHE_SIZE];
+// u8 *bios_translation_ptr = bios_translation_cache;
+
+/* Fallback unified caches (for backward compatibility) */
 u8 ALIGN_DATA readonly_code_cache[READONLY_CODE_CACHE_SIZE];
 u8 *readonly_next_code = readonly_code_cache;
 
@@ -3362,6 +3373,9 @@ static u8 *translate_block_##type(u32 pc)                                     \
   switch (pc >> 24)                                                           \
   {                                                                           \
     case 0x00: /* BIOS */                                                     \
+      translation_region = TRANSLATION_REGION_READONLY;                       \
+      break;                                                                  \
+                                                                              \
     case 0x08: case 0x09: /* ROM */                                           \
     case 0x0A: case 0x0B:                                                     \
     case 0x0C: case 0x0D:                                                     \

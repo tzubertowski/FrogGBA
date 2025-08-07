@@ -11,8 +11,8 @@ PREFIX = ${shell psp-config --psp-prefix}
 BUILD_PRX = 1
 ENCRYPT = 1
 
-PSP_FW_VERSION = 371
-PSP_LARGE_MEMORY = 1
+PSP_FW_VERSION = 300
+PSP_LARGE_MEMORY = 0
 
 PSP_EBOOT_ICON = res/ICON0.png
 PSP_EBOOT_TITLE = FrogGBA
@@ -21,7 +21,7 @@ EXTRA_TARGETS = EBOOT.PBP
 
 COMMON_FILE = \
  common.h \
- cpu.h memory.h video.h input.h sound.h main.h message.h mh_print.h gui.h zip.h png.h \
+ cpu.h cpu_common.h memory.h video.h input.h sound.h main.h message.h mh_print.h gui.h zip.h png.h \
  ku_bridge.h exception.h ch_print.h
 
 MAINOBJS = \
@@ -57,7 +57,7 @@ ASFLAGS = ${CFLAGS}
 INCDIR = SDK/include src src/zlib src/libpower
 LIBDIR = SDK/lib
 
-LIBS = src/libpower/libpsppower.a -lpspgu -lpsprtc -lpspaudio -lpspkubridge
+LIBS = src/libpower/libpsppower.a -lpspgu -lpsprtc -lpspaudio -lpspkubridge -lpspgum -lm
 
 include ${PSPSDK}/lib/build.mak
 
