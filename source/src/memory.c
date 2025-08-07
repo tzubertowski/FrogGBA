@@ -25,28 +25,29 @@
 #define CONFIG_FILENAME  "game_config.txt"
 
 
+// Optimized waitstate tables - reduced penalties for better performance
 u8 ALIGN_DATA memory_waitstate_n[2][16] =
 {
-  { 0, 0, 2, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 0 }, // 8,16bit accesses
-  { 0, 0, 5, 0, 0, 1, 1, 1, 7, 7, 9, 9,13,13, 4, 0 }  // 32bit accesses
+  { 0, 0, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0 }, // 8,16bit accesses (reduced)
+  { 0, 0, 3, 0, 0, 1, 1, 1, 4, 4, 5, 5, 7, 7, 2, 0 }  // 32bit accesses (reduced)
 };
 
 u8 ALIGN_DATA memory_waitstate_s[2][16] =
 {
-  { 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 4, 4, 8, 8, 4, 0 },
-  { 0, 0, 5, 0, 0, 1, 1, 1, 5, 5, 9, 9,17,17, 4, 0 }
+  { 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 2, 2, 4, 4, 2, 0 }, // Sequential penalties reduced
+  { 0, 0, 3, 0, 0, 1, 1, 1, 3, 3, 5, 5, 9, 9, 2, 0 }  // Sequential penalties reduced
 };
 
 u8 ALIGN_DATA fetch_waitstate_n[2][16] =
 {
-  { 0, 0, 2, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 0 },
-  { 0, 0, 5, 0, 0, 1, 1, 1, 7, 7, 9, 9,13,13, 4, 0 }
+  { 0, 0, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0 }, // Fetch penalties reduced
+  { 0, 0, 3, 0, 0, 1, 1, 1, 4, 4, 5, 5, 7, 7, 2, 0 }  // Fetch penalties reduced
 };
 
 u8 ALIGN_DATA fetch_waitstate_s[2][16] =
 {
-  { 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 4, 4, 8, 8, 4, 0 },
-  { 0, 0, 5, 0, 0, 1, 1, 1, 5, 5, 9, 9,17,17, 4, 0 }
+  { 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 2, 2, 4, 4, 2, 0 }, // Sequential fetch reduced
+  { 0, 0, 3, 0, 0, 1, 1, 1, 3, 3, 5, 5, 9, 9, 2, 0 }  // Sequential fetch reduced
 };
 
 // GBA memory areas.
