@@ -108,3 +108,8 @@ size_t volatile_mem_available(void)
     // This is an approximation - in practice we'd need to query the partition
     return g_volatile_mem_available ? (4 * 1024 * 1024) : 0;
 }
+
+int volatile_mem_is_active(void)
+{
+    return g_volatile_mem_available;
+}

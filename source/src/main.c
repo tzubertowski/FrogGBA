@@ -20,6 +20,7 @@
 
 
 #include "common.h"
+#include "volatile_mem.h"
 
 
 // Main Thread Params
@@ -560,9 +561,9 @@ static void synchronize(void)
     // fps
     if (psp_fps_debug != 0)
     {
-      char print_buffer[16];
-      sprintf(print_buffer, "%02ld(%02ld)", (long)fps, (long)frames_drawn);
-//    sprintf(print_buffer, "%02d(%02d)", fps % 100, frames_drawn);
+      char print_buffer[32];
+      sprintf(print_buffer, "%02ld(%02ld) VM:%s", (long)fps, (long)frames_drawn, 
+              volatile_mem_is_active() ? "ON" : "OFF");
       print_string(print_buffer, 0, 0, COLOR15_WHITE, COLOR15_BLACK);
     }
   }
