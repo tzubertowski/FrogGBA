@@ -63,7 +63,7 @@
 
 #ifdef PSP_MIPS32_OPTIMIZATIONS
 // Enable cycle batching to reduce dynarec overhead
-#define PSP_CYCLE_BATCHING
+// #define PSP_CYCLE_BATCHING
 #define PSP_CYCLE_BATCH_THRESHOLD 128
 
 // Enable block coalescing for better cache usage
@@ -74,7 +74,7 @@
 #define PSP_REDUCE_CACHE_INVALIDATION
 
 // Enable sprite rendering optimizations for better performance
-#define PSP_SPRITE_OPTIMIZATIONS
+// #define PSP_SPRITE_OPTIMIZATIONS
 
 // Enable MIPS32 Allegrex-specific instruction optimizations
 #define PSP_MIPS32_INSTRUCTION_OPTIMIZATIONS
