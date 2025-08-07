@@ -61,6 +61,9 @@
 // Based on SF2000 MIPS optimizations, adapted for PSP Allegrex processor
 #define PSP_MIPS32_OPTIMIZATIONS
 
+// Use faster, less accurate timing like gpSP-kai for better performance
+#define OLD_COUNT
+
 #ifdef PSP_MIPS32_OPTIMIZATIONS
 // Enable cycle batching to reduce dynarec overhead
 #define PSP_CYCLE_BATCHING
