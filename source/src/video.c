@@ -2112,6 +2112,9 @@ static void render_scanline_obj_##alpha_op##_##map_space(u32 priority, u32 start
     obj_x = (s32)(obj_attribute_1 << 23) >> 23;                               \
     obj_width = obj_width_table[obj_size];                                    \
                                                                               \
+    /* PSP sprite culling optimization - skip sprites completely off-screen */ \
+    if (obj_x >= (s32)end || (obj_x + obj_width) <= (s32)start) \
+      continue;                                                               \
                                                                               \
     render_scanline_obj_prologue_##combine_op(alpha_op);                      \
                                                                               \

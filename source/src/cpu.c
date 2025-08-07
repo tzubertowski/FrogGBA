@@ -1213,7 +1213,7 @@ static void partial_clear_metadata_thumb(u16 *metadata, u16 *metadata_area_start
       {                                                                       \
         /* MOV rd, reg_op */                                                  \
         arm_data_proc_unary(mov, reg, no_flags);                              \
-        check_cycle_counter(pc + 4);                                          \
+        check_cycle_counter_batched(pc + 4);                                          \
       }                                                                       \
       break;                                                                  \
                                                                               \
@@ -2149,7 +2149,7 @@ static void arm_flag_status(BlockDataArmType *block_data, u32 opcode)
     case 0x46:                                                                \
       /* MOV rd, rs */                                                        \
       thumb_data_proc_mov_hi();                                               \
-      check_cycle_counter(pc + 2);                                            \
+      check_cycle_counter_batched(pc + 2);                                            \
       break;                                                                  \
                                                                               \
     case 0x47:                                                                \
