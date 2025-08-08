@@ -1,4 +1,4 @@
-# FrogGBA - TempGBA mod by Prosty
+# FrogGBA - modern TempGBA mod by Prosty
 
 ## Download & Installation
 ![FrogGBA Icon](source/res/ICON0.png)
