@@ -8,6 +8,7 @@
 You need to have a CFW installed on your PSP. 
 - Unzip the folder
 - Copy the unzipped PSP folder into root of your PSP SD card
+- Acquire and copy GBA bios file into PSP/GAME/FrogGBA/gba_bios.bin file
 - Launch the emulator on the console
 
 ### TL;DR - Key Improvements
