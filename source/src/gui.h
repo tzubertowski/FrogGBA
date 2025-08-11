@@ -28,6 +28,7 @@ extern char dir_state[MAX_PATH];
 extern char dir_cfg[MAX_PATH];
 extern char dir_snap[MAX_PATH];
 extern char dir_cheat[MAX_PATH];
+extern char dir_overlay[MAX_PATH];
 
 s32 load_file(const char **wildcards, char *result, char *default_dir_name);
 
@@ -41,6 +42,8 @@ u32 menu(void);
 
 void action_loadstate(void);
 void action_savestate(void);
+
+void init_overlays_at_boot(void);
 
 
 #endif /* GUI_H */

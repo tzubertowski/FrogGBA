@@ -60,6 +60,9 @@ extern u32 option_enable_analog;
 extern u32 option_analog_sensitivity;
 extern u32 option_language;
 
+extern u32 option_overlay_enabled;
+extern u32 option_overlay_selected;
+
 extern u32 option_frameskip_type;
 extern u32 option_frameskip_value;
 extern u32 option_clock_speed;
