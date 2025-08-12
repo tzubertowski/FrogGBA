@@ -3643,10 +3643,14 @@ void load_state(char *savestate_filename)
   int need_restore_overlay = 0;
   char saved_overlay_name[64] = {0};
   
-  if (option_overlay_enabled && option_overlay_selected > 0) {
-    strcpy(saved_overlay_name, overlay_names[option_overlay_selected]);
+  // Free overlay memory if any overlay is loaded (not just if enabled)
+  extern int overlay_loaded;
+  if (overlay_loaded || (option_overlay_enabled && option_overlay_selected > 0)) {
+    if (option_overlay_selected > 0 && option_overlay_selected < 10) {
+      strcpy(saved_overlay_name, overlay_names[option_overlay_selected]);
+      need_restore_overlay = 1;
+    }
     free_overlay_memory();
-    need_restore_overlay = 1;
   }
 
   scePowerLock(0);
@@ -3710,10 +3714,14 @@ void save_state(char *savestate_filename, u16 *screen_capture)
   int need_restore_overlay = 0;
   char saved_overlay_name[64] = {0};
   
-  if (option_overlay_enabled && option_overlay_selected > 0) {
-    strcpy(saved_overlay_name, overlay_names[option_overlay_selected]);
+  // Free overlay memory if any overlay is loaded (not just if enabled)
+  extern int overlay_loaded;
+  if (overlay_loaded || (option_overlay_enabled && option_overlay_selected > 0)) {
+    if (option_overlay_selected > 0 && option_overlay_selected < 10) {
+      strcpy(saved_overlay_name, overlay_names[option_overlay_selected]);
+      need_restore_overlay = 1;
+    }
     free_overlay_memory();
-    need_restore_overlay = 1;
   }
 
   savestate_write_buffer = (u8 *)safe_malloc(SAVESTATE_SIZE);

@@ -3490,12 +3490,12 @@ static void bitbilt_gu(void)
   sceGuStart(GU_DIRECT, display_list);
 
   sceGuCallList(display_list_0);
-  
-  // Apply overlay BEFORE GPU finishes - while we're still in the GPU command stream
-  render_overlay();
 
   sceGuFinish();
   sceGuSync(0, GU_SYNC_FINISH);
+  
+  // Apply overlay AFTER GPU finishes to avoid conflicts
+  render_overlay();
 }
 
 // Stretch display list - stretches GBA screen to fill entire PSP screen (480x272)
@@ -4276,17 +4276,17 @@ void video_write_mem_savestate(SceUID savestate_file)
 
 // Overlay buffer - dynamically allocated to save memory when not in use
 static u16 *overlay_buffer = NULL;
-static int overlay_loaded = 0;
+int overlay_loaded = 0;  // Made non-static for memory.c access
 static u32 overlay_enabled = 0;
 static int overlay_first_render = 1;
 int overlay_needs_update = 0;  // Flag to track when overlay needs re-rendering
 
-// Optimization: Pre-computed list of opaque pixel offsets - reduced size
-#define MAX_OPAQUE_PIXELS 10000  // Reduced from 30000 to save memory
+// Optimization: Pre-computed list of opaque pixel offsets
+#define MAX_OPAQUE_PIXELS 30000  // Balanced for full bezels and memory usage
 static u32 *opaque_pixel_offsets = NULL;
 static int num_opaque_pixels = 0;
 
-// Ultra-fast overlay cache: pre-computed framebuffer writes - reduced size
+// Ultra-fast overlay cache: pre-computed framebuffer writes
 static struct {
   u32 framebuffer_offset;  // Final framebuffer position
   u16 pixel_color;         // Pixel color to write
@@ -4429,6 +4429,9 @@ void free_overlay_memory(void)
   overlay_loaded = 0;
   num_opaque_pixels = 0;
   cache_valid = 0;
+  
+  // Force garbage collection to reclaim memory immediately
+  sceKernelDcacheWritebackAll();
 }
 
 // Force a complete framebuffer refresh - only used when changing positions
@@ -4460,20 +4463,25 @@ void build_overlay_cache(void) {
   if (!overlay_loaded) return;
   
   // Pre-calculate all framebuffer operations
-  for (y = 0; y < OVERLAY_HEIGHT; y++) {
-    for (x = 0; x < OVERLAY_WIDTH; x++) {
+  // Start from y=0 to ensure we don't miss top pixels
+  for (y = 0; y < OVERLAY_HEIGHT && y < PSP_SCREEN_HEIGHT; y++) {
+    for (x = 0; x < OVERLAY_WIDTH && x < PSP_SCREEN_WIDTH; x++) {
       u16 overlay_pixel = overlay_buffer[y * OVERLAY_WIDTH + x];
       
-      // Only cache opaque pixels
+      // Only cache opaque pixels (alpha bit set)
       if (overlay_pixel & 0x8000) {
         if (cache_index < MAX_OPAQUE_PIXELS) {
-          // Pre-calculate framebuffer offset (no bounds check needed - overlay is 480x272)
+          // Calculate framebuffer offset
           overlay_write_cache[cache_index].framebuffer_offset = (y * PSP_LINE_SIZE) + x;
           overlay_write_cache[cache_index].pixel_color = overlay_pixel;
           cache_index++;
+        } else {
+          // We've hit the limit, stop processing
+          break;
         }
       }
     }
+    if (cache_index >= MAX_OPAQUE_PIXELS) break;
   }
   
   num_opaque_pixels = cache_index;
@@ -4483,25 +4491,42 @@ void build_overlay_cache(void) {
   if (debug_log) {
     fprintf(debug_log, "build_overlay_cache: Found %d opaque pixels, cache_valid=%d\n", 
             num_opaque_pixels, cache_valid);
+    if (cache_index >= MAX_OPAQUE_PIXELS) {
+      fprintf(debug_log, "WARNING: Overlay has too many opaque pixels! Only first %d rendered.\n", MAX_OPAQUE_PIXELS);
+    }
     fclose(debug_log);
+  }
+  
+  // Show warning if overlay is truncated
+  if (cache_index >= MAX_OPAQUE_PIXELS) {
+    extern void error_msg(const char *text, u8 confirm);
+    error_msg("Overlay too complex! Only partial rendering.", 0);
   }
 }
 
 void apply_overlay_borders(void) 
 {
-  if (!option_overlay_enabled || !overlay_loaded) return;
+  if (!option_overlay_enabled || !overlay_loaded || !cache_valid) return;
   
-  // Get both framebuffers
+  // Get BOTH framebuffers and apply to both to prevent flickering
   u16 *fb0 = (u16 *)0x04000000;
   u16 *fb1 = (u16 *)0x04044000;
   
-  // Apply pre-calculated overlay pixels
+  // Apply pre-calculated overlay pixels to BOTH buffers
   for (int i = 0; i < num_opaque_pixels; i++) {
     u32 offset = overlay_write_cache[i].framebuffer_offset;
     u16 color = overlay_write_cache[i].pixel_color;
-    fb0[offset] = color;
-    fb1[offset] = color;
+    
+    // Additional bounds check to prevent writing outside visible area
+    if (offset < (PSP_LINE_SIZE * PSP_SCREEN_HEIGHT)) {
+      // Write to both buffers to ensure consistency
+      fb0[offset] = color;
+      fb1[offset] = color;
+    }
   }
+  
+  // Ensure writes are flushed
+  sceKernelDcacheWritebackAll();
 }
 
 void render_overlay(void) 
