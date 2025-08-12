@@ -10,5 +10,6 @@
 #define PSP_PNG_H
 
 int save_png(const char *path, u16 *screen_image);
+int load_png_overlay(const char *path, u16 *overlay_buffer);
 
 #endif /* PSP_PNG_H */

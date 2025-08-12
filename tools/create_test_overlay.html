@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Overlay Generator - FrogGBA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        button {
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        canvas {
+            border: 2px solid #ddd;
+            display: block;
+            margin: 20px auto;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+        .info {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .download-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 12px 30px;
+            background: #2196F3;
+            text-align: center;
+        }
+        .download-btn.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Test Overlay Generator</h1>
+        <p style="text-align: center; color: #666;">Generate test patterns to verify overlay functionality</p>
+        
+        <div class="controls">
+            <button onclick="generateGrid3x3()">3×3 Grid (Black)</button>
+            <button onclick="generateGrid3x3Color()">3×3 Grid (Colored)</button>
+            <button onclick="generateBorder()">Border Frame</button>
+            <button onclick="generateCrosshair()">Crosshair</button>
+            <button onclick="generateScanlines()">Scanlines</button>
+            <button onclick="generateColoredOverlay()">Color Test</button>
+            <button onclick="generateChecker()">Checkerboard</button>
+        </div>
+        
+        <canvas id="canvas" width="480" height="272"></canvas>
+        
+        <a id="downloadBtn" class="download-btn" href="#" download="test.ovl">⬇ Download as OVL</a>
+        
+        <div class="info">
+            <h3>Current Pattern Info:</h3>
+            <p id="patternInfo">Select a pattern above to generate</p>
+        </div>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const patternInfo = document.getElementById('patternInfo');
+        
+        let currentOvlData = null;
+        let currentFilename = 'test.ovl';
+        
+        // Scale canvas for better visibility
+        canvas.style.width = '480px';
+        canvas.style.height = '272px';
+        
+        function clearCanvas() {
+            ctx.clearRect(0, 0, 480, 272);
+        }
+        
+        function generateOvl() {
+            const imageData = ctx.getImageData(0, 0, 480, 272);
+            const pixels = imageData.data;
+            
+            const ovlData = new ArrayBuffer(480 * 272 * 2);
+            const ovlView = new DataView(ovlData);
+            
+            let opaqueCount = 0;
+            let offset = 0;
+            
+            for (let y = 0; y < 272; y++) {
+                for (let x = 0; x < 480; x++) {
+                    const idx = (y * 480 + x) * 4;
+                    const r = pixels[idx];
+                    const g = pixels[idx + 1];
+                    const b = pixels[idx + 2];
+                    const a = pixels[idx + 3];
+                    
+                    // Convert to RGB5551
+                    const r5 = (r >> 3) & 0x1F;
+                    const g5 = (g >> 3) & 0x1F;
+                    const b5 = (b >> 3) & 0x1F;
+                    const alphaBit = a > 128 ? 1 : 0;
+                    
+                    if (alphaBit) opaqueCount++;
+                    
+                    const pixel = (alphaBit << 15) | (b5 << 10) | (g5 << 5) | r5;
+                    ovlView.setUint16(offset, pixel, true);
+                    offset += 2;
+                }
+            }
+            
+            currentOvlData = ovlData;
+            
+            // Set up download
+            const blob = new Blob([ovlData], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            downloadBtn.href = url;
+            downloadBtn.download = currentFilename;
+            downloadBtn.classList.add('show');
+            
+            // Add click handler
+            downloadBtn.onclick = function(e) {
+                e.preventDefault();
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = currentFilename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            };
+            
+            return opaqueCount;
+        }
+        
+        function generateGrid3x3() {
+            clearCanvas();
+            ctx.strokeStyle = 'rgba(0, 0, 0, 255)';
+            ctx.lineWidth = 2;
+            
+            // Vertical lines at 1/3 and 2/3 for PSP resolution (480×272)
+            ctx.beginPath();
+            ctx.moveTo(160, 0);
+            ctx.lineTo(160, 272);
+            ctx.moveTo(320, 0);
+            ctx.lineTo(320, 272);
+            
+            // Horizontal lines at 1/3 and 2/3
+            ctx.moveTo(0, 91);
+            ctx.lineTo(480, 91);
+            ctx.moveTo(0, 181);
+            ctx.lineTo(480, 181);
+            ctx.stroke();
+            
+            currentFilename = 'grid_3x3_psp.ovl';
+            const count = generateOvl();
+            patternInfo.innerHTML = `<strong>3×3 Grid (PSP):</strong> ${count} opaque pixels<br>Black grid lines dividing PSP screen (480×272) into 9 sections`;
+        }
+        
+        function generateGrid3x3Color() {
+            clearCanvas();
+            
+            // Red vertical lines for PSP resolution
+            ctx.strokeStyle = 'rgba(255, 0, 0, 180)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(160, 0);
+            ctx.lineTo(160, 272);
+            ctx.moveTo(320, 0);
+            ctx.lineTo(320, 272);
+            ctx.stroke();
+            
+            // Blue horizontal lines for PSP resolution
+            ctx.strokeStyle = 'rgba(0, 0, 255, 180)';
+            ctx.beginPath();
+            ctx.moveTo(0, 91);
+            ctx.lineTo(480, 91);
+            ctx.moveTo(0, 181);
+            ctx.lineTo(480, 181);
+            ctx.stroke();
+            
+            currentFilename = 'grid_3x3_color.ovl';
+            const count = generateOvl();
+            patternInfo.innerHTML = `<strong>Colored 3×3 Grid:</strong> ${count} opaque pixels<br>Red vertical lines, blue horizontal lines with transparency`;
+        }
+        
+        function generateColoredOverlay() {
+            clearCanvas();
+            
+            // Create colored regions for testing (scaled for PSP)
+            ctx.fillStyle = 'rgba(255, 0, 0, 128)'; // Semi-transparent red
+            ctx.fillRect(20, 20, 100, 100);
+            
+            ctx.fillStyle = 'rgba(0, 255, 0, 180)'; // Semi-transparent green
+            ctx.fillRect(360, 20, 100, 100);
+            
+            ctx.fillStyle = 'rgba(0, 0, 255, 100)'; // Light blue
+            ctx.fillRect(20, 152, 100, 100);
+            
+            ctx.fillStyle = 'rgba(255, 255, 0, 200)'; // Semi-transparent yellow
+            ctx.fillRect(360, 152, 100, 100);
+            
+            // Add some text outline
+            ctx.strokeStyle = 'rgba(255, 255, 255, 255)';
+            ctx.lineWidth = 3;
+            ctx.font = '32px Arial';
+            ctx.strokeText('COLOR TEST', 160, 136);
+            
+            currentFilename = 'color_test.ovl';
+            const count = generateOvl();
+            patternInfo.innerHTML = `<strong>Color Test:</strong> ${count} opaque pixels<br>Various colored regions with different alpha levels for testing`;
+        }
+        
+        function generateBorder() {
+            clearCanvas();
+            ctx.strokeStyle = 'rgba(0, 0, 0, 255)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(1, 1, 478, 270);
+            
+            currentFilename = 'border.ovl';
+            const count = generateOvl();
+            patternInfo.innerHTML = `<strong>Border Frame:</strong> ${count} opaque pixels<br>2px black border around the screen`;
+        }
+        
+        function generateCrosshair() {
+            clearCanvas();
+            ctx.strokeStyle = 'rgba(255, 0, 0, 255)';
+            ctx.lineWidth = 2;
+            
+            // Crosshair in center of PSP screen
+            ctx.beginPath();
+            ctx.moveTo(240, 126);
+            ctx.lineTo(240, 146);
+            ctx.moveTo(230, 136);
+            ctx.lineTo(250, 136);
+            ctx.stroke();
+            
+            currentFilename = 'crosshair.ovl';
+            const count = generateOvl();
+            patternInfo.innerHTML = `<strong>Crosshair:</strong> ${count} opaque pixels<br>Red crosshair in center of screen`;
+        }
+        
+        function generateScanlines() {
+            clearCanvas();
+            ctx.fillStyle = 'rgba(0, 0, 0, 128)';
+            
+            // Every other line for PSP resolution
+            for (let y = 0; y < 272; y += 2) {
+                ctx.fillRect(0, y, 480, 1);
+            }
+            
+            currentFilename = 'scanlines.ovl';
+            const count = generateOvl();
+            patternInfo.innerHTML = `<strong>Scanlines:</strong> ${count} opaque pixels<br>Horizontal scanlines for CRT effect`;
+        }
+        
+        function generateDots() {
+            clearCanvas();
+            ctx.fillStyle = 'rgba(0, 0, 0, 255)';
+            
+            // Dot grid pattern for PSP resolution
+            for (let y = 20; y < 272; y += 40) {
+                for (let x = 20; x < 480; x += 40) {
+                    ctx.fillRect(x, y, 2, 2);
+                }
+            }
+            
+            currentFilename = 'dots.ovl';
+            const count = generateOvl();
+            patternInfo.innerHTML = `<strong>Dot Pattern:</strong> ${count} opaque pixels<br>Grid of single pixel dots`;
+        }
+        
+        function generateChecker() {
+            clearCanvas();
+            ctx.fillStyle = 'rgba(0, 0, 0, 64)';
+            
+            // Checkerboard pattern for full PSP resolution
+            for (let y = 0; y < 272; y += 8) {
+                for (let x = 0; x < 480; x += 8) {
+                    if (((x/8) + (y/8)) % 2 === 0) {
+                        ctx.fillRect(x, y, 8, 8);
+                    }
+                }
+            }
+            
+            currentFilename = 'checker.ovl';
+            const count = generateOvl();
+            patternInfo.innerHTML = `<strong>Checkerboard:</strong> ${count} opaque pixels<br>8×8 pixel checkerboard pattern (PSP full screen)`;
+        }
+        
+        // Generate initial pattern
+        generateGrid3x3();
+    </script>
+</body>
+</html>

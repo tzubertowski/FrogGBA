@@ -109,7 +109,7 @@ const u8 ALIGN_DATA active_layers[8] =
 };
 
 
-static void set_gba_resolution(void);
+void set_gba_resolution(void);
 static void generate_display_list(float mag);
 static void bitbilt_gu(void);
 static void bitbilt_sw(void);
@@ -3400,8 +3400,41 @@ static void generate_display_list(float mag)
   dw = GBA_SCREEN_WIDTH  * mag;
   dh = GBA_SCREEN_HEIGHT * mag;
 
-  dx = (PSP_SCREEN_WIDTH  - dw) >> 1;
-  dy = (PSP_SCREEN_HEIGHT - dh) >> 1;
+  // Apply user-specified X/Y offset for overlay positioning
+  extern u32 option_overlay_offset_x;
+  extern u32 option_overlay_offset_y;
+  
+  // DEBUG: Check what the variables actually contain
+  FILE *debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "generate_display_list: READING offset vars: option_overlay_offset_x=%d, option_overlay_offset_y=%d\n", 
+            option_overlay_offset_x, option_overlay_offset_y);
+    fclose(debug_log);
+  }
+  
+  // Calculate position: default center + user offset (allowing negative movement)
+  u32 default_dx = (PSP_SCREEN_WIDTH  - dw) >> 1;
+  u32 default_dy = (PSP_SCREEN_HEIGHT - dh) >> 1;
+  
+  // Convert offset to signed and allow movement in both directions from center
+  int offset_x_signed = (int)option_overlay_offset_x - 120; // Range: -120 to +120
+  int offset_y_signed = (int)option_overlay_offset_y - 56;  // Range: -56 to +56
+  
+  // Calculate new position with bounds checking
+  int new_dx = (int)default_dx + offset_x_signed;
+  int new_dy = (int)default_dy + offset_y_signed;
+  
+  // Clamp to screen bounds to prevent crashes
+  dx = (new_dx < 0) ? 0 : (new_dx > PSP_SCREEN_WIDTH - dw) ? PSP_SCREEN_WIDTH - dw : new_dx;
+  dy = (new_dy < 0) ? 0 : (new_dy > PSP_SCREEN_HEIGHT - dh) ? PSP_SCREEN_HEIGHT - dh : new_dy;
+  
+  // DEBUG: Log display list positioning
+  debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "generate_display_list: mag=%.2f, dw=%d, dh=%d, default_dx=%d, default_dy=%d, offset_x=%d, offset_y=%d, final_dx=%d, final_dy=%d\n", 
+            mag, dw, dh, default_dx, default_dy, option_overlay_offset_x, option_overlay_offset_y, dx, dy);
+    fclose(debug_log);
+  }
 
   sceGuStart(GU_CALL, display_list_0);
 
@@ -3456,6 +3489,9 @@ static void bitbilt_gu(void)
   sceGuStart(GU_DIRECT, display_list);
 
   sceGuCallList(display_list_0);
+  
+  // Apply overlay BEFORE GPU finishes - while we're still in the GPU command stream
+  render_overlay();
 
   sceGuFinish();
   sceGuSync(0, GU_SYNC_FINISH);
@@ -3510,6 +3546,9 @@ static void bitbilt_sw(void)
     vptr0 += (PSP_LINE_SIZE * 3);
     d0 += (GBA_LINE_SIZE * 2);
   }
+  
+  // Apply overlay after software rendering is complete
+  render_overlay();
 }
 
 
@@ -3532,8 +3571,14 @@ void video_resolution_small(void)
   sceGuSync(0, GU_SYNC_FINISH);
 }
 
-static void set_gba_resolution(void)
+void set_gba_resolution(void)
 {
+  FILE *debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "set_gba_resolution: option_screen_scale=%d\n", option_screen_scale);
+    fclose(debug_log);
+  }
+  
   switch (option_screen_scale)
   {
     case SCALED_NONE:
@@ -3547,7 +3592,13 @@ static void set_gba_resolution(void)
       break;
 
     case SCALED_X15_SW:
-      update_screen = bitbilt_sw;
+      // If offset is being used, force hardware scaling to support positioning
+      if (option_overlay_offset_x != 0 || option_overlay_offset_y != 0) {
+        generate_display_list(1.5);
+        update_screen = bitbilt_gu;
+      } else {
+        update_screen = bitbilt_sw;
+      }
       break;
 
     case SCALED_USER:
@@ -3560,6 +3611,10 @@ static void set_gba_resolution(void)
 
 void clear_screen(u32 color)
 {
+  // When screen is cleared, overlay needs to be re-applied
+  extern int overlay_needs_update;
+  overlay_needs_update = 1;
+  
   sceGuStart(GU_DIRECT, display_list);
 
   sceGuClearColor(color);
@@ -4131,4 +4186,195 @@ void video_write_mem_savestate(SceUID savestate_file)
   VIDEO_SAVESTATE_BODY(WRITE_MEM);
 }
 
+// Overlay system implementation - Full PSP resolution
+#define OVERLAY_WIDTH 480
+#define OVERLAY_HEIGHT 272
+#define OVERLAY_SIZE (OVERLAY_WIDTH * OVERLAY_HEIGHT)
+
+// Overlay buffer - stores RGBA5551 format (1 bit alpha, 5 bits per color)
+static u16 overlay_buffer[OVERLAY_SIZE];
+static int overlay_loaded = 0;
+static u32 overlay_enabled = 0;
+static int overlay_first_render = 1;
+int overlay_needs_update = 0;  // Flag to track when overlay needs re-rendering
+
+// Optimization: Pre-computed list of opaque pixel offsets
+#define MAX_OPAQUE_PIXELS 30000
+static u32 opaque_pixel_offsets[MAX_OPAQUE_PIXELS];
+static int num_opaque_pixels = 0;
+
+// Ultra-fast overlay cache: pre-computed framebuffer writes
+static struct {
+  u32 framebuffer_offset;  // Final framebuffer position
+  u16 pixel_color;         // Pixel color to write
+} overlay_write_cache[MAX_OPAQUE_PIXELS];
+static int cache_valid = 0;
+
+// Function declaration
+static void build_overlay_cache(void);
+
+extern u32 option_overlay_enabled;
+extern u32 option_overlay_selected;
+extern char overlay_names[][64];
+extern char dir_overlay[];
+
+// Load overlay from file (simple raw binary format for now)
+void load_overlay(const char *filename) 
+{
+  SceUID fd;
+  char filepath[MAX_PATH];
+  FILE *debug_log;
+  
+  // Clear overlay first
+  clear_overlay();
+  
+  debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "load_overlay: filename='%s'\n", filename ? filename : "NULL");
+    fclose(debug_log);
+  }
+  
+  if (!filename || strcmp(filename, "None") == 0) {
+    return;
+  }
+  
+  // Build full path to overlay file
+  sprintf(filepath, "%s%s.ovl", dir_overlay, filename);
+  
+  debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "load_overlay: trying path='%s'\n", filepath);
+    fclose(debug_log);
+  }
+  
+  // Try to open overlay file (using .ovl extension for raw overlay data)
+  fd = sceIoOpen(filepath, PSP_O_RDONLY, 0777);
+  if (fd >= 0) {
+    // Read overlay data (480x272 pixels, 2 bytes per pixel = 261,120 bytes)
+    int bytes_read = sceIoRead(fd, overlay_buffer, OVERLAY_SIZE * 2);
+    sceIoClose(fd);
+    overlay_loaded = 1;
+    overlay_first_render = 1; // Reset first render flag for new overlay
+    overlay_needs_update = 1; // Mark that overlay needs to be rendered
+    
+    debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "load_overlay: Set overlay_loaded=1, overlay_needs_update=1, overlay_first_render=1\n");
+      fclose(debug_log);
+    }
+    
+    // Build ultra-fast overlay cache
+    build_overlay_cache();
+    
+    debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "load_overlay: SUCCESS! Read %d bytes, overlay_loaded=%d, opaque=%d\n", 
+              bytes_read, overlay_loaded, num_opaque_pixels);
+      fclose(debug_log);
+    }
+  } else {
+    // Try PNG format (would need proper PNG loading implementation)
+    sprintf(filepath, "%s%s.png", dir_overlay, filename);
+    // For now, PNG loading is not implemented
+    overlay_loaded = 0;
+    
+    debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "load_overlay: FAILED to open file\n");
+      fclose(debug_log);
+    }
+  }
+}
+
+// Clear overlay buffer - don't touch framebuffers unless necessary
+void clear_overlay(void) 
+{
+  // Clear overlay buffer state
+  overlay_loaded = 0;
+  num_opaque_pixels = 0; // Reset opaque pixel count
+  overlay_needs_update = 0; // Reset update flag
+  
+  // Don't clear framebuffers here - let the game re-render naturally
+  // The overlay system will just stop applying new overlay pixels
+}
+
+// Force a complete framebuffer refresh - only used when changing positions
+void force_screen_refresh(void) 
+{
+  // Clear both framebuffers to black - the game will redraw everything
+  u16 *frame0 = (u16 *)psp_vram_addr((void *)0, 0, 0);
+  u16 *frame1 = (u16 *)psp_vram_addr((void *)PSP_FRAME_SIZE, 0, 0);
+  
+  for (int y = 0; y < PSP_SCREEN_HEIGHT; y++) {
+    for (int x = 0; x < PSP_SCREEN_WIDTH; x++) {
+      frame0[y * PSP_LINE_SIZE + x] = 0x0000;
+      frame1[y * PSP_LINE_SIZE + x] = 0x0000;
+    }
+  }
+  
+  sceKernelDcacheWritebackAll();
+}
+
+// Apply overlay borders once (for static border overlays)
+// Build cached overlay operations for maximum performance
+void build_overlay_cache(void) {
+  int cache_index = 0;
+  int x, y;
+  
+  // Clear cache
+  cache_valid = 0;
+  
+  if (!overlay_loaded) return;
+  
+  // Pre-calculate all framebuffer operations
+  for (y = 0; y < OVERLAY_HEIGHT; y++) {
+    for (x = 0; x < OVERLAY_WIDTH; x++) {
+      u16 overlay_pixel = overlay_buffer[y * OVERLAY_WIDTH + x];
+      
+      // Only cache opaque pixels
+      if (overlay_pixel & 0x8000) {
+        if (cache_index < MAX_OPAQUE_PIXELS) {
+          // Pre-calculate framebuffer offset (no bounds check needed - overlay is 480x272)
+          overlay_write_cache[cache_index].framebuffer_offset = (y * PSP_LINE_SIZE) + x;
+          overlay_write_cache[cache_index].pixel_color = overlay_pixel;
+          cache_index++;
+        }
+      }
+    }
+  }
+  
+  num_opaque_pixels = cache_index;
+  cache_valid = 1;
+  
+  FILE *debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "build_overlay_cache: Found %d opaque pixels, cache_valid=%d\n", 
+            num_opaque_pixels, cache_valid);
+    fclose(debug_log);
+  }
+}
+
+void apply_overlay_borders(void) 
+{
+  if (!option_overlay_enabled || !overlay_loaded) return;
+  
+  // Get both framebuffers
+  u16 *fb0 = (u16 *)0x04000000;
+  u16 *fb1 = (u16 *)0x04044000;
+  
+  // Apply pre-calculated overlay pixels
+  for (int i = 0; i < num_opaque_pixels; i++) {
+    u32 offset = overlay_write_cache[i].framebuffer_offset;
+    u16 color = overlay_write_cache[i].pixel_color;
+    fb0[offset] = color;
+    fb1[offset] = color;
+  }
+}
+
+void render_overlay(void) 
+{
+  if (option_overlay_enabled && overlay_loaded) {
+    apply_overlay_borders();
+  }
+}
 

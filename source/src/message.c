@@ -445,6 +445,12 @@ const char *message[4][MSG_END] =
     "Enabled: %s",
 
     //MSG_OVERLAY_MENU_2
+    "X Offset: %d",
+
+    //MSG_OVERLAY_MENU_3
+    "Y Offset: %d",
+
+    //MSG_OVERLAY_MENU_4
     "Back to main menu",
 
     //MSG_OVERLAY_MENU_HELP_0
@@ -454,6 +460,12 @@ const char *message[4][MSG_END] =
     FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":Toggle overlay on/off",
 
     //MSG_OVERLAY_MENU_HELP_2
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":Adjust X position (0-240)",
+
+    //MSG_OVERLAY_MENU_HELP_3
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":Adjust Y position (0-112)",
+
+    //MSG_OVERLAY_MENU_HELP_4
     "X:Return to main menu",
 
     // MSG_NON_LOAD_GAME

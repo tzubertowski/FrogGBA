@@ -62,6 +62,8 @@ extern u32 option_language;
 
 extern u32 option_overlay_enabled;
 extern u32 option_overlay_selected;
+extern u32 option_overlay_offset_x;
+extern u32 option_overlay_offset_y;
 
 extern u32 option_frameskip_type;
 extern u32 option_frameskip_value;
