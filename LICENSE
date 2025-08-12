@@ -1,0 +1,56 @@
+FrogGBA - Modified TempGBA4PSP for Enhanced PSP Gameplay
+==========================================================
+
+Copyright (C) 2024 FrogGBA Project Contributors
+Based on TempGBA4PSP and gameplaySP kai
+
+This software is a derivative work based on:
+- gameplaySP kai by Exophase (2006) and takka (2007)
+- TempGBA4PSP modifications by various contributors
+- Additional enhancements and overlay system by FrogGBA Project (2024)
+
+LICENSE
+-------
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 2 of
+the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
+ORIGINAL COPYRIGHT NOTICES
+--------------------------
+
+gameplaySP kai:
+Copyright (C) 2006 Exophase <exophase@gmail.com>
+Copyright (C) 2007 takka <takka@tfact.net>
+
+ADDITIONAL COMPONENTS
+--------------------
+
+The overlay system, PNG to OVL converter tools, and performance optimizations
+are additional contributions by the FrogGBA Project and are licensed under
+the same GPL v2+ terms as the original software.
+
+Web-based tools (HTML/JavaScript files in tools/ directory) may be used,
+modified, and distributed under the same GPL v2+ license terms.
+
+ACKNOWLEDGMENTS
+--------------
+
+Special thanks to:
+- Exophase for the original gameplaySP emulator
+- takka for gameplaySP kai improvements
+- The TempGBA4PSP community for PSP-specific enhancements
+- All contributors who have helped improve this emulator
+
+For the full text of the GPL v2 license, see:
+https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
