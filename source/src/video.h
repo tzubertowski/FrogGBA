@@ -75,6 +75,7 @@ void flip_screen(u32 vsync);
 void load_overlay(const char *filename);
 void render_overlay(void);
 void clear_overlay(void);
+void free_overlay_memory(void);
 
 void video_resolution_large(void);
 void video_resolution_small(void);
