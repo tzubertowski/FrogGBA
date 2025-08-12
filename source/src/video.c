@@ -3573,12 +3573,24 @@ void video_resolution_small(void)
 
 void set_gba_resolution(void)
 {
+  extern u32 option_aspect_ratio;
+  
   FILE *debug_log = fopen("froggba_debug.log", "a");
   if (debug_log) {
-    fprintf(debug_log, "set_gba_resolution: option_screen_scale=%d\n", option_screen_scale);
+    fprintf(debug_log, "set_gba_resolution: option_screen_scale=%d, aspect_ratio=%d\n", 
+            option_screen_scale, option_aspect_ratio);
     fclose(debug_log);
   }
   
+  // If zoom mode is selected, force full screen regardless of scale setting
+  if (option_aspect_ratio == 1) {
+    // Zoom mode: fill entire screen (480x272)
+    generate_display_list(2.0); // 240*2=480, 160*2=320 (will be clipped to 272)
+    update_screen = bitbilt_gu;
+    return;
+  }
+  
+  // Core provided (3:2) - use normal scaling based on scale setting
   switch (option_screen_scale)
   {
     case SCALED_NONE:
