@@ -44,6 +44,7 @@ void action_loadstate(void);
 void action_savestate(void);
 
 void init_overlays_at_boot(void);
+void load_recent_games(void);
 
 
 #endif /* GUI_H */

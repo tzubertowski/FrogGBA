@@ -360,21 +360,21 @@ u32 update_input(void)
   if ((enable_home_menu != 0) && ((non_repeat_buttons & PSP_CTRL_HOME) != 0))
   {
     // Safety wrapper for HOME button menu call to help debug crashes
-    FILE *debug_log = fopen("froggba_debug.log", "a");
+    /*FILE *debug_log = fopen("froggba_debug.log", "a");
     if (debug_log) {
       fprintf(debug_log, "HOME button pressed - calling menu() safely\n");
       fflush(debug_log);
       fclose(debug_log);
-    }
+    }*/
     
     u32 menu_result = menu();
     
-    debug_log = fopen("froggba_debug.log", "a");
+    /*debug_log = fopen("froggba_debug.log", "a");
     if (debug_log) {
       fprintf(debug_log, "menu() returned: %lu\n", (unsigned long)menu_result);
       fflush(debug_log);
       fclose(debug_log);
-    }
+    }*/
     
     // Ensure HOME button is released before returning to prevent immediate re-trigger
     SceCtrlData ctrl_wait;
@@ -383,12 +383,12 @@ u32 update_input(void)
       sceKernelDelayThread(16000); // ~16ms delay (1/60th second)
     } while ((ctrl_wait.Buttons & PSP_CTRL_HOME) != 0);
     
-    debug_log = fopen("froggba_debug.log", "a");
+    /*debug_log = fopen("froggba_debug.log", "a");
     if (debug_log) {
       fprintf(debug_log, "HOME button released, returning result: %lu\n", (unsigned long)menu_result);
       fflush(debug_log);
       fclose(debug_log);
-    }
+    }*/
     
     return menu_result;
   }
