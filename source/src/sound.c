@@ -22,7 +22,7 @@
 
 
 #define SOUND_BUFFER_SIZE (SOUND_SAMPLES * 2)
-#define RING_BUFFER_SIZE  (65536)
+#define RING_BUFFER_SIZE  (32768)
 
 u32 sound_pause = 0;
 
