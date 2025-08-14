@@ -25,6 +25,7 @@
 #define SOUND_SAMPLES   (800)
 #define SOUND_FREQUENCY (48000)
 
+// Lower quality settings (can enable for performance)
 // #define SOUND_SAMPLES   (736)
 // #define SOUND_FREQUENCY (44100)
 
