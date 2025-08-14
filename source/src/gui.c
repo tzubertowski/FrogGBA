@@ -22,7 +22,7 @@
 #include <pspiofilemgr.h>
 
 #define GPSP_CONFIG_FILENAME  "froggba.cfg"
-#define GPSP_CONFIG_NUM       (22 + 16) // options + game pad config + overlay options + aspect ratio
+#define GPSP_CONFIG_NUM       (23 + 16) // options + game pad config + overlay options + aspect ratio + compatibility mode
 #define GPSP_GAME_CONFIG_NUM  (7 + 16)
 
 #define COLOR_BG            COLOR15( 8, 15, 12)  // Soft mint green background
@@ -1708,6 +1708,7 @@ u32 menu(void)
 	option_screen_scale = SCALED_X15_GU;
 	option_screen_mag = 170;
 	option_screen_filter = FILTER_BILINEAR;
+	option_compatibility_mode = 0; // Default to fast mode
 	psp_fps_debug = 0;
 	option_frameskip_type = FRAMESKIP_AUTO;
 	option_frameskip_value = 9;
@@ -1975,29 +1976,31 @@ u32 menu(void)
 
     STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_2], on_off_options, &option_screen_filter, 2, MSG_OPTION_MENU_HELP_2, 3),
 
-    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_SHOW_FPS], on_off_options, &psp_fps_debug, 2, MSG_OPTION_MENU_HELP_SHOW_FPS, 4),
+    {NULL, NULL, NULL, "Compatibility Mode: %s", (void*)on_off_options, &option_compatibility_mode, 2, MSG_OPTION_MENU_HELP_7, 5, STRING_SELECTION_OPTION},
 
-    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_COLOR_CORRECTION], color_correction_options, &option_color_correction, 3, MSG_OPTION_MENU_HELP_COLOR_CORRECTION, 5),
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_SHOW_FPS], on_off_options, &psp_fps_debug, 2, MSG_OPTION_MENU_HELP_SHOW_FPS, 6),
 
-    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_3], frameskip_options, &option_frameskip_type, 3, MSG_OPTION_MENU_HELP_3, 6),
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_COLOR_CORRECTION], color_correction_options, &option_color_correction, 3, MSG_OPTION_MENU_HELP_COLOR_CORRECTION, 7),
 
-    NUMERIC_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_4], &option_frameskip_value, 10, MSG_OPTION_MENU_HELP_4, 7),
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_3], frameskip_options, &option_frameskip_type, 3, MSG_OPTION_MENU_HELP_3, 8),
 
-    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_5], clock_speed_options, &option_clock_speed, 4, MSG_OPTION_MENU_HELP_5, 8), 
+    NUMERIC_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_4], &option_frameskip_value, 10, MSG_OPTION_MENU_HELP_4, 9),
 
-    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_6], sound_volume_options, &option_sound_volume, 11, MSG_OPTION_MENU_HELP_6, 9),
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_5], clock_speed_options, &option_clock_speed, 4, MSG_OPTION_MENU_HELP_5, 10), 
 
-    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_7], stack_optimize_options, &option_stack_optimize, 2, MSG_OPTION_MENU_HELP_7, 10),
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_6], sound_volume_options, &option_sound_volume, 11, MSG_OPTION_MENU_HELP_6, 11),
 
-    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_8], yes_no_options, &option_boot_mode, 2, MSG_OPTION_MENU_HELP_8, 11),
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_7], stack_optimize_options, &option_stack_optimize, 2, MSG_OPTION_MENU_HELP_7, 12),
 
-    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_9], update_backup_options, &option_update_backup, 2, MSG_OPTION_MENU_HELP_9, 12), 
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_8], yes_no_options, &option_boot_mode, 2, MSG_OPTION_MENU_HELP_8, 13),
 
-    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_10], language_options, &option_language, 2, MSG_OPTION_MENU_HELP_10, 13),
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_9], update_backup_options, &option_update_backup, 2, MSG_OPTION_MENU_HELP_9, 14), 
 
-    ACTION_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_DEFAULT], MSG_OPTION_MENU_HELP_DEFAULT, 14),
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_10], language_options, &option_language, 2, MSG_OPTION_MENU_HELP_10, 15),
 
-    ACTION_SUBMENU_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_11], MSG_OPTION_MENU_HELP_11, 15)
+    ACTION_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_DEFAULT], MSG_OPTION_MENU_HELP_DEFAULT, 16),
+
+    ACTION_SUBMENU_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_11], MSG_OPTION_MENU_HELP_11, 17)
   };
 
   MAKE_MENU(emulator, NULL, NULL);
@@ -2672,6 +2675,7 @@ s32 save_config_file(void)
     file_options[18]  = option_overlay_offset_x;
     file_options[19]  = option_overlay_offset_y;
     file_options[20]  = option_aspect_ratio;
+    file_options[21]  = option_compatibility_mode;
 
     for (i = 0; i < 16; i++)
     {
@@ -2803,6 +2807,10 @@ s32 load_config_file(void)
       option_overlay_offset_x = file_options[18] % 241;  // 0-240 X offset
       option_overlay_offset_y = file_options[19] % 113;  // 0-112 Y offset
       option_aspect_ratio = file_options[20] % 3;  // 0-2 aspect ratio
+      option_compatibility_mode = file_options[21] % 2;  // 0 = Fast, 1 = Accurate
+      
+      // Update memory timing when loading config
+      set_compatibility_mode(option_compatibility_mode);
 
       for (i = 0; i < 16; i++)
       {

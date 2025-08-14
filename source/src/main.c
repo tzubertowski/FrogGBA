@@ -38,6 +38,7 @@ u32 option_screen_mag = 170;
 u32 option_screen_filter = FILTER_BILINEAR;
 u32 option_sound_volume = 10;
 u32 option_stack_optimize = 1;
+u32 option_compatibility_mode = 0;
 u32 option_boot_mode = 0;
 u32 option_update_backup = 0;
 u32 option_screen_capture_format = 0;

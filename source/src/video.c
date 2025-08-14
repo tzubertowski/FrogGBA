@@ -100,6 +100,10 @@ u8 ALIGN_DATA obj_priority_list[5][160][128];
 u8 ALIGN_DATA obj_priority_count[5][160];
 u8 ALIGN_DATA obj_alpha_count[160];
 
+// Track which scanlines had sprites for optimized clearing
+static u16 used_scanlines_mask[10];  // 160 bits packed into 10 u16s
+static u8 used_priority_levels;
+
 u8 ALIGN_DATA layer_order[16];
 u32 layer_count;
 
@@ -2162,8 +2166,25 @@ static void order_obj(u8 video_mode)
   u16 current_count;
   u16 *oam_ptr = oam_ram + 508;
 
-  memset(obj_priority_count, 0, 5 * 160);
-  memset(obj_alpha_count, 0, 160);
+  // Optimized clearing - only clear scanlines that had sprites in the previous frame
+  for (int mask_idx = 0; mask_idx < 10; mask_idx++) {
+    u16 mask = used_scanlines_mask[mask_idx];
+    if (mask) {
+      for (int bit = 0; bit < 16 && (mask_idx * 16 + bit) < 160; bit++) {
+        if (mask & (1 << bit)) {
+          int scanline = mask_idx * 16 + bit;
+          obj_alpha_count[scanline] = 0;
+          for (int priority = 0; priority < 5; priority++) {
+            if (used_priority_levels & (1 << priority)) {
+              obj_priority_count[priority][scanline] = 0;
+            }
+          }
+        }
+      }
+      used_scanlines_mask[mask_idx] = 0; // Clear for this frame
+    }
+  }
+  used_priority_levels = 0;
 
   for (obj_num = 127; obj_num >= 0; obj_num--, oam_ptr -= 4)
   {
@@ -2227,6 +2248,9 @@ static void order_obj(u8 video_mode)
               obj_priority_list[obj_priority][row][current_count] = obj_num;
               obj_priority_count[obj_priority][row] = current_count + 1;
               obj_alpha_count[row] = 1;
+              // Track usage for optimized clearing
+              used_scanlines_mask[row / 16] |= 1 << (row % 16);
+              used_priority_levels |= 1 << obj_priority;
             }
           }
           else
@@ -2239,6 +2263,9 @@ static void order_obj(u8 video_mode)
               current_count = obj_priority_count[obj_priority][row];
               obj_priority_list[obj_priority][row][current_count] = obj_num;
               obj_priority_count[obj_priority][row] = current_count + 1;
+              // Track usage for optimized clearing
+              used_scanlines_mask[row / 16] |= 1 << (row % 16);
+              used_priority_levels |= 1 << obj_priority;
             }
           }
         }

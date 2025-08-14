@@ -3930,15 +3930,35 @@ void flush_translation_cache(TRANSLATION_REGION_TYPE translation_region, CACHE_F
 
 #ifdef PSP_REDUCE_CACHE_INVALIDATION
   // PSP MIPS32 Cache Invalidation Reduction Optimization 
-  // Only enable when user explicitly enables optimizations
+  // Enhanced for better Castlevania performance
   psp_cache_flush_counter++;
   
-  // Conservative cache invalidation reduction - only skip non-critical flushes
+  // More aggressive cache invalidation reduction for better frame stability
   if (flush_reason == FLUSH_REASON_NATIVE_BRANCHING) {
-    // Skip every 2nd flush for native branching (less critical)
-    if ((psp_cache_flush_counter % 2) != 0) {
+    // Skip 3 out of 4 flushes for native branching (less critical)
+    if ((psp_cache_flush_counter % 4) != 0) {
       return; // Skip this cache flush
     }
+  }
+  
+  // Additional optimization: defer cache flushes during heavy activity
+  static u32 recent_flush_count = 0;
+  static u32 last_flush_check = 0;
+  u32 current_time = (u32)(ticker() / 1000);  // Get time in milliseconds
+  
+  // Check if we're in a high-activity period (more than 8 flushes per 100ms)
+  if (current_time - last_flush_check > 100) {
+    last_flush_check = current_time;
+    if (recent_flush_count > 8 && flush_reason == FLUSH_REASON_NATIVE_BRANCHING) {
+      // During high activity, skip even more aggressively
+      if ((psp_cache_flush_counter % 8) != 0) {
+        recent_flush_count = 0;
+        return;
+      }
+    }
+    recent_flush_count = 0;
+  } else {
+    recent_flush_count++;
   }
   // Always do full cache flushes - they're too important to skip
 #endif
