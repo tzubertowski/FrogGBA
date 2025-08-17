@@ -2951,6 +2951,8 @@ static void render_scanline_tile(u16 *scanline, u16 dispcnt)
   u16 bldcnt = pIO_REG(REG_BLDCNT);
   render_scanline_layer_functions_tile();
 
+  // Disabled layer caching for now - was causing glitches
+  // Just use normal rendering path
   render_layers_color_effect(render_layers, layer_count, render_condition_alpha, render_condition_fade, 0, 240);
 }
 
