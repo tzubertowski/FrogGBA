@@ -34,7 +34,7 @@ This mod is based on:
 - **Full-Screen Borders**: Overlays can now stretch across the entire PSP display
 - **Custom Overlays/Borders**: Render PNG overlays above the game window for bezels, borders, and custom frames
 - **X/Y Offset Controls**: Position the game window anywhere on screen
-- **Online Overlay Generator**: Convert PNG images to OVL format at [froggba.render.com](https://froggba.render.com)
+- **Online Overlay Generator**: Convert PNG images to OVL format at [froggba.onrender.com](https://froggba.onrender.com)
 - **Multiple Overlay Slots**: Store up to 10 different overlays and switch between them
 - **RLE Compression**: Advanced compression handles pixel-dense designs without slowdown
 

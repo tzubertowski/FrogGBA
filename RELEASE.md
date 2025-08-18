@@ -41,7 +41,7 @@ Major performance update inspired by gpSP Kai optimizations. This release brings
 * **Recent Games Menu** – Quick access to your last played titles
 * **Lightning-Fast Overlays** – Full-screen borders with zero performance impact
 * **Custom Overlay Support** – Up to 10 designs with pixel-perfect positioning
-* **Online Overlay Generator** – Create your own at [froggba.render.com](https://froggba.render.com)
+* **Online Overlay Generator** – Create your own at [froggba.onrender.com](https://froggba.onrender.com)
 * **Multiple Aspect Ratios** – Choose your preferred display mode
 * **Fast Color Correction** – Hardware-accelerated color processing
 
