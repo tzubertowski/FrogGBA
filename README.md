@@ -82,7 +82,7 @@ This mod is based on:
 ## 🎨 How to Use Custom Overlays
 
 ### Creating Overlays
-1. **Visit the Online Generator**: Go to [froggba.render.com](https://froggba.render.com)
+1. **Visit the Online Generator**: Go to [froggba.onrender.com](https://froggba.onrender.com)
 2. **Upload Your PNG**: 
    - Image must be exactly 480×272 pixels (PSP screen size)
    - Transparent areas will show the game
