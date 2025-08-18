@@ -4101,8 +4101,6 @@ void set_cpu_mode(CPU_MODE_TYPE new_mode)
 
 static void init_translation_caches(void)
 {
-  static int caches_initialized = 0;
-  
   if (caches_initialized)
     return;
     
@@ -4201,25 +4199,32 @@ void cpu_write_mem_savestate(SceUID savestate_file)
   CPU_SAVESTATE_BODY(WRITE_MEM);
 }
 
+// Track initialization state (needs to be global for cpu_term)
+static int caches_initialized = 0;
+
 void cpu_term(void)
 {
-  // Free translation caches (handles both regular and volatile memory)
-  if (readonly_code_cache) {
-    volatile_mem_free(readonly_code_cache);  // This function handles both types
-    readonly_code_cache = NULL;
-    readonly_next_code = NULL;
-    readonly_cache_size = 0;
-  }
+  // Static caches don't need to be freed, just reset the pointers
+  readonly_code_cache = NULL;
+  readonly_next_code = NULL;
+  readonly_cache_size = 0;
   
-  if (writable_code_cache) {
-    volatile_mem_free(writable_code_cache);  // This function handles both types
-    writable_code_cache = NULL;
-    writable_next_code = NULL;
-    writable_cache_size = 0;
-  }
+  writable_code_cache = NULL;
+  writable_next_code = NULL;
+  writable_cache_size = 0;
   
-  // Shutdown volatile memory system
-  volatile_mem_shutdown();
+  // Clear the static arrays for next use
+  memset(rom_translation_cache, 0xFF, sizeof(rom_translation_cache));
+  memset(ram_translation_cache, 0xFF, sizeof(ram_translation_cache));
+  memset(bios_translation_cache, 0xFF, sizeof(bios_translation_cache));
+  
+  // Reset pointers to beginning of static caches
+  rom_translation_ptr = rom_translation_cache;
+  ram_translation_ptr = ram_translation_cache;
+  bios_translation_ptr = bios_translation_cache;
+  
+  // Mark caches as uninitialized for next run
+  caches_initialized = 0;
 }
 
 
