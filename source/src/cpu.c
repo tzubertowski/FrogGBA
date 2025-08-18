@@ -4098,6 +4098,8 @@ void set_cpu_mode(CPU_MODE_TYPE new_mode)
   reg[CPU_MODE] = new_mode;
 }
 
+// Track initialization state (needs to be global for cpu_term)
+static int caches_initialized = 0;
 
 static void init_translation_caches(void)
 {
@@ -4198,9 +4200,6 @@ void cpu_write_mem_savestate(SceUID savestate_file)
 {
   CPU_SAVESTATE_BODY(WRITE_MEM);
 }
-
-// Track initialization state (needs to be global for cpu_term)
-static int caches_initialized = 0;
 
 void cpu_term(void)
 {
