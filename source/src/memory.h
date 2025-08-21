@@ -231,6 +231,7 @@ s32 parse_config_line(char *current_line, char *current_variable, char *current_
 
 void init_memory(void);
 void init_gamepak_buffer(void);
+void set_compatibility_mode(u32 mode);
 
 void memory_term(void);
 

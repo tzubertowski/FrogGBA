@@ -25,30 +25,81 @@
 #define CONFIG_FILENAME  "game_config.txt"
 
 
-// Optimized waitstate tables - reduced penalties for better performance
-u8 ALIGN_DATA memory_waitstate_n[2][16] =
+// Alternative waitstate tables for compatibility mode
+static u8 ALIGN_DATA memory_waitstate_n_accurate[2][16] =
 {
-  { 0, 0, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0 }, // 8,16bit accesses (reduced)
-  { 0, 0, 3, 0, 0, 1, 1, 1, 4, 4, 5, 5, 7, 7, 2, 0 }  // 32bit accesses (reduced)
+  { 0, 0, 2, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 0 }, // 8,16bit accesses
+  { 0, 0, 5, 0, 0, 1, 1, 1, 7, 7, 9, 9,13,13, 4, 0 }  // 32bit accesses
 };
 
-u8 ALIGN_DATA memory_waitstate_s[2][16] =
+static u8 ALIGN_DATA memory_waitstate_s_accurate[2][16] =
 {
-  { 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 2, 2, 4, 4, 2, 0 }, // Sequential penalties reduced
-  { 0, 0, 3, 0, 0, 1, 1, 1, 3, 3, 5, 5, 9, 9, 2, 0 }  // Sequential penalties reduced
+  { 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 4, 4, 8, 8, 4, 0 },
+  { 0, 0, 5, 0, 0, 1, 1, 1, 5, 5, 9, 9,17,17, 4, 0 }
 };
 
-u8 ALIGN_DATA fetch_waitstate_n[2][16] =
+static u8 ALIGN_DATA fetch_waitstate_n_accurate[2][16] =
 {
-  { 0, 0, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0 }, // Fetch penalties reduced
-  { 0, 0, 3, 0, 0, 1, 1, 1, 4, 4, 5, 5, 7, 7, 2, 0 }  // Fetch penalties reduced
+  { 0, 0, 2, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 0 },
+  { 0, 0, 5, 0, 0, 1, 1, 1, 7, 7, 9, 9,13,13, 4, 0 }
 };
 
-u8 ALIGN_DATA fetch_waitstate_s[2][16] =
+static u8 ALIGN_DATA fetch_waitstate_s_accurate[2][16] =
 {
-  { 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 2, 2, 4, 4, 2, 0 }, // Sequential fetch reduced
-  { 0, 0, 3, 0, 0, 1, 1, 1, 3, 3, 5, 5, 9, 9, 2, 0 }  // Sequential fetch reduced
+  { 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 4, 4, 8, 8, 4, 0 },
+  { 0, 0, 5, 0, 0, 1, 1, 1, 5, 5, 9, 9,17,17, 4, 0 }
 };
+
+// Function to switch between compatibility and performance modes
+void set_compatibility_mode(u32 mode) {
+  int i, j;
+  
+  if (mode == 1) {
+    // Copy accurate timing values for compatibility
+    for (i = 0; i < 2; i++) {
+      for (j = 0; j < 16; j++) {
+        memory_waitstate_n[i][j] = memory_waitstate_n_accurate[i][j];
+        memory_waitstate_s[i][j] = memory_waitstate_s_accurate[i][j];
+        fetch_waitstate_n[i][j] = fetch_waitstate_n_accurate[i][j];
+        fetch_waitstate_s[i][j] = fetch_waitstate_s_accurate[i][j];
+      }
+    }
+  } else {
+    // Use fast timing - restore original optimized values
+    // 8/16-bit accesses
+    memory_waitstate_n[0][0] = 0; memory_waitstate_n[0][1] = 0; memory_waitstate_n[0][2] = 1;
+    memory_waitstate_n[0][3] = 0; memory_waitstate_n[0][4] = 0; memory_waitstate_n[0][5] = 0;
+    memory_waitstate_n[0][6] = 0; memory_waitstate_n[0][7] = 0; memory_waitstate_n[0][8] = 2;
+    memory_waitstate_n[0][9] = 2; memory_waitstate_n[0][10] = 2; memory_waitstate_n[0][11] = 2;
+    memory_waitstate_n[0][12] = 2; memory_waitstate_n[0][13] = 2; memory_waitstate_n[0][14] = 2;
+    memory_waitstate_n[0][15] = 0;
+
+    // 32-bit accesses
+    memory_waitstate_n[1][0] = 0; memory_waitstate_n[1][1] = 0; memory_waitstate_n[1][2] = 3;
+    memory_waitstate_n[1][3] = 0; memory_waitstate_n[1][4] = 0; memory_waitstate_n[1][5] = 1;
+    memory_waitstate_n[1][6] = 1; memory_waitstate_n[1][7] = 1; memory_waitstate_n[1][8] = 4;
+    memory_waitstate_n[1][9] = 4; memory_waitstate_n[1][10] = 5; memory_waitstate_n[1][11] = 5;
+    memory_waitstate_n[1][12] = 7; memory_waitstate_n[1][13] = 7; memory_waitstate_n[1][14] = 2;
+    memory_waitstate_n[1][15] = 0;
+
+    // Sequential access values (reduced from originals)
+    memory_waitstate_s[0][2] = 1; memory_waitstate_s[0][8] = 1; memory_waitstate_s[0][9] = 1;
+    memory_waitstate_s[0][10] = 2; memory_waitstate_s[0][11] = 2; memory_waitstate_s[0][12] = 4;
+    memory_waitstate_s[0][13] = 4; memory_waitstate_s[0][14] = 2;
+
+    memory_waitstate_s[1][2] = 3; memory_waitstate_s[1][8] = 3; memory_waitstate_s[1][9] = 3;
+    memory_waitstate_s[1][10] = 5; memory_waitstate_s[1][11] = 5; memory_waitstate_s[1][12] = 9;
+    memory_waitstate_s[1][13] = 9; memory_waitstate_s[1][14] = 2;
+
+    // Copy values to fetch tables
+    for (i = 0; i < 2; i++) {
+      for (j = 0; j < 16; j++) {
+        fetch_waitstate_n[i][j] = memory_waitstate_n[i][j];
+        fetch_waitstate_s[i][j] = memory_waitstate_s[i][j];
+      }
+    }
+  }
+}
 
 // GBA memory areas.
 
@@ -79,6 +130,31 @@ u32 iwram_control;
 u8 *io_readable = (u8 *)io_registers + 0x400;
 
 u32 obj_address = 0x10000; // OBJ Tiles Address
+
+// Waitstate tables - initialized with fast values, can be switched to accurate for compatibility
+u8 ALIGN_DATA memory_waitstate_n[2][16] =
+{
+  { 0, 0, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0 }, // 8,16bit accesses (fast)
+  { 0, 0, 3, 0, 0, 1, 1, 1, 4, 4, 5, 5, 7, 7, 2, 0 }  // 32bit accesses (fast)
+};
+
+u8 ALIGN_DATA memory_waitstate_s[2][16] =
+{
+  { 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 2, 2, 4, 4, 2, 0 }, // Sequential penalties reduced
+  { 0, 0, 3, 0, 0, 1, 1, 1, 3, 3, 5, 5, 9, 9, 2, 0 }  // Sequential penalties reduced
+};
+
+u8 ALIGN_DATA fetch_waitstate_n[2][16] =
+{
+  { 0, 0, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0 }, // Fetch penalties reduced
+  { 0, 0, 3, 0, 0, 1, 1, 1, 4, 4, 5, 5, 7, 7, 2, 0 }  // Fetch penalties reduced
+};
+
+u8 ALIGN_DATA fetch_waitstate_s[2][16] =
+{
+  { 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 2, 2, 4, 4, 2, 0 }, // Sequential fetch reduced
+  { 0, 0, 3, 0, 0, 1, 1, 1, 3, 3, 5, 5, 9, 9, 2, 0 }  // Sequential fetch reduced
+};
 
 DmaTransferType ALIGN_DATA dma[4];
 const ALIGN_DATA s32 dma_addr_control[4] = { 2, -2, 0, 2 };
@@ -2814,6 +2890,9 @@ void init_gamepak_buffer(void)
 void init_memory(void)
 {
   u32 i = 0;
+
+  // Initialize memory timing based on compatibility mode
+  set_compatibility_mode(option_compatibility_mode);
 
   // Fill memory map regions, areas marked as NULL must be checked directly
   MAP_REGION(read, 0x0000000, 0x1000000, 1, bios.rom);

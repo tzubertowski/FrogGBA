@@ -81,6 +81,7 @@ extern u32 synchronize_flag;
 extern u32 psp_fps_debug;
 extern u32 option_color_correction;
 extern u32 fast_forward_speed;
+extern u32 option_compatibility_mode;
 
 extern u32 real_frame_count;
 extern u32 virtual_frame_count;
