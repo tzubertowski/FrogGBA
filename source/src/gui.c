@@ -276,6 +276,12 @@ const char *overlay_name_options[MAX_OVERLAYS] = {
 u32 num_overlays = 1; // Start with 1 for "None"
 static u32 overlays_scanned = 0; // Flag to track if we've already scanned
 
+// Recent games tracking system
+#define MAX_RECENT_GAMES 5
+static char recent_games[MAX_RECENT_GAMES][MAX_PATH];
+static int num_recent_games = 0;
+static const char *recent_games_display[MAX_RECENT_GAMES];
+
 // Global yes/no options - needed for overlay menu
 static const char *global_yes_no_options[2];
 
@@ -303,13 +309,13 @@ void init_overlays_at_boot(void)
   SceIoDirent dirent;
   char *ext;
   
-  FILE *debug_log = fopen("froggba_debug.log", "a");
+  /*FILE *debug_log = fopen("froggba_debug.log", "a");
   if (debug_log) {
     fprintf(debug_log, "DEBUG: init_overlays_at_boot() called\n");
     fprintf(debug_log, "DEBUG: dir_overlay = '%s'\n", dir_overlay);
     fflush(debug_log);
     fclose(debug_log);
-  }
+  }*/
   
   // Start with just "None"
   num_overlays = 1;
@@ -317,12 +323,12 @@ void init_overlays_at_boot(void)
   // Try to open the overlays directory
   dir = sceIoDopen(dir_overlay);
   
-  debug_log = fopen("froggba_debug.log", "a");
+  /*debug_log = fopen("froggba_debug.log", "a");
   if (debug_log) {
     fprintf(debug_log, "DEBUG: sceIoDopen returned %d\n", dir);
     fflush(debug_log);
     fclose(debug_log);
-  }
+  }*/
   
   if (dir >= 0)
   {
@@ -337,12 +343,12 @@ void init_overlays_at_boot(void)
       ext = strrchr(dirent.d_name, '.');
       if (ext && (strcasecmp(ext, ".ovl") == 0 || strcasecmp(ext, ".png") == 0))
       {
-        debug_log = fopen("froggba_debug.log", "a");
+        /*debug_log = fopen("froggba_debug.log", "a");
         if (debug_log) {
           fprintf(debug_log, "DEBUG: Found overlay: %s\n", dirent.d_name);
           fflush(debug_log);
           fclose(debug_log);
-        }
+        }*/
         
         // Copy filename and remove extension for display
         strncpy(overlay_names[num_overlays], dirent.d_name, sizeof(overlay_names[num_overlays]) - 1);
@@ -360,12 +366,12 @@ void init_overlays_at_boot(void)
     sceIoDclose(dir);
   }
   
-  debug_log = fopen("froggba_debug.log", "a");
+  /*debug_log = fopen("froggba_debug.log", "a");
   if (debug_log) {
     fprintf(debug_log, "DEBUG: init_overlays_at_boot complete, found %u overlays\n", num_overlays);
     fflush(debug_log);
     fclose(debug_log);
-  }
+  }*/
   
   // Mark as scanned
   overlays_scanned = 1;
@@ -394,13 +400,13 @@ static void overlay_changed(void)
 {
   extern int overlay_needs_update;
   
-  FILE *debug_log = fopen("froggba_debug.log", "a");
+  /*FILE *debug_log = fopen("froggba_debug.log", "a");
   if (debug_log) {
     fprintf(debug_log, "overlay_changed: selected=%d, num_overlays=%d, name='%s'\n", 
             option_overlay_selected, num_overlays, 
             option_overlay_selected < num_overlays ? overlay_names[option_overlay_selected] : "INVALID");
     fclose(debug_log);
-  }
+  }*/
   
   if (option_overlay_selected < num_overlays) {
     extern int overlay_needs_update;
@@ -416,12 +422,12 @@ static void overlay_enabled_changed(void)
   extern void load_overlay(const char *filename);
   extern char overlay_names[][64];
   
-  FILE *debug_log = fopen("froggba_debug.log", "a");
+  /*FILE *debug_log = fopen("froggba_debug.log", "a");
   if (debug_log) {
     fprintf(debug_log, "overlay_enabled_changed: enabled=%d, selected=%d\n", 
             option_overlay_enabled, option_overlay_selected);
     fclose(debug_log);
-  }
+  }*/
   
   if (option_overlay_enabled && option_overlay_selected > 0) {
     // Load the selected overlay
@@ -457,24 +463,24 @@ static void overlay_offset_changed(void)
   set_gba_resolution();
   
   // DEBUG: Log when offset changes
-  FILE *debug_log = fopen("froggba_debug.log", "a");
+  /*FILE *debug_log = fopen("froggba_debug.log", "a");
   if (debug_log) {
     extern u32 option_overlay_offset_x, option_overlay_offset_y;
     fprintf(debug_log, "overlay_offset_changed: new offset X=%d Y=%d, set overlay_needs_update=1, called set_gba_resolution\n", 
             option_overlay_offset_x, option_overlay_offset_y);
     fclose(debug_log);
-  }
+  }*/
 }
 
 // This function is no longer needed - arrays are initialized at compile time
 
 // Initialize overlay menu structure - to be called when we have MSG available
 static void init_overlay_menu_late(void) {
-    FILE *debug_log = fopen("froggba_debug.log", "a");
+    /*FILE *debug_log = fopen("froggba_debug.log", "a");
     if (debug_log) {
         fprintf(debug_log, "init_overlay_menu_late: Setting up overlay menu callbacks\n");
         fclose(debug_log);
-    }
+    }*/
     // Set up the overlay menu options with proper MSG references
     overlay_options_global[0].display_string = MSG[MSG_OVERLAY_MENU_0];
     overlay_options_global[0].options = (void*)overlay_name_options;
@@ -511,6 +517,98 @@ static void init_overlay_menu_late(void) {
     
     // No init function needed - we scan at startup
     overlay_menu_global.init_function = NULL;
+}
+
+// Recent games tracking functions
+void load_recent_games(void) {
+  char recent_games_file[MAX_PATH];
+  sprintf(recent_games_file, "%sfroggba_recent.txt", dir_cfg);
+  
+  // Initialize display array
+  for (int i = 0; i < MAX_RECENT_GAMES; i++) {
+    recent_games[i][0] = '\0';
+    recent_games_display[i] = NULL;
+  }
+  num_recent_games = 0;
+  
+  FILE *file = fopen(recent_games_file, "r");
+  if (file) {
+    char line[MAX_PATH];
+    while (fgets(line, sizeof(line), file) && num_recent_games < MAX_RECENT_GAMES) {
+      // Remove newline
+      int len = strlen(line);
+      if (len > 0 && line[len-1] == '\n') {
+        line[len-1] = '\0';
+      }
+      
+      // Copy to recent games array
+      strcpy(recent_games[num_recent_games], line);
+      recent_games_display[num_recent_games] = recent_games[num_recent_games];
+      num_recent_games++;
+    }
+    fclose(file);
+  }
+}
+
+static void save_recent_games(void) {
+  char recent_games_file[MAX_PATH];
+  sprintf(recent_games_file, "%sfroggba_recent.txt", dir_cfg);
+  
+  FILE *file = fopen(recent_games_file, "w");
+  if (file) {
+    for (int i = 0; i < num_recent_games; i++) {
+      fprintf(file, "%s\n", recent_games[i]);
+    }
+    fclose(file);
+  }
+}
+
+static void add_recent_game(const char *game_path) {
+  if (!game_path || strlen(game_path) == 0) return;
+  
+  // Check if game already exists in recent list
+  int existing_index = -1;
+  for (int i = 0; i < num_recent_games; i++) {
+    if (strcmp(recent_games[i], game_path) == 0) {
+      existing_index = i;
+      break;
+    }
+  }
+  
+  if (existing_index >= 0) {
+    // Move existing game to top
+    char temp[MAX_PATH];
+    strcpy(temp, recent_games[existing_index]);
+    
+    // Shift games down
+    for (int i = existing_index; i > 0; i--) {
+      strcpy(recent_games[i], recent_games[i-1]);
+    }
+    
+    // Put game at top
+    strcpy(recent_games[0], temp);
+  } else {
+    // Add new game at top
+    // Shift existing games down
+    for (int i = (num_recent_games < MAX_RECENT_GAMES ? num_recent_games : MAX_RECENT_GAMES - 1); i > 0; i--) {
+      strcpy(recent_games[i], recent_games[i-1]);
+    }
+    
+    // Add new game at top
+    strcpy(recent_games[0], game_path);
+    
+    // Update count
+    if (num_recent_games < MAX_RECENT_GAMES) {
+      num_recent_games++;
+    }
+  }
+  
+  // Update display pointers
+  for (int i = 0; i < num_recent_games; i++) {
+    recent_games_display[i] = recent_games[i];
+  }
+  
+  save_recent_games();
 }
 
 // Explicit declaration to ensure visibility
@@ -684,6 +782,43 @@ s32 load_file(const char **wildcards, char *result, char *default_dir_name)
     num[FILE_LIST] = 0;
     num[DIR_LIST]  = 0;
 
+    // Add recent games to the file list first (with "★ " prefix)
+    if (num_recent_games > 0 && strcmp(default_dir_name, dir_roms) == 0) {
+      // Add separator
+      file_list[num[FILE_LIST]] = (char *)safe_malloc(strlen("--- Recent Games ---") + 1);
+      sprintf(file_list[num[FILE_LIST]], "--- Recent Games ---");
+      num[FILE_LIST]++;
+      
+      // Add recent games
+      for (i = 0; i < num_recent_games && i < 5; i++) {
+        // Extract just the filename from the full path for display
+        char *filename = strrchr(recent_games[i], '/');
+        if (filename) {
+          filename++; // Skip the '/'
+        } else {
+          filename = recent_games[i];
+        }
+        
+        // Allocate space for "> " prefix + filename
+        file_list[num[FILE_LIST]] = (char *)safe_malloc(strlen(filename) + 3);
+        sprintf(file_list[num[FILE_LIST]], "> %s", filename);
+        num[FILE_LIST]++;
+        
+        // Reallocate if needed
+        if (num[FILE_LIST] == total_file_names_allocated) {
+          file_list = (char **)realloc(file_list, sizeof(char *) * (total_file_names_allocated << 1));
+          CHECK_MEM_ALLOCATE(file_list);
+          memset(file_list + total_file_names_allocated, 0, sizeof(char *) * total_file_names_allocated);
+          total_file_names_allocated <<= 1;
+        }
+      }
+      
+      // Add separator after recent games
+      file_list[num[FILE_LIST]] = (char *)safe_malloc(strlen("--- All Games ---") + 1);
+      sprintf(file_list[num[FILE_LIST]], "--- All Games ---");
+      num[FILE_LIST]++;
+    }
+
     getcwd(current_dir_name, MAX_PATH);
     strcat(current_dir_name, "/");
 
@@ -751,7 +886,18 @@ s32 load_file(const char **wildcards, char *result, char *default_dir_name)
     sceIoDclose(current_dir);
     scePowerUnlock(0);
 
-    qsort((void *)file_list, num[FILE_LIST], sizeof(char *), sort_function);
+    // Only sort the normal files, not recent games
+    if (num_recent_games > 0 && strcmp(default_dir_name, dir_roms) == 0) {
+      // Sort only the files after the recent games section
+      int recent_section_size = num_recent_games + 2; // +2 for the two separator lines
+      if (num[FILE_LIST] > recent_section_size) {
+        qsort((void *)(file_list + recent_section_size), 
+              num[FILE_LIST] - recent_section_size, 
+              sizeof(char *), sort_function);
+      }
+    } else {
+      qsort((void *)file_list, num[FILE_LIST], sizeof(char *), sort_function);
+    }
     qsort((void *)dir_list,  num[DIR_LIST],  sizeof(char *), sort_function);
 
 
@@ -981,9 +1127,30 @@ s32 load_file(const char **wildcards, char *result, char *default_dir_name)
           {
             if (num[FILE_LIST] != 0)
             {
-              repeat = 0;
-              return_value = 0;
-              strcpy(result, file_list[selection[FILE_LIST]]);
+              char *selected_file = file_list[selection[FILE_LIST]];
+              
+              // Check if it's a separator line
+              if (strncmp(selected_file, "---", 3) == 0) {
+                // Don't do anything for separators
+                break;
+              }
+              
+              // Check if it's a recent game (starts with "> ")
+              if (strncmp(selected_file, "> ", 2) == 0) {
+                // Get the actual game index (minus the header and star prefix)
+                int recent_index = selection[FILE_LIST] - 1; // Subtract the "Recent Games" header
+                if (recent_index >= 0 && recent_index < num_recent_games) {
+                  // Use the full path from recent_games array
+                  strcpy(result, recent_games[recent_index]);
+                  repeat = 0;
+                  return_value = 0;
+                }
+              } else {
+                // Normal file selection
+                repeat = 0;
+                return_value = 0;
+                strcpy(result, selected_file);
+              }
             }
           }
           break;
@@ -1100,7 +1267,7 @@ void action_savestate(void)
 u32 menu(void)
 {
   // Use the same debug log as HOME button
-  FILE *debug_log = fopen("froggba_debug.log", "a");
+  /*FILE *debug_log = fopen("froggba_debug.log", "a");
   if (debug_log) {
     fprintf(debug_log, "DEBUG: menu() function entry point\n");
     fprintf(debug_log, "DEBUG: overlay_menu_global address: %p\n", &overlay_menu_global);
@@ -1108,7 +1275,7 @@ u32 menu(void)
     fprintf(debug_log, "DEBUG: overlay_name_options address: %p\n", overlay_name_options);
     fflush(debug_log);
     fclose(debug_log);
-  }
+  }*/
 
 	int id_language;
   u32 i;
@@ -1387,6 +1554,9 @@ u32 menu(void)
 
         return;
       }
+
+      // Track recently played game
+      add_recent_game(filename_buffer);
 
       reset_gba();
       reg[CHANGED_PC_STATUS] = 1;

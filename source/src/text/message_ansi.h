@@ -61,6 +61,9 @@
 
     //MSG_MAIN_MENU_OVERLAY
     "Overlay options",
+    
+    //MSG_MAIN_MENU_RECENT
+    "Recent games",
 
     // MSG_MAIN_MENU_HELP_0
     "X:Load  Left/Right:Select slot",
@@ -103,6 +106,9 @@
 
     //MSG_MAIN_MENU_HELP_OVERLAY
     "X:Select and configure screen overlays",
+    
+    //MSG_MAIN_MENU_HELP_RECENT
+    "X:Load recently played games",
 
     // MSG_OPTION_MENU_TITLE
     "Emulator options",
@@ -661,6 +667,9 @@
 
     //MSG_MAIN_MENU_OVERLAY
     "覆盖层选项",
+    
+    //MSG_MAIN_MENU_RECENT
+    "最近游戏",
 
     // MSG_MAIN_MENU_HELP_0
     "○:读取  " FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择存档",
@@ -703,6 +712,9 @@
 
     //MSG_MAIN_MENU_HELP_OVERLAY
     "○:选择和配置屏幕覆盖层",
+    
+    //MSG_MAIN_MENU_HELP_RECENT
+    "○:加载最近玩过的游戏",
 
     // MSG_OPTION_MENU_TITLE
     "模拟器设定",
@@ -1263,6 +1275,9 @@
 
     //MSG_MAIN_MENU_OVERLAY
     "覆蓋層選項",
+    
+    //MSG_MAIN_MENU_RECENT
+    "最近遊戲",
 
     // MSG_MAIN_MENU_HELP_0
     "○:讀取  " FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇存档",
@@ -1305,6 +1320,9 @@
 
     //MSG_MAIN_MENU_HELP_OVERLAY
     "○:選擇和配置屏幕覆蓋層",
+    
+    //MSG_MAIN_MENU_HELP_RECENT
+    "○:加載最近玩過的遊戲",
 
     // MSG_OPTION_MENU_TITLE
     "模擬器設定",

@@ -3405,13 +3405,14 @@ static void generate_display_list(float mag)
   extern u32 option_overlay_offset_x;
   extern u32 option_overlay_offset_y;
   
-  // DEBUG: Check what the variables actually contain
+  /*
   FILE *debug_log = fopen("froggba_debug.log", "a");
   if (debug_log) {
     fprintf(debug_log, "generate_display_list: READING offset vars: option_overlay_offset_x=%d, option_overlay_offset_y=%d\n", 
             option_overlay_offset_x, option_overlay_offset_y);
     fclose(debug_log);
   }
+  */
   
   // Calculate position: default center + user offset (allowing negative movement)
   u32 default_dx = (PSP_SCREEN_WIDTH  - dw) >> 1;
@@ -3429,13 +3430,14 @@ static void generate_display_list(float mag)
   dx = (new_dx < 0) ? 0 : (new_dx > PSP_SCREEN_WIDTH - dw) ? PSP_SCREEN_WIDTH - dw : new_dx;
   dy = (new_dy < 0) ? 0 : (new_dy > PSP_SCREEN_HEIGHT - dh) ? PSP_SCREEN_HEIGHT - dh : new_dy;
   
-  // DEBUG: Log display list positioning
+  /*
   debug_log = fopen("froggba_debug.log", "a");
   if (debug_log) {
     fprintf(debug_log, "generate_display_list: mag=%.2f, dw=%d, dh=%d, default_dx=%d, default_dy=%d, offset_x=%d, offset_y=%d, final_dx=%d, final_dy=%d\n", 
             mag, dw, dh, default_dx, default_dy, option_overlay_offset_x, option_overlay_offset_y, dx, dy);
     fclose(debug_log);
   }
+  */
 
   sceGuStart(GU_CALL, display_list_0);
 
@@ -3512,11 +3514,13 @@ static void generate_display_list_stretch(void)
   dx = 0;
   dy = 0;
   
+  /*
   FILE *debug_log = fopen("froggba_debug.log", "a");
   if (debug_log) {
     fprintf(debug_log, "generate_display_list_stretch: stretching to full PSP screen dw=%d, dh=%d\n", dw, dh);
     fclose(debug_log);
   }
+  */
 
   sceGuStart(GU_CALL, display_list_0);
 
@@ -3639,12 +3643,12 @@ void set_gba_resolution(void)
 {
   extern u32 option_aspect_ratio;
   
-  FILE *debug_log = fopen("froggba_debug.log", "a");
+  /*FILE *debug_log = fopen("froggba_debug.log", "a");
   if (debug_log) {
     fprintf(debug_log, "set_gba_resolution: option_screen_scale=%d, aspect_ratio=%d\n", 
             option_screen_scale, option_aspect_ratio);
     fclose(debug_log);
-  }
+  }*/
   
   // Handle aspect ratio modes
   if (option_aspect_ratio == 1) {
@@ -4287,10 +4291,11 @@ static u32 *opaque_pixel_offsets = NULL;
 static int num_opaque_pixels = 0;
 
 // Ultra-fast overlay cache: pre-computed framebuffer writes
-static struct {
+static struct overlay_cache_entry {
   u32 framebuffer_offset;  // Final framebuffer position
   u16 pixel_color;         // Pixel color to write
 } *overlay_write_cache = NULL;
+
 static int cache_valid = 0;
 
 // Function declaration
@@ -4311,11 +4316,11 @@ void load_overlay(const char *filename)
   // Clear overlay first
   clear_overlay();
   
-  debug_log = fopen("froggba_debug.log", "a");
+  /*debug_log = fopen("froggba_debug.log", "a");
   if (debug_log) {
     fprintf(debug_log, "load_overlay: filename='%s'\n", filename ? filename : "NULL");
     fclose(debug_log);
-  }
+  }*/
   
   if (!filename || strcmp(filename, "None") == 0) {
     return;
@@ -4324,21 +4329,21 @@ void load_overlay(const char *filename)
   // Build full path to overlay file
   sprintf(filepath, "%s%s.ovl", dir_overlay, filename);
   
-  debug_log = fopen("froggba_debug.log", "a");
+  /*debug_log = fopen("froggba_debug.log", "a");
   if (debug_log) {
     fprintf(debug_log, "load_overlay: trying path='%s'\n", filepath);
     fclose(debug_log);
-  }
+  }*/
   
   // Allocate overlay buffer if not already allocated
   if (overlay_buffer == NULL) {
     overlay_buffer = (u16*)safe_malloc(OVERLAY_SIZE * sizeof(u16));
     if (overlay_buffer == NULL) {
-      debug_log = fopen("froggba_debug.log", "a");
+      /*debug_log = fopen("froggba_debug.log", "a");
       if (debug_log) {
         fprintf(debug_log, "load_overlay: Failed to allocate overlay buffer\n");
         fclose(debug_log);
-      }
+      }*/
       return;
     }
   }
@@ -4351,11 +4356,11 @@ void load_overlay(const char *filename)
     overlay_write_cache = safe_malloc(MAX_OPAQUE_PIXELS * sizeof(*overlay_write_cache));
   }
   if (opaque_pixel_offsets == NULL || overlay_write_cache == NULL) {
-    debug_log = fopen("froggba_debug.log", "a");
+    /*debug_log = fopen("froggba_debug.log", "a");
     if (debug_log) {
       fprintf(debug_log, "load_overlay: Failed to allocate cache arrays\n");
       fclose(debug_log);
-    }
+    }*/
     return;
   }
 
@@ -4369,32 +4374,32 @@ void load_overlay(const char *filename)
     overlay_first_render = 1; // Reset first render flag for new overlay
     overlay_needs_update = 1; // Mark that overlay needs to be rendered
     
-    debug_log = fopen("froggba_debug.log", "a");
+    /*debug_log = fopen("froggba_debug.log", "a");
     if (debug_log) {
       fprintf(debug_log, "load_overlay: Set overlay_loaded=1, overlay_needs_update=1, overlay_first_render=1\n");
       fclose(debug_log);
-    }
+    }*/
     
     // Build ultra-fast overlay cache
     build_overlay_cache();
     
-    debug_log = fopen("froggba_debug.log", "a");
+    /*debug_log = fopen("froggba_debug.log", "a");
     if (debug_log) {
       fprintf(debug_log, "load_overlay: SUCCESS! Read %d bytes, overlay_loaded=%d, opaque=%d\n", 
               bytes_read, overlay_loaded, num_opaque_pixels);
       fclose(debug_log);
-    }
+    }*/
   } else {
     // Try PNG format (would need proper PNG loading implementation)
     sprintf(filepath, "%s%s.png", dir_overlay, filename);
     // For now, PNG loading is not implemented
     overlay_loaded = 0;
     
-    debug_log = fopen("froggba_debug.log", "a");
+    /*debug_log = fopen("froggba_debug.log", "a");
     if (debug_log) {
       fprintf(debug_log, "load_overlay: FAILED to open file\n");
       fclose(debug_log);
-    }
+    }*/
   }
 }
 
@@ -4452,7 +4457,7 @@ void force_screen_refresh(void)
 }
 
 // Apply overlay borders once (for static border overlays)
-// Build cached overlay operations for maximum performance
+// Build cached overlay operations for maximum performance with batching
 void build_overlay_cache(void) {
   int cache_index = 0;
   int x, y;
@@ -4462,9 +4467,12 @@ void build_overlay_cache(void) {
   
   if (!overlay_loaded) return;
   
-  // Pre-calculate all framebuffer operations
+  // Pre-calculate all framebuffer operations with smart batching
   // Start from y=0 to ensure we don't miss top pixels
   for (y = 0; y < OVERLAY_HEIGHT && y < PSP_SCREEN_HEIGHT; y++) {
+    int row_start = -1;
+    int consecutive_pixels = 0;
+    
     for (x = 0; x < OVERLAY_WIDTH && x < PSP_SCREEN_WIDTH; x++) {
       u16 overlay_pixel = overlay_buffer[y * OVERLAY_WIDTH + x];
       
@@ -4475,10 +4483,22 @@ void build_overlay_cache(void) {
           overlay_write_cache[cache_index].framebuffer_offset = (y * PSP_LINE_SIZE) + x;
           overlay_write_cache[cache_index].pixel_color = overlay_pixel;
           cache_index++;
+          
+          // Track consecutive pixels for potential batching
+          if (row_start == -1) {
+            row_start = x;
+            consecutive_pixels = 1;
+          } else if (x == row_start + consecutive_pixels) {
+            consecutive_pixels++;
+          }
         } else {
           // We've hit the limit, stop processing
           break;
         }
+      } else {
+        // Reset consecutive pixel tracking on transparent pixel
+        row_start = -1;
+        consecutive_pixels = 0;
       }
     }
     if (cache_index >= MAX_OPAQUE_PIXELS) break;
@@ -4487,7 +4507,7 @@ void build_overlay_cache(void) {
   num_opaque_pixels = cache_index;
   cache_valid = 1;
   
-  FILE *debug_log = fopen("froggba_debug.log", "a");
+  /*FILE *debug_log = fopen("froggba_debug.log", "a");
   if (debug_log) {
     fprintf(debug_log, "build_overlay_cache: Found %d opaque pixels, cache_valid=%d\n", 
             num_opaque_pixels, cache_valid);
@@ -4495,7 +4515,7 @@ void build_overlay_cache(void) {
       fprintf(debug_log, "WARNING: Overlay has too many opaque pixels! Only first %d rendered.\n", MAX_OPAQUE_PIXELS);
     }
     fclose(debug_log);
-  }
+  }*/
   
   // Show warning if overlay is truncated
   if (cache_index >= MAX_OPAQUE_PIXELS) {
@@ -4508,25 +4528,57 @@ void apply_overlay_borders(void)
 {
   if (!option_overlay_enabled || !overlay_loaded || !cache_valid) return;
   
-  // Get BOTH framebuffers and apply to both to prevent flickering
+  // Get both framebuffers but optimize the write process
   u16 *fb0 = (u16 *)0x04000000;
   u16 *fb1 = (u16 *)0x04044000;
   
-  // Apply pre-calculated overlay pixels to BOTH buffers
-  for (int i = 0; i < num_opaque_pixels; i++) {
-    u32 offset = overlay_write_cache[i].framebuffer_offset;
-    u16 color = overlay_write_cache[i].pixel_color;
+  // Optimized memory access: Process pixels in batches for better cache performance
+  u32 max_offset = PSP_LINE_SIZE * PSP_SCREEN_HEIGHT;
+  struct overlay_cache_entry *cache = overlay_write_cache;
+  int pixels_remaining = num_opaque_pixels;
+  int i = 0;
+  
+  // Unrolled loop processing 4 pixels at once with dual buffer writes
+  while (pixels_remaining >= 4) {
+    // Prefetch offsets and colors for better performance
+    u32 offset0 = cache[i].framebuffer_offset;
+    u32 offset1 = cache[i+1].framebuffer_offset;
+    u32 offset2 = cache[i+2].framebuffer_offset;
+    u32 offset3 = cache[i+3].framebuffer_offset;
     
-    // Additional bounds check to prevent writing outside visible area
-    if (offset < (PSP_LINE_SIZE * PSP_SCREEN_HEIGHT)) {
-      // Write to both buffers to ensure consistency
+    u16 color0 = cache[i].pixel_color;
+    u16 color1 = cache[i+1].pixel_color;
+    u16 color2 = cache[i+2].pixel_color;
+    u16 color3 = cache[i+3].pixel_color;
+    
+    // Batch bounds checking and dual buffer writes
+    if (offset0 < max_offset) { fb0[offset0] = color0; fb1[offset0] = color0; }
+    if (offset1 < max_offset) { fb0[offset1] = color1; fb1[offset1] = color1; }
+    if (offset2 < max_offset) { fb0[offset2] = color2; fb1[offset2] = color2; }
+    if (offset3 < max_offset) { fb0[offset3] = color3; fb1[offset3] = color3; }
+    
+    i += 4;
+    pixels_remaining -= 4;
+  }
+  
+  // Handle remaining pixels (1-3 pixels)
+  while (pixels_remaining > 0) {
+    u32 offset = cache[i].framebuffer_offset;
+    if (offset < max_offset) {
+      u16 color = cache[i].pixel_color;
       fb0[offset] = color;
       fb1[offset] = color;
     }
+    i++;
+    pixels_remaining--;
   }
   
-  // Ensure writes are flushed
-  sceKernelDcacheWritebackAll();
+  // Reduced cache flushes: Only flush every 4 frames to balance performance and responsiveness
+  static int flush_counter = 0;
+  if (++flush_counter >= 4) {
+    sceKernelDcacheWritebackAll();
+    flush_counter = 0;
+  }
 }
 
 void render_overlay(void) 

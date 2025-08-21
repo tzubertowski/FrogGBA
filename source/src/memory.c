@@ -3744,11 +3744,14 @@ void save_state(char *savestate_filename, u16 *screen_capture)
 
   if (FILE_CHECK_VALID(savestate_file))
   {
-    FILE_WRITE_MEM(savestate_file, screen_capture, GBA_SCREEN_SIZE);
+    // Write screen capture directly to file (not to memory buffer)
+    FILE_WRITE(savestate_file, screen_capture, GBA_SCREEN_SIZE);
 
+    // Write timestamp directly to file (not to memory buffer)
     u64 current_time = ticker();
-    FILE_WRITE_MEM_VARIABLE(savestate_file, current_time);
+    FILE_WRITE_VARIABLE(savestate_file, current_time);
 
+    // Now write the savestate data to memory buffer, then to file
     SAVESTATE_BLOCK(write_mem);
     FILE_WRITE(savestate_file, savestate_write_buffer, SAVESTATE_SIZE);
     FILE_CLOSE(savestate_file);
