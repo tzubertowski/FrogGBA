@@ -8,6 +8,11 @@ PARAM.SFO
 TempGBA.*
 FrogGBA.*
 
+# Build directory artifacts
+build/EBOOT.PBP
+build/FrogGBA.prx
+build/*.o
+
 # Compilation logs
 compile.txt
 buildlog.txt
