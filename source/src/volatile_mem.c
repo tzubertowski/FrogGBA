@@ -24,9 +24,22 @@ int volatile_mem_init(void)
     if (g_volatile_mem_inited)
         return 1;
     
-    // Try to unlock volatile memory
-    int result = sceKernelVolatileMemLock(0, NULL, NULL);
-    if (result == 0) {
+    // For PSP-1000/2000, we can try to use partition 5 directly
+    // This partition is typically available for user programs
+    // We'll test if we can allocate from it
+    
+    // Try a small test allocation from partition 5
+    SceUID test_uid = sceKernelAllocPartitionMemory(
+        VOLATILE_PARTITION_ID,
+        "test",
+        PSP_SMEM_Low,
+        1024,
+        NULL
+    );
+    
+    if (test_uid >= 0) {
+        // Success! We can use partition 5
+        sceKernelFreePartitionMemory(test_uid);
         g_volatile_mem_locked = 1;
         g_volatile_mem_inited = 1;
         
@@ -36,7 +49,7 @@ int volatile_mem_init(void)
         return 1;
     }
     
-    // Volatile memory not available
+    // Partition 5 not available
     return 0;
 }
 
@@ -124,10 +137,6 @@ size_t volatile_mem_available(void)
 {
     if (!g_volatile_mem_inited || !g_volatile_mem_locked)
         return 0;
-    
-    // Get partition info
-    size_t total_free = 0;
-    int i;
     
     // This is an approximation - actual implementation would query partition info
     // For now, assume we can use most of the 4MB
