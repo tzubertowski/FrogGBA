@@ -22,9 +22,9 @@
 #include "gba_cc_lut.h"
 #include "volume_icon.c"
 
-// Optimized color correction lookup tables (64KB total)
-static u16 gpsp_color_lut[32768] = {0};
-static u16 retro_color_lut[32768] = {0};
+// Optimized color correction lookup tables (dynamically allocated)
+static u16 *gpsp_color_lut = NULL;
+static u16 *retro_color_lut = NULL;
 static u8 color_luts_initialized = 0;
 
 // Global function pointers
@@ -3274,6 +3274,14 @@ void init_color_correction_luts(void)
   if (color_luts_initialized)
     return;
     
+  // Allocate lookup tables dynamically to save static memory
+  if (!gpsp_color_lut) {
+    gpsp_color_lut = (u16*)safe_malloc(32768 * sizeof(u16));
+  }
+  if (!retro_color_lut) {
+    retro_color_lut = (u16*)safe_malloc(32768 * sizeof(u16));
+  }
+    
   printf("Initializing color correction lookup tables...\n");
   
   // Build GPSP color correction LUT
@@ -4285,16 +4293,34 @@ static u32 overlay_enabled = 0;
 static int overlay_first_render = 1;
 int overlay_needs_update = 0;  // Flag to track when overlay needs re-rendering
 
-// Optimization: Pre-computed list of opaque pixel offsets
-#define MAX_OPAQUE_PIXELS 30000  // Balanced for full bezels and memory usage
-static u32 *opaque_pixel_offsets = NULL;
-static int num_opaque_pixels = 0;
+// Dynamic overlay system with RLE compression
+static int total_opaque_pixels_in_cache = 0;  // Track pixels actually in cache
 
-// Ultra-fast overlay cache: pre-computed framebuffer writes
-static struct overlay_cache_entry {
-  u32 framebuffer_offset;  // Final framebuffer position
-  u16 pixel_color;         // Pixel color to write
-} *overlay_write_cache = NULL;
+// RLE-compressed overlay cache for continuous runs
+typedef struct {
+  u32 framebuffer_offset;  // Starting position
+  u16 pixel_color;         // Color to write
+  u16 run_length;          // Number of consecutive pixels (1 for single pixel)
+} overlay_rle_entry;
+
+static overlay_rle_entry *overlay_rle_cache = NULL;
+static int num_rle_entries = 0;
+static int max_rle_entries = 0;
+
+// Quality degradation settings
+typedef enum {
+  OVERLAY_QUALITY_FULL = 0,     // Render every pixel
+  OVERLAY_QUALITY_HALF = 1,     // Skip every other pixel  
+  OVERLAY_QUALITY_QUARTER = 2,  // Skip 3 of 4 pixels
+} overlay_quality_mode;
+
+static overlay_quality_mode current_quality = OVERLAY_QUALITY_FULL;
+static int total_overlay_pixels = 0;  // Total opaque pixels in overlay
+
+// Performance thresholds
+#define OPTIMAL_PIXEL_LIMIT 20000   // Full quality up to this
+#define HALF_QUALITY_LIMIT  40000   // Half quality up to this
+#define MAX_CACHE_ENTRIES   20000   // Maximum RLE entries (much smaller with proper RLE)
 
 static int cache_valid = 0;
 
@@ -4311,7 +4337,7 @@ void load_overlay(const char *filename)
 {
   SceUID fd;
   char filepath[MAX_PATH];
-  FILE *debug_log;
+  
   
   // Clear overlay first
   clear_overlay();
@@ -4348,21 +4374,7 @@ void load_overlay(const char *filename)
     }
   }
   
-  // Allocate cache arrays if not already allocated
-  if (opaque_pixel_offsets == NULL) {
-    opaque_pixel_offsets = (u32*)safe_malloc(MAX_OPAQUE_PIXELS * sizeof(u32));
-  }
-  if (overlay_write_cache == NULL) {
-    overlay_write_cache = safe_malloc(MAX_OPAQUE_PIXELS * sizeof(*overlay_write_cache));
-  }
-  if (opaque_pixel_offsets == NULL || overlay_write_cache == NULL) {
-    /*debug_log = fopen("froggba_debug.log", "a");
-    if (debug_log) {
-      fprintf(debug_log, "load_overlay: Failed to allocate cache arrays\n");
-      fclose(debug_log);
-    }*/
-    return;
-  }
+  // Don't allocate cache arrays here - will be done dynamically after counting pixels
 
   // Try to open overlay file (using .ovl extension for raw overlay data)
   fd = sceIoOpen(filepath, PSP_O_RDONLY, 0777);
@@ -4370,6 +4382,7 @@ void load_overlay(const char *filename)
     // Read overlay data (480x272 pixels, 2 bytes per pixel = 261,120 bytes)
     int bytes_read = sceIoRead(fd, overlay_buffer, OVERLAY_SIZE * 2);
     sceIoClose(fd);
+    
     overlay_loaded = 1;
     overlay_first_render = 1; // Reset first render flag for new overlay
     overlay_needs_update = 1; // Mark that overlay needs to be rendered
@@ -4380,13 +4393,14 @@ void load_overlay(const char *filename)
       fclose(debug_log);
     }*/
     
+    
     // Build ultra-fast overlay cache
     build_overlay_cache();
     
     /*debug_log = fopen("froggba_debug.log", "a");
     if (debug_log) {
       fprintf(debug_log, "load_overlay: SUCCESS! Read %d bytes, overlay_loaded=%d, opaque=%d\n", 
-              bytes_read, overlay_loaded, num_opaque_pixels);
+              bytes_read, overlay_loaded, total_opaque_pixels_in_cache);
       fclose(debug_log);
     }*/
   } else {
@@ -4408,7 +4422,7 @@ void clear_overlay(void)
 {
   // Clear overlay buffer state
   overlay_loaded = 0;
-  num_opaque_pixels = 0; // Reset opaque pixel count
+  total_opaque_pixels_in_cache = 0; // Reset opaque pixel count
   overlay_needs_update = 0; // Reset update flag
   cache_valid = 0; // Invalidate cache
   
@@ -4423,16 +4437,15 @@ void free_overlay_memory(void)
     free(overlay_buffer);
     overlay_buffer = NULL;
   }
-  if (opaque_pixel_offsets != NULL) {
-    free(opaque_pixel_offsets);
-    opaque_pixel_offsets = NULL;
-  }
-  if (overlay_write_cache != NULL) {
-    free(overlay_write_cache);
-    overlay_write_cache = NULL;
+  if (overlay_rle_cache != NULL) {
+    free(overlay_rle_cache);
+    overlay_rle_cache = NULL;
   }
   overlay_loaded = 0;
-  num_opaque_pixels = 0;
+  num_rle_entries = 0;
+  total_overlay_pixels = 0;
+  total_opaque_pixels_in_cache = 0;
+  current_quality = OVERLAY_QUALITY_FULL;
   cache_valid = 0;
   
   // Force garbage collection to reclaim memory immediately
@@ -4456,124 +4469,168 @@ void force_screen_refresh(void)
   sceKernelDcacheWritebackAll();
 }
 
-// Apply overlay borders once (for static border overlays)
-// Build cached overlay operations for maximum performance with batching
+// Build overlay cache with RLE compression and dynamic allocation
 void build_overlay_cache(void) {
-  int cache_index = 0;
   int x, y;
+  
   
   // Clear cache
   cache_valid = 0;
+  num_rle_entries = 0;
+  total_overlay_pixels = 0;
   
-  if (!overlay_loaded) return;
-  
-  // Pre-calculate all framebuffer operations with smart batching
-  // Start from y=0 to ensure we don't miss top pixels
-  for (y = 0; y < OVERLAY_HEIGHT && y < PSP_SCREEN_HEIGHT; y++) {
-    int row_start = -1;
-    int consecutive_pixels = 0;
-    
-    for (x = 0; x < OVERLAY_WIDTH && x < PSP_SCREEN_WIDTH; x++) {
-      u16 overlay_pixel = overlay_buffer[y * OVERLAY_WIDTH + x];
-      
-      // Only cache opaque pixels (alpha bit set)
-      if (overlay_pixel & 0x8000) {
-        if (cache_index < MAX_OPAQUE_PIXELS) {
-          // Calculate framebuffer offset
-          overlay_write_cache[cache_index].framebuffer_offset = (y * PSP_LINE_SIZE) + x;
-          overlay_write_cache[cache_index].pixel_color = overlay_pixel;
-          cache_index++;
-          
-          // Track consecutive pixels for potential batching
-          if (row_start == -1) {
-            row_start = x;
-            consecutive_pixels = 1;
-          } else if (x == row_start + consecutive_pixels) {
-            consecutive_pixels++;
-          }
-        } else {
-          // We've hit the limit, stop processing
-          break;
-        }
-      } else {
-        // Reset consecutive pixel tracking on transparent pixel
-        row_start = -1;
-        consecutive_pixels = 0;
-      }
-    }
-    if (cache_index >= MAX_OPAQUE_PIXELS) break;
+  if (!overlay_loaded) {
+    return;
   }
   
-  num_opaque_pixels = cache_index;
+  // First pass: Count total opaque pixels to determine quality mode
+  for (y = 0; y < OVERLAY_HEIGHT && y < PSP_SCREEN_HEIGHT; y++) {
+    for (x = 0; x < OVERLAY_WIDTH && x < PSP_SCREEN_WIDTH; x++) {
+      u16 pixel = overlay_buffer[y * OVERLAY_WIDTH + x];
+      if (pixel & 0x8000) {
+        total_overlay_pixels++;
+      }
+    }
+  }
+  
+  // Determine quality mode based on pixel count
+  
+  // Force full quality for now - quality degradation causes visual artifacts
+  current_quality = OVERLAY_QUALITY_FULL;
+  
+  // Calculate needed cache size based on quality
+  int pixels_to_render = total_overlay_pixels;
+  if (current_quality == OVERLAY_QUALITY_HALF) {
+    pixels_to_render = (total_overlay_pixels + 1) / 2;
+  } else if (current_quality == OVERLAY_QUALITY_QUARTER) {
+    pixels_to_render = (total_overlay_pixels + 3) / 4;
+  }
+  
+  // Free old cache if it exists
+  if (overlay_rle_cache != NULL) {
+    free(overlay_rle_cache);
+    overlay_rle_cache = NULL;
+  }
+  
+  // Allocate RLE cache dynamically (estimate max entries as pixels/2 for safety)
+  max_rle_entries = (pixels_to_render > MAX_CACHE_ENTRIES) ? MAX_CACHE_ENTRIES : pixels_to_render;
+  overlay_rle_cache = (overlay_rle_entry*)safe_malloc(max_rle_entries * sizeof(overlay_rle_entry));
+  
+  if (overlay_rle_cache == NULL) {
+    return;
+  }
+  
+  // Second pass: Build RLE-compressed cache  
+  int skip_counter = 0;
+  int skip_interval = (current_quality == OVERLAY_QUALITY_HALF) ? 2 : 
+                      (current_quality == OVERLAY_QUALITY_QUARTER) ? 4 : 1;
+  
+  for (y = 0; y < OVERLAY_HEIGHT && y < PSP_SCREEN_HEIGHT; y++) {
+    int x = 0;
+    while (x < OVERLAY_WIDTH && x < PSP_SCREEN_WIDTH) {
+      u16 pixel = overlay_buffer[y * OVERLAY_WIDTH + x];
+      
+      if (pixel & 0x8000) {
+        // Apply quality degradation
+        if (skip_interval > 1) {
+          skip_counter++;
+          if ((skip_counter % skip_interval) != 1) {
+            x++;
+            continue; // Skip this pixel based on quality mode
+          }
+        }
+        
+        if (num_rle_entries >= max_rle_entries) break;
+        
+        u32 start_offset = (y * PSP_LINE_SIZE) + x;
+        u16 run_color = pixel;
+        int run_length = 1;
+        
+        // Look for consecutive pixels of same color on this row
+        int next_x = x + 1;
+        while (next_x < OVERLAY_WIDTH && next_x < PSP_SCREEN_WIDTH) {
+          u16 next_pixel = overlay_buffer[y * OVERLAY_WIDTH + next_x];
+          if ((next_pixel & 0x8000) && next_pixel == run_color) {
+            // Apply quality degradation to consecutive pixels too
+            if (skip_interval > 1) {
+              skip_counter++;
+              if ((skip_counter % skip_interval) != 1) {
+                next_x++;
+                continue;
+              }
+            }
+            run_length++;
+            next_x++;
+          } else {
+            break;
+          }
+        }
+        
+        // Store RLE entry
+        overlay_rle_cache[num_rle_entries].framebuffer_offset = start_offset;
+        overlay_rle_cache[num_rle_entries].pixel_color = run_color;
+        overlay_rle_cache[num_rle_entries].run_length = run_length;
+        
+        num_rle_entries++;
+        x = next_x; // Skip to end of run
+      } else {
+        x++; // Move to next pixel
+      }
+    }
+    
+    if (num_rle_entries >= max_rle_entries) break;
+  }
+  
   cache_valid = 1;
   
-  /*FILE *debug_log = fopen("froggba_debug.log", "a");
-  if (debug_log) {
-    fprintf(debug_log, "build_overlay_cache: Found %d opaque pixels, cache_valid=%d\n", 
-            num_opaque_pixels, cache_valid);
-    if (cache_index >= MAX_OPAQUE_PIXELS) {
-      fprintf(debug_log, "WARNING: Overlay has too many opaque pixels! Only first %d rendered.\n", MAX_OPAQUE_PIXELS);
-    }
-    fclose(debug_log);
-  }*/
   
-  // Show warning if overlay is truncated
-  if (cache_index >= MAX_OPAQUE_PIXELS) {
+  // Report quality mode if degraded
+  if (current_quality != OVERLAY_QUALITY_FULL) {
     extern void error_msg(const char *text, u8 confirm);
-    error_msg("Overlay too complex! Only partial rendering.", 0);
+    char msg[80];
+    sprintf(msg, "Overlay: %d pixels, using %s quality", 
+            total_overlay_pixels,
+            current_quality == OVERLAY_QUALITY_HALF ? "50%" : "25%");
+    error_msg(msg, 0);
   }
 }
 
 void apply_overlay_borders(void) 
 {
-  if (!option_overlay_enabled || !overlay_loaded || !cache_valid) return;
   
-  // Get both framebuffers but optimize the write process
+  
+  if (!option_overlay_enabled || !overlay_loaded || !cache_valid) return;
+  if (overlay_rle_cache == NULL || num_rle_entries == 0) return;
+  
+  // Get both framebuffers
   u16 *fb0 = (u16 *)0x04000000;
   u16 *fb1 = (u16 *)0x04044000;
   
-  // Optimized memory access: Process pixels in batches for better cache performance
   u32 max_offset = PSP_LINE_SIZE * PSP_SCREEN_HEIGHT;
-  struct overlay_cache_entry *cache = overlay_write_cache;
-  int pixels_remaining = num_opaque_pixels;
-  int i = 0;
   
-  // Unrolled loop processing 4 pixels at once with dual buffer writes
-  while (pixels_remaining >= 4) {
-    // Prefetch offsets and colors for better performance
-    u32 offset0 = cache[i].framebuffer_offset;
-    u32 offset1 = cache[i+1].framebuffer_offset;
-    u32 offset2 = cache[i+2].framebuffer_offset;
-    u32 offset3 = cache[i+3].framebuffer_offset;
+  // Process RLE cache entries - each entry can represent multiple pixels
+  int applied = 0;
+  for (int i = 0; i < num_rle_entries; i++) {
+    u32 start_offset = overlay_rle_cache[i].framebuffer_offset;
+    u16 color = overlay_rle_cache[i].pixel_color;
+    u16 run_length = overlay_rle_cache[i].run_length;
     
-    u16 color0 = cache[i].pixel_color;
-    u16 color1 = cache[i+1].pixel_color;
-    u16 color2 = cache[i+2].pixel_color;
-    u16 color3 = cache[i+3].pixel_color;
+    // Bounds check for entire run
+    if (start_offset >= max_offset) continue;
     
-    // Batch bounds checking and dual buffer writes
-    if (offset0 < max_offset) { fb0[offset0] = color0; fb1[offset0] = color0; }
-    if (offset1 < max_offset) { fb0[offset1] = color1; fb1[offset1] = color1; }
-    if (offset2 < max_offset) { fb0[offset2] = color2; fb1[offset2] = color2; }
-    if (offset3 < max_offset) { fb0[offset3] = color3; fb1[offset3] = color3; }
-    
-    i += 4;
-    pixels_remaining -= 4;
-  }
-  
-  // Handle remaining pixels (1-3 pixels)
-  while (pixels_remaining > 0) {
-    u32 offset = cache[i].framebuffer_offset;
-    if (offset < max_offset) {
-      u16 color = cache[i].pixel_color;
+    // Write the run of pixels
+    for (int j = 0; j < run_length; j++) {
+      u32 offset = start_offset + j;
+      if (offset >= max_offset) break; // Safety check
+      
       fb0[offset] = color;
       fb1[offset] = color;
+      applied++;
     }
-    i++;
-    pixels_remaining--;
   }
   
-  // Reduced cache flushes: Only flush every 4 frames to balance performance and responsiveness
+  
+  // Reduced cache flushes: Only flush every 4 frames
   static int flush_counter = 0;
   if (++flush_counter >= 4) {
     sceKernelDcacheWritebackAll();
@@ -4583,6 +4640,7 @@ void apply_overlay_borders(void)
 
 void render_overlay(void) 
 {
+  
   if (option_overlay_enabled && overlay_loaded) {
     apply_overlay_borders();
   }

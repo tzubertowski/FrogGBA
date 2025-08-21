@@ -22,7 +22,7 @@
 #include "common.h"
 
 
-#define ZIP_BUFFER_SIZE (128 * 1024)
+#define ZIP_BUFFER_SIZE (64 * 1024)
 
 struct SZIPFileDataDescriptor
 {
