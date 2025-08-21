@@ -4452,6 +4452,43 @@ void free_overlay_memory(void)
   sceKernelDcacheWritebackAll();
 }
 
+// Temporarily free overlay memory for save/load operations
+static char *temp_overlay_filename = NULL;
+void pause_overlay_for_saveload(void) {
+  if (!overlay_loaded) return;
+  
+  // Remember which overlay was loaded so we can restore it
+  extern char overlay_names[][64];
+  extern u32 option_overlay_selected;
+  
+  if (temp_overlay_filename) {
+    free(temp_overlay_filename);
+    temp_overlay_filename = NULL;
+  }
+  
+  if (option_overlay_selected < 10) { // Assuming max 10 overlays
+    temp_overlay_filename = (char*)malloc(64);
+    if (temp_overlay_filename) {
+      strcpy(temp_overlay_filename, overlay_names[option_overlay_selected]);
+    }
+  }
+  
+  // Free all overlay memory
+  free_overlay_memory();
+}
+
+// Restore overlay after save/load operations
+void resume_overlay_after_saveload(void) {
+  if (temp_overlay_filename && strlen(temp_overlay_filename) > 0) {
+    // Reload the overlay that was previously active
+    load_overlay(temp_overlay_filename);
+    
+    // Clean up temp storage
+    free(temp_overlay_filename);
+    temp_overlay_filename = NULL;
+  }
+}
+
 // Force a complete framebuffer refresh - only used when changing positions
 void force_screen_refresh(void) 
 {
@@ -4583,6 +4620,11 @@ void build_overlay_cache(void) {
   
   cache_valid = 1;
   
+  // Free the original overlay buffer to save memory (we only need the RLE cache now)
+  if (overlay_buffer != NULL) {
+    free(overlay_buffer);
+    overlay_buffer = NULL;
+  }
   
   // Report quality mode if degraded
   if (current_quality != OVERLAY_QUALITY_FULL) {

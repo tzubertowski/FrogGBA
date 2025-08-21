@@ -783,7 +783,20 @@ s32 load_file(const char **wildcards, char *result, char *default_dir_name)
     num[DIR_LIST]  = 0;
 
     // Add recent games to the file list first (with "★ " prefix)
-    if (num_recent_games > 0 && strcmp(default_dir_name, dir_roms) == 0) {
+    // Only show recent games when browsing for ROM files (based on file extension)
+    int is_rom_browsing = 0;
+    if (wildcards && wildcards[0]) {
+      // Check if we're looking for ROM extensions
+      for (int w = 0; wildcards[w]; w++) {
+        if (strstr(wildcards[w], ".gba") || strstr(wildcards[w], ".zip") || 
+            strstr(wildcards[w], ".GBA") || strstr(wildcards[w], ".ZIP")) {
+          is_rom_browsing = 1;
+          break;
+        }
+      }
+    }
+    
+    if (num_recent_games > 0 && is_rom_browsing) {
       // Add separator
       file_list[num[FILE_LIST]] = (char *)safe_malloc(strlen("--- Recent Games ---") + 1);
       sprintf(file_list[num[FILE_LIST]], "--- Recent Games ---");
@@ -887,7 +900,7 @@ s32 load_file(const char **wildcards, char *result, char *default_dir_name)
     scePowerUnlock(0);
 
     // Only sort the normal files, not recent games
-    if (num_recent_games > 0 && strcmp(default_dir_name, dir_roms) == 0) {
+    if (num_recent_games > 0 && is_rom_browsing) {
       // Sort only the files after the recent games section
       int recent_section_size = num_recent_games + 2; // +2 for the two separator lines
       if (num[FILE_LIST] > recent_section_size) {
@@ -1246,8 +1259,14 @@ void action_loadstate(void)
 {
   char savestate_filename[MAX_FILE];
 
+  // Free overlay memory to ensure enough RAM for load operation
+  pause_overlay_for_saveload();
+  
   get_savestate_filename(savestate_slot, savestate_filename);
   load_state(savestate_filename);
+  
+  // Restore overlay after load completes
+  resume_overlay_after_saveload();
 }
 
 void action_savestate(void)
@@ -1257,10 +1276,16 @@ void action_savestate(void)
 
   current_screen = copy_screen();
 
+  // Free overlay memory to ensure enough RAM for save operation
+  pause_overlay_for_saveload();
+  
   get_savestate_filename(savestate_slot, savestate_filename);
   save_state(savestate_filename, current_screen);
 
   free(current_screen);
+  
+  // Restore overlay after save completes
+  resume_overlay_after_saveload();
 }
 
 
@@ -1555,8 +1580,16 @@ u32 menu(void)
         return;
       }
 
-      // Track recently played game
-      add_recent_game(filename_buffer);
+      // Track recently played game with full path
+      char full_game_path[MAX_PATH];
+      if (filename_buffer[0] == '/' || strstr(filename_buffer, ":/")) {
+        // Already a full path
+        strcpy(full_game_path, filename_buffer);
+      } else {
+        // Construct full path
+        sprintf(full_game_path, "%s%s", dir_roms, filename_buffer);
+      }
+      add_recent_game(full_game_path);
 
       reset_gba();
       reg[CHANGED_PC_STATUS] = 1;

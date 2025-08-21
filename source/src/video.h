@@ -76,6 +76,8 @@ void load_overlay(const char *filename);
 void render_overlay(void);
 void clear_overlay(void);
 void free_overlay_memory(void);
+void pause_overlay_for_saveload(void);
+void resume_overlay_after_saveload(void);
 
 void video_resolution_large(void);
 void video_resolution_small(void);
