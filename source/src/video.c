@@ -114,6 +114,21 @@ u16 tile_base_bg_control[4] = {0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF};
 // Fast path tile rendering for common cases
 u32 fast_path_enabled = 1;
 
+// Layer merging system for static background optimization
+#define MAX_LAYER_CACHE_FRAMES 4
+typedef struct {
+  u16 *composite_buffer;        // Pre-rendered layer composite 
+  u32 static_frame_count;       // Frames this layer has been static
+  u32 last_bg_control;          // Last BG control register value
+  u32 last_scroll_x;            // Last horizontal scroll
+  u32 last_scroll_y;            // Last vertical scroll
+  u8 is_static;                 // 1 if layer is considered static
+  u8 needs_update;              // 1 if cache needs refresh
+} layer_cache_t;
+
+static layer_cache_t layer_cache[4];
+static u32 layer_merge_enabled = 1;
+
 const u8 ALIGN_DATA active_layers[8] =
 {
   0x1F, 0x17, 0x1C, 0x14, 0x14, 0x14, 0x00, 0x00
@@ -2234,6 +2249,81 @@ u32 get_video_mode(void) {
   return current_video_mode;
 }
 
+// Layer merging functions
+void init_layer_cache(void) {
+  u32 i;
+  for (i = 0; i < 4; i++) {
+    layer_cache[i].composite_buffer = NULL;
+    layer_cache[i].static_frame_count = 0;
+    layer_cache[i].last_bg_control = 0xFFFF;
+    layer_cache[i].last_scroll_x = 0xFFFF;
+    layer_cache[i].last_scroll_y = 0xFFFF;
+    layer_cache[i].is_static = 0;
+    layer_cache[i].needs_update = 1;
+  }
+}
+
+u32 check_layer_static(u32 layer) {
+  u32 bg_control = pIO_REG(REG_BG0CNT + layer);
+  u32 scroll_x = pIO_REG(REG_BG0HOFS + (layer << 1));
+  u32 scroll_y = pIO_REG(REG_BG0VOFS + (layer << 1));
+  
+  layer_cache_t *cache = &layer_cache[layer];
+  
+  // Check if layer settings changed
+  if (cache->last_bg_control != bg_control || 
+      cache->last_scroll_x != scroll_x ||
+      cache->last_scroll_y != scroll_y) {
+    // Layer changed, reset static counter
+    cache->static_frame_count = 0;
+    cache->is_static = 0;
+    cache->needs_update = 1;
+    cache->last_bg_control = bg_control;
+    cache->last_scroll_x = scroll_x;
+    cache->last_scroll_y = scroll_y;
+    return 0;
+  }
+  
+  // Layer unchanged, increment static counter
+  cache->static_frame_count++;
+  if (cache->static_frame_count >= MAX_LAYER_CACHE_FRAMES) {
+    cache->is_static = 1;
+  }
+  
+  return cache->is_static;
+}
+
+void render_static_layers_composite(u32 start_layer, u32 end_layer, u16 *dest_buffer, u16 dispcnt) {
+  // Render multiple static layers into a single composite buffer
+  // This replaces multiple separate layer render calls
+  
+  u32 layer_order_pos;
+  u8 current_layer;
+  u16 bldcnt = pIO_REG(REG_BLDCNT);
+  TileLayerRenderStruct *layer_renderers = tile_mode_renderers[dispcnt & 0x07];
+  
+  // Clear composite buffer first
+  u32 i;
+  for (i = 0; i < 240; i++) {
+    dest_buffer[i] = palette_ram[0];  // Background color
+  }
+  
+  // Render each static layer in order
+  for (layer_order_pos = start_layer; layer_order_pos <= end_layer; layer_order_pos++) {
+    if (layer_order_pos >= layer_count) break;
+    
+    current_layer = layer_order[layer_order_pos];
+    if ((current_layer & 0x04) != 0) continue; // Skip OBJ layers
+    
+    // Only render if this layer is marked as static
+    if (!layer_cache[current_layer].is_static) continue;
+    
+    // Render this layer directly to composite buffer  
+    // Use base rendering (non-transparent) for static layers
+    layer_renderers[current_layer].normal_render_base(current_layer, 0, 240, dest_buffer);
+  }
+}
+
 static void order_obj(u8 video_mode)
 {
   s32 obj_num;
@@ -2864,6 +2954,64 @@ static void render_scanline_tile(u16 *scanline, u16 dispcnt)
   render_layers_color_effect(render_layers, layer_count, render_condition_alpha, render_condition_fade, 0, 240);
 }
 
+// Optimized tile renderer that merges static layers
+static void render_scanline_tile_merged(u16 *scanline, u16 dispcnt)
+{
+  u8 current_layer;
+  u32 layer_order_pos;
+  u16 bldcnt = pIO_REG(REG_BLDCNT);
+  render_scanline_layer_functions_tile();
+  
+  // Split rendering: static layers first (cached), then dynamic layers
+  u32 static_rendered = 0;
+  
+  // Step 1: Render static layers to temp buffer (or use cached)
+  static u16 static_composite[240];
+  u32 has_static_layers = 0;
+  
+  for (layer_order_pos = 0; layer_order_pos < layer_count; layer_order_pos++) {
+    current_layer = layer_order[layer_order_pos];
+    if ((current_layer & 0x04) != 0) continue; // Skip OBJ for now
+    
+    if (layer_cache[current_layer & 3].is_static) {
+      if (!has_static_layers) {
+        // First static layer - clear buffer
+        u32 i;
+        for (i = 0; i < 240; i++) {
+          static_composite[i] = palette_ram[0];
+        }
+        has_static_layers = 1;
+      }
+      // Render static layer to composite
+      layer_renderers[current_layer].normal_render_transparent(
+        current_layer, 0, 240, static_composite);
+      static_rendered++;
+    }
+  }
+  
+  // Step 2: Copy static composite to main scanline
+  if (has_static_layers) {
+    u32 i;
+    for (i = 0; i < 240; i++) {
+      scanline[i] = static_composite[i];
+    }
+  }
+  
+  // Step 3: Render dynamic layers on top
+  for (layer_order_pos = 0; layer_order_pos < layer_count; layer_order_pos++) {
+    current_layer = layer_order[layer_order_pos];
+    
+    if ((current_layer & 0x04) != 0) {
+      // Render OBJ layers normally
+      render_layers_color_effect(render_layers, 1, render_condition_alpha, render_condition_fade, 0, 240);
+    } else if (!layer_cache[current_layer & 3].is_static) {
+      // Render dynamic background layer
+      layer_renderers[current_layer].normal_render_transparent(
+        current_layer, 0, 240, scanline);
+    }
+  }
+}
+
 static void render_scanline_bitmap(u16 *scanline, u16 dispcnt)
 {
 //  u16 bldcnt = pIO_REG(REG_BLDCNT);
@@ -3353,7 +3501,38 @@ void update_scanline(void)
       }
       else
       {
-        render_scanline_tile(screen_offset, dispcnt);
+        // Layer merging optimization for Mode 0 with multiple layers
+        if (layer_merge_enabled && video_mode == 0 && layer_count >= 3) {
+          u32 scanline = pIO_REG(REG_VCOUNT);
+          
+          // Check which layers are static every few scanlines
+          if ((scanline & 7) == 0) {  // Check every 8 scanlines
+            u32 i;
+            for (i = 0; i < 4; i++) {
+              check_layer_static(i);
+            }
+          }
+          
+          // Count static vs dynamic layers
+          u32 static_layers = 0, dynamic_layers = 0;
+          u32 i;
+          for (i = 0; i < layer_count && i < 4; i++) {
+            if (layer_cache[layer_order[i] & 3].is_static) {
+              static_layers++;
+            } else {
+              dynamic_layers++;
+            }
+          }
+          
+          // If we have 2+ static layers, use merged rendering
+          if (static_layers >= 2) {
+            render_scanline_tile_merged(screen_offset, dispcnt);
+          } else {
+            render_scanline_tile(screen_offset, dispcnt);
+          }
+        } else {
+          render_scanline_tile(screen_offset, dispcnt);
+        }
       }
     }
     else
@@ -3503,6 +3682,9 @@ void init_video(int devkit_version)
   
   // Initialize color correction lookup tables for performance
   init_color_correction_luts();
+  
+  // Initialize layer merging cache
+  init_layer_cache();
 }
 
 void video_term(void)
