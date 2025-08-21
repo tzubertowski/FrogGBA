@@ -129,6 +129,9 @@
     // MSG_OPTION_MENU_COLOR_CORRECTION
     "Color Correction: %s",
 
+    // MSG_OPTION_MENU_BUTTON_MAPPING
+    "Button Mapping  : %s",
+
     // MSG_OPTION_MENU_3
     "Frameskip type  : %s",
 
@@ -179,6 +182,9 @@
 
     // MSG_OPTION_MENU_HELP_COLOR_CORRECTION
     "Left/Right:Select   GBA color correction",
+
+    // MSG_OPTION_MENU_HELP_BUTTON_MAPPING
+    "Left/Right:Select   X/O or O/X button mapping",
 
     // MSG_OPTION_MENU_HELP_3
     "Left/Right:Select   Description:Settings",
@@ -737,6 +743,9 @@
     // MSG_OPTION_MENU_COLOR_CORRECTION
     "色彩校正 : %s",
 
+    // MSG_OPTION_MENU_BUTTON_MAPPING
+    "按键映射 : %s",
+
     // MSG_OPTION_MENU_3
     "跳帧类型: %s",
 
@@ -787,6 +796,9 @@
 
     // MSG_OPTION_MENU_HELP_COLOR_CORRECTION
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择   GBA色彩校正",
+
+    // MSG_OPTION_MENU_HELP_BUTTON_MAPPING
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择   X/O或O/X按键映射",
 
     // MSG_OPTION_MENU_HELP_3
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择   游戏/模拟器配置",
@@ -1345,6 +1357,9 @@
     // MSG_OPTION_MENU_COLOR_CORRECTION
     "色彩校正 : %s",
 
+    // MSG_OPTION_MENU_BUTTON_MAPPING
+    "按鍵映射 : %s",
+
     // MSG_OPTION_MENU_3
     "跳幀類型: %s",
 
@@ -1395,6 +1410,9 @@
 
     // MSG_OPTION_MENU_HELP_COLOR_CORRECTION
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇   GBA色彩校正",
+
+    // MSG_OPTION_MENU_HELP_BUTTON_MAPPING
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇   X/O或O/X按鍵映射",
 
     // MSG_OPTION_MENU_HELP_3
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇   遊戲/模擬器配置",

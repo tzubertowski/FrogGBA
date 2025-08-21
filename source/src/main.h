@@ -80,6 +80,7 @@ extern u32 sleep_flag;
 extern u32 synchronize_flag;
 extern u32 psp_fps_debug;
 extern u32 option_color_correction;
+extern u32 option_button_mapping;
 extern u32 fast_forward_speed;
 extern u32 option_compatibility_mode;
 

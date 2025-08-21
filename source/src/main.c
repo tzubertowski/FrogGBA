@@ -67,7 +67,9 @@ u32 sleep_flag = 0;
 u32 synchronize_flag = 1;
 u32 psp_fps_debug = 0;
 u32 option_color_correction = 0;
+u32 option_button_mapping = 0;  // 0 = X/O (X confirm, O cancel), 1 = O/X (O confirm, X cancel)
 u32 fast_forward_speed = 0;  // 0 = 1x (off), 1 = 2x, 2 = 3x
+u32 layer_merge_enabled = 1;  // Layer merging optimization
 
 u32 real_frame_count = 0;
 u32 virtual_frame_count = 0;
@@ -576,7 +578,6 @@ static void synchronize(void)
       extern u32 get_active_layers(void);
       extern u32 get_video_mode(void);
       extern u32 fast_path_enabled;
-      extern u32 layer_merge_enabled;
       u32 sprites = get_active_sprite_count();
       u32 blends = get_blend_operations();
       u32 layers = get_active_layers();
