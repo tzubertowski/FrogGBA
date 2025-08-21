@@ -62,9 +62,12 @@ u32 ALIGN_DATA spsr[7];
 #define DCACHE_FILL_WITH_LOCK                   (0x1F) // Fill with Lock (D)
 
 
-// Optimized cache sizes - conservative approach without specialized caches
-#define READONLY_CODE_CACHE_SIZE          (1024 * 512 * 3)  // 1.5MB for ROM/BIOS (gpSP Kai size)
-#define WRITABLE_CODE_CACHE_SIZE          (1024 * 128 * 1)   // 128KB for RAM (gpSP Kai size)
+// Optimized cache sizes - balanced for performance and stability
+#define READONLY_CODE_CACHE_SIZE          (1024 * 1024 * 2)  // 2MB for ROM/BIOS (balanced size)
+#define WRITABLE_CODE_CACHE_SIZE          (1024 * 256 * 1)   // 256KB for RAM (increased for stability)
+
+// Enable cache invalidation reduction to fix micro stutters
+#define PSP_REDUCE_CACHE_INVALIDATION
  /* The following parameter needs to be at least enough bytes to hold
   * the generated code for the largest instruction on your platform.
   * In most cases, that will be the ARM instruction
@@ -4124,9 +4127,19 @@ static void init_translation_caches(void)
   readonly_next_code = readonly_code_cache;
   writable_next_code = writable_code_cache;
   
-  // Clear the caches
-  memset(readonly_code_cache, 0, readonly_cache_size);
-  memset(writable_code_cache, 0, writable_cache_size);
+  // Clear the caches - use 0xFF (invalid MIPS opcode) for better cache line utilization
+  memset(readonly_code_cache, 0xFF, readonly_cache_size);
+  memset(writable_code_cache, 0xFF, writable_cache_size);
+  
+  // Pre-touch cache lines to warm up the data cache
+  volatile u32 dummy;
+  for (u32 i = 0; i < readonly_cache_size; i += 64) {
+    dummy = *(volatile u32*)(readonly_code_cache + i);
+  }
+  for (u32 i = 0; i < writable_cache_size; i += 64) {
+    dummy = *(volatile u32*)(writable_code_cache + i);
+  }
+  (void)dummy; // Suppress unused variable warning
   
   caches_initialized = 1;
   printf("init_translation_caches: Initialization complete\n");
