@@ -22,7 +22,7 @@
 #include <pspiofilemgr.h>
 
 #define GPSP_CONFIG_FILENAME  "froggba.cfg"
-#define GPSP_CONFIG_NUM       (21 + 16) // options + game pad config + overlay options
+#define GPSP_CONFIG_NUM       (22 + 16) // options + game pad config + overlay options + aspect ratio
 #define GPSP_GAME_CONFIG_NUM  (7 + 16)
 
 #define COLOR_BG            COLOR15( 8, 15, 12)  // Soft mint green background
@@ -1239,6 +1239,16 @@ u32 menu(void)
     MSG[MSG_LANG_JAPANESE], MSG[MSG_LANG_ENGLISH]
   };
 
+  const char *aspect_ratio_options[] =
+  {
+    "Core Provided (3:2)", "Zoom (Fill Screen)"
+  };
+
+  // Since we can't add messages to the message system, use direct string pointers cast as message indices
+  // This is a hack but avoids breaking the message system alignment
+  const char aspect_ratio_label[] = "Aspect Ratio: %s";
+  const char aspect_ratio_help[] = "Left/Right: Select aspect ratio";
+
   // Dynamic overlay options will be updated by scan_overlay_files()
   // overlay_name_options is now a global variable
 
@@ -1780,9 +1790,11 @@ u32 menu(void)
 
     STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_10], language_options, &option_language, 2, MSG_OPTION_MENU_HELP_10, 12),
 
-    ACTION_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_DEFAULT], MSG_OPTION_MENU_HELP_DEFAULT, 13),
+    {NULL, NULL, NULL, "Aspect Ratio: %s", (void*)aspect_ratio_options, &option_aspect_ratio, 2, 0, 13, STRING_SELECTION_OPTION},
 
-    ACTION_SUBMENU_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_11], MSG_OPTION_MENU_HELP_11, 14)
+    ACTION_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_DEFAULT], MSG_OPTION_MENU_HELP_DEFAULT, 14),
+
+    ACTION_SUBMENU_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_11], MSG_OPTION_MENU_HELP_11, 15)
   };
 
   MAKE_MENU(emulator, NULL, NULL);
@@ -2456,10 +2468,11 @@ s32 save_config_file(void)
     file_options[17]  = option_overlay_selected;
     file_options[18]  = option_overlay_offset_x;
     file_options[19]  = option_overlay_offset_y;
+    file_options[20]  = option_aspect_ratio;
 
     for (i = 0; i < 16; i++)
     {
-      file_options[21 + i] = gamepad_config_map[i];
+      file_options[22 + i] = gamepad_config_map[i];
     }
 
     FILE_WRITE_ARRAY(config_file, file_options);
@@ -2586,10 +2599,11 @@ s32 load_config_file(void)
       option_overlay_selected = file_options[17] % 10;  // 0-9 overlay selection
       option_overlay_offset_x = file_options[18] % 241;  // 0-240 X offset
       option_overlay_offset_y = file_options[19] % 113;  // 0-112 Y offset
+      option_aspect_ratio = file_options[20] % 2;  // 0-1 aspect ratio
 
       for (i = 0; i < 16; i++)
       {
-        gamepad_config_map[i] = file_options[21 + i] % (BUTTON_ID_NONE + 1);
+        gamepad_config_map[i] = file_options[22 + i] % (BUTTON_ID_NONE + 1);
 
         if (gamepad_config_map[i] == BUTTON_ID_MENU)
           menu_button = i;

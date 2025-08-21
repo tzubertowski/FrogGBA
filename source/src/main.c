@@ -44,6 +44,7 @@ u32 option_screen_capture_format = 0;
 u32 option_enable_analog = 0;
 u32 option_analog_sensitivity = 4;
 u32 option_language = 1;
+u32 option_aspect_ratio = 0; // 0=Core Provided (3:2), 1=Zoom (fill screen)
 
 // Overlay options
 u32 option_overlay_enabled = 0;
