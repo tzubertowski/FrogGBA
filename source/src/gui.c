@@ -1165,6 +1165,10 @@ u32 menu(void)
 
       get_savestate_info(filename_buffer, savestate_screen, line_buffer);
       sprintf(savestate_timestamps[savestate_slot], "%d: %s", (int)savestate_slot, line_buffer);
+      
+      // Return to game after saving state
+      return_value = 1;
+      repeat = 0;
     }
   }
 
@@ -1842,9 +1846,11 @@ u32 menu(void)
               {
                 case 0:  // Load State
                   action_loadstate();
+                  repeat = 0;  // Return to game after load
                   break;
                 case 1:  // Save State  
                   action_savestate();
+                  repeat = 0;  // Return to game after save
                   break;
                 case 14: // "Return to Game"
                   repeat = 0;
