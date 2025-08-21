@@ -45,6 +45,10 @@ u32 option_enable_analog = 0;
 u32 option_analog_sensitivity = 4;
 u32 option_language = 1;
 
+// Overlay options
+u32 option_overlay_enabled = 0;
+u32 option_overlay_selected = 0;
+
 u32 option_frameskip_type = FRAMESKIP_AUTO;
 u32 option_frameskip_value = 9;
 u32 option_clock_speed = PSP_CLOCK_333;
@@ -797,6 +801,9 @@ int user_main(int argc, char *argv[])
   const char *file_ext[] = { ".zip", ".gba", ".bin", ".agb", ".gbz", NULL };
 
   setup_main();
+  
+  // Initialize overlay cache at boot
+  init_overlays_at_boot();
 
   gamepak_filename[0] = 0;
 

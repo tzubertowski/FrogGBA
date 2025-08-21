@@ -19,6 +19,7 @@
  */
 
 #include "common.h"
+#include <pspiofilemgr.h>
 
 #define GPSP_CONFIG_FILENAME  "froggba.cfg"
 #define GPSP_CONFIG_NUM       (17 + 16) // options + game pad config
@@ -258,8 +259,156 @@ char dir_state[MAX_PATH];
 char dir_cfg[MAX_PATH];
 char dir_snap[MAX_PATH];
 char dir_cheat[MAX_PATH];//cheat
+char dir_overlay[MAX_PATH];//overlay
 
 u32 menu_cheat_page = 0;
+
+// Overlay variables
+#define MAX_OVERLAYS 10
+char overlay_names[MAX_OVERLAYS][64] = {
+  "None", "None", "None", "None", "None", 
+  "None", "None", "None", "None", "None"
+};
+const char *overlay_name_options[MAX_OVERLAYS] = {
+  overlay_names[0], overlay_names[1], overlay_names[2], overlay_names[3], overlay_names[4],
+  overlay_names[5], overlay_names[6], overlay_names[7], overlay_names[8], overlay_names[9]
+};
+u32 num_overlays = 1; // Start with 1 for "None"
+static u32 overlays_scanned = 0; // Flag to track if we've already scanned
+
+// Global yes/no options - needed for overlay menu
+static const char *global_yes_no_options[2];
+
+// Global menu structures for overlay - must be here to avoid scope issues
+MenuOptionType overlay_options_global[3] = {
+  {NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, STRING_SELECTION_OPTION},
+  {NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, STRING_SELECTION_OPTION}, 
+  {NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, SUBMENU_OPTION}
+};
+
+MenuType overlay_menu_global = {
+  NULL, // init_function - will be set later
+  NULL, // passive_function  
+  overlay_options_global,
+  3
+};
+
+// Initialize overlays at emulator boot - called from main.c
+void init_overlays_at_boot(void)
+{
+  u32 i;
+  SceUID dir;
+  SceIoDirent dirent;
+  char *ext;
+  
+  FILE *debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "DEBUG: init_overlays_at_boot() called\n");
+    fprintf(debug_log, "DEBUG: dir_overlay = '%s'\n", dir_overlay);
+    fflush(debug_log);
+    fclose(debug_log);
+  }
+  
+  // Start with just "None"
+  num_overlays = 1;
+  
+  // Try to open the overlays directory
+  dir = sceIoDopen(dir_overlay);
+  
+  debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "DEBUG: sceIoDopen returned %d\n", dir);
+    fflush(debug_log);
+    fclose(debug_log);
+  }
+  
+  if (dir >= 0)
+  {
+    // Scan for PNG files in the overlay directory
+    while (sceIoDread(dir, &dirent) > 0 && num_overlays < MAX_OVERLAYS)
+    {
+      // Skip directories and hidden files
+      if (!(dirent.d_stat.st_mode & FIO_SO_IFREG) || dirent.d_name[0] == '.')
+        continue;
+        
+      // Check if it's a PNG file
+      ext = strrchr(dirent.d_name, '.');
+      if (ext && (strcasecmp(ext, ".png") == 0))
+      {
+        debug_log = fopen("froggba_debug.log", "a");
+        if (debug_log) {
+          fprintf(debug_log, "DEBUG: Found overlay: %s\n", dirent.d_name);
+          fflush(debug_log);
+          fclose(debug_log);
+        }
+        
+        // Copy filename and remove extension for display
+        strncpy(overlay_names[num_overlays], dirent.d_name, sizeof(overlay_names[num_overlays]) - 1);
+        overlay_names[num_overlays][sizeof(overlay_names[num_overlays]) - 1] = '\0';
+        
+        // Remove .png extension from display name
+        char *dot = strrchr(overlay_names[num_overlays], '.');
+        if (dot) *dot = '\0';
+        
+        // Pointer is already set up safely at compile time
+        num_overlays++;
+      }
+    }
+    
+    sceIoDclose(dir);
+  }
+  
+  debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "DEBUG: init_overlays_at_boot complete, found %u overlays\n", num_overlays);
+    fflush(debug_log);
+    fclose(debug_log);
+  }
+  
+  // Mark as scanned
+  overlays_scanned = 1;
+  
+  // Ensure option_overlay_selected is within bounds
+  if (option_overlay_selected >= num_overlays)
+  {
+    option_overlay_selected = 0;
+  }
+  
+  // Update the menu structure with the actual number of overlays found
+  overlay_options_global[0].num_options = num_overlays;
+}
+
+// Empty function - overlays already loaded at boot
+void scan_overlay_files(void)
+{
+  // Do nothing - overlays are cached from boot
+}
+
+// This function is no longer needed - arrays are initialized at compile time
+
+// Initialize overlay menu structure - to be called when we have MSG available
+static void init_overlay_menu_late(void) {
+    // Set up the overlay menu options with proper MSG references
+    overlay_options_global[0].display_string = MSG[MSG_OVERLAY_MENU_0];
+    overlay_options_global[0].options = (void*)overlay_name_options;
+    overlay_options_global[0].current_option = &option_overlay_selected;
+    overlay_options_global[0].num_options = MAX_OVERLAYS;
+    overlay_options_global[0].help_string = MSG_OVERLAY_MENU_HELP_0;
+    overlay_options_global[0].line_number = 0;
+    
+    overlay_options_global[1].display_string = MSG[MSG_OVERLAY_MENU_1];
+    overlay_options_global[1].current_option = &option_overlay_enabled;
+    overlay_options_global[1].num_options = 2;
+    overlay_options_global[1].help_string = MSG_OVERLAY_MENU_HELP_1;
+    overlay_options_global[1].line_number = 1;
+    
+    overlay_options_global[2].display_string = MSG[MSG_OVERLAY_MENU_2];
+    overlay_options_global[2].help_string = MSG_OVERLAY_MENU_HELP_2;
+    overlay_options_global[2].line_number = 2;
+    
+    // No init function needed - we scan at startup
+    overlay_menu_global.init_function = NULL;
+}
 
 // Explicit declaration to ensure visibility
 extern u32 option_optimization_level;
@@ -847,6 +996,16 @@ void action_savestate(void)
 
 u32 menu(void)
 {
+  // Use the same debug log as HOME button
+  FILE *debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "DEBUG: menu() function entry point\n");
+    fprintf(debug_log, "DEBUG: overlay_menu_global address: %p\n", &overlay_menu_global);
+    fprintf(debug_log, "DEBUG: overlay_options_global address: %p\n", overlay_options_global);
+    fprintf(debug_log, "DEBUG: overlay_name_options address: %p\n", overlay_name_options);
+    fflush(debug_log);
+    fclose(debug_log);
+  }
 
 	int id_language;
   u32 i;
@@ -894,6 +1053,21 @@ u32 menu(void)
     MSG[MSG_NO],
     MSG[MSG_YES]
   };
+  
+  // Only do this initialization once
+  static int menu_initialized = 0;
+  if (!menu_initialized) {
+    
+    // Set up global yes/no options first
+    global_yes_no_options[0] = MSG[MSG_NO];
+    global_yes_no_options[1] = MSG[MSG_YES];
+    
+    // Set up overlay menu with MSG and global yes_no_options now available
+    init_overlay_menu_late();
+    overlay_options_global[1].options = (void*)global_yes_no_options;
+    
+    menu_initialized = 1;
+  }
 
   const char *enable_disable_options[] =
   {
@@ -961,6 +1135,9 @@ u32 menu(void)
   {
     MSG[MSG_LANG_JAPANESE], MSG[MSG_LANG_ENGLISH]
   };
+
+  // Dynamic overlay options will be updated by scan_overlay_files()
+  // overlay_name_options is now a global variable
 
   const char *optimization_level_options_local[] =
   {
@@ -1030,7 +1207,7 @@ u32 menu(void)
   void menu_init(void)
   {
     menu_init_flag = 1;
-    
+    scan_overlay_files();
   }
 
   void menu_term(void)
@@ -1276,6 +1453,8 @@ u32 menu(void)
     }
   }
 
+  // scan_overlay_files is now defined globally above
+
   #define DRAW_TITLE(title)                                                   \
    sprintf(line_buffer, "%s %s", FONT_GBA_ICON, MSG[title]);                  \
    print_string(line_buffer, 6, 2, COLOR_HELP_TEXT, BG_NO_FILL);              \
@@ -1505,6 +1684,8 @@ u32 menu(void)
 
   MAKE_MENU(emulator, NULL, NULL);
 
+  // Overlay menu is now initialized globally to avoid scope issues
+  // The overlay_options_global and overlay_menu_global are used directly from main menu
 
   MenuOptionType cheats_misc_options[] =
   {
@@ -1600,15 +1781,15 @@ u32 menu(void)
 
     SUBMENU_OPTION(&cheats_misc_menu, MSG[MSG_MAIN_MENU_CHEAT], MSG_MAIN_MENU_HELP_CHEAT, 10),
 
-    ACTION_OPTION(NULL, NULL, MSG[MSG_MAIN_MENU_7], MSG_MAIN_MENU_HELP_7, 11),
+    SUBMENU_OPTION(&overlay_menu_global, MSG[MSG_MAIN_MENU_OVERLAY], MSG_MAIN_MENU_HELP_OVERLAY, 11),
 
-    ACTION_OPTION(NULL, NULL, MSG[MSG_MAIN_MENU_8], MSG_MAIN_MENU_HELP_8, 13),
+    ACTION_OPTION(NULL, NULL, MSG[MSG_MAIN_MENU_7], MSG_MAIN_MENU_HELP_7, 13),
 
-    ACTION_OPTION(NULL, NULL, MSG[MSG_MAIN_MENU_9], MSG_MAIN_MENU_HELP_9, 14),
+    ACTION_OPTION(NULL, NULL, MSG[MSG_MAIN_MENU_8], MSG_MAIN_MENU_HELP_8, 15),
 
-    ACTION_OPTION(NULL, NULL, MSG[MSG_MAIN_MENU_10], MSG_MAIN_MENU_HELP_10, 16),
+    ACTION_OPTION(NULL, NULL, MSG[MSG_MAIN_MENU_9], MSG_MAIN_MENU_HELP_9, 16),
 
-    ACTION_OPTION(NULL, NULL, MSG[MSG_MAIN_MENU_11], MSG_MAIN_MENU_HELP_11, 17)
+    ACTION_OPTION(NULL, NULL, MSG[MSG_MAIN_MENU_11], MSG_MAIN_MENU_HELP_11, 18)
   };
 
 
@@ -1617,12 +1798,24 @@ u32 menu(void)
 
   void choose_menu(MenuType *new_menu)
   {
-    if (new_menu == NULL)
+    printf("DEBUG: choose_menu called with menu: %p\n", new_menu);
+    
+    if (new_menu == NULL) {
+      printf("DEBUG: new_menu was NULL, using main_menu\n");
       new_menu = &main_menu;
+    }
 
+    printf("DEBUG: Setting current_menu to %p\n", new_menu);
     current_menu = new_menu;
+    
+    printf("DEBUG: new_menu->options = %p\n", new_menu->options);
+    printf("DEBUG: Setting current_option to %p\n", new_menu->options);
     current_option = new_menu->options;
+    
+    printf("DEBUG: Setting current_option_num to 0\n");
     current_option_num = 0;
+    
+    printf("DEBUG: choose_menu completed successfully\n");
   }
 
   void reload_cheats_page()
@@ -1852,11 +2045,17 @@ u32 menu(void)
                   action_savestate();
                   repeat = 0;  // Return to game after save
                   break;
-                case 14: // "Return to Game"
+                case 13: // "Load Game"
+                  menu_load_file();
+                  break;
+                case 15: // "Reset Game"
+                  menu_reset();
+                  break;
+                case 16: // "Return to Game"
                   repeat = 0;
                   break;
-                case 17: // "Quit"
-                  quit();
+                case 18: // "Quit"
+                  menu_quit();
                   break;
                 default:
                   // For other actions, just continue for now
@@ -2324,6 +2523,7 @@ s32 load_dir_cfg(char *file_name)
   const char item_cfg[]   = "game_config_directory";
   const char item_snap[]  = "snapshot_directory";
   const char item_cheat[]  = "cheat_directory";
+  const char item_overlay[] = "overlay_directory";
 
   FILE *dir_config;
   SceUID check_dir = -1;
@@ -2365,6 +2565,12 @@ s32 load_dir_cfg(char *file_name)
         str_line += FONTHEIGHT;
 
         strcpy(dir_name, main_path);
+        
+        // Special case: overlay directory should have /overlays/ suffix
+        if (strcasecmp(item_name, "overlay_directory") == 0)
+        {
+          strcat(dir_name, "overlays/");
+        }
       }
     }
   }
@@ -2378,6 +2584,12 @@ s32 load_dir_cfg(char *file_name)
       str_line += FONTHEIGHT;
 
       strcpy(dir_name, main_path);
+      
+      // Special case: overlay directory should have /overlays/ suffix
+      if (strcasecmp(item_name, "overlay_directory") == 0)
+      {
+        strcat(dir_name, "overlays/");
+      }
     }
   }
 
@@ -2387,6 +2599,7 @@ s32 load_dir_cfg(char *file_name)
   dir_cfg[0]   = 0;
   dir_snap[0]  = 0;
   dir_cheat[0]  = 0;
+  dir_overlay[0] = 0;
 
   dir_config = fopen(file_name, "r");
 
@@ -2404,6 +2617,7 @@ s32 load_dir_cfg(char *file_name)
         set_directory(dir_cfg,   item_cfg);
         set_directory(dir_snap,  item_snap);
         set_directory(dir_cheat, item_cheat);
+        set_directory(dir_overlay, item_overlay);
       }
     }
 
@@ -2415,6 +2629,14 @@ s32 load_dir_cfg(char *file_name)
     check_directory(dir_cfg,   item_cfg);
     check_directory(dir_snap,  item_snap);
     check_directory(dir_cheat, item_cheat);
+    
+    // Always ensure overlay directory is set properly
+    if (dir_overlay[0] == 0) {
+      strcpy(dir_overlay, main_path);
+      strcat(dir_overlay, "overlays/");
+    }
+    
+    check_directory(dir_overlay, item_overlay);
 
     if (str_line > 7)
     {
@@ -2436,6 +2658,15 @@ s32 load_dir_cfg(char *file_name)
   strcpy(dir_cfg,   main_path);
   strcpy(dir_snap,  main_path);
   strcpy(dir_cheat, main_path);
+  strcpy(dir_overlay, main_path);
+  strcat(dir_overlay, "overlays/");
+  
+  // Ensure overlay directory exists or fallback gracefully
+  if (dir_overlay[0] == 0) {
+    strcpy(dir_overlay, main_path);
+    strcat(dir_overlay, "overlays/");
+  }
+  
   return -1;
 }
 

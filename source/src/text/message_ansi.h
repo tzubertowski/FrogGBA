@@ -59,6 +59,9 @@
     // MSG_MAIN_MENU_11
     "Exit FrogGBA",
 
+    //MSG_MAIN_MENU_OVERLAY
+    "Overlay options",
+
     // MSG_MAIN_MENU_HELP_0
     "X:Load  Left/Right:Select slot",
 
@@ -97,6 +100,9 @@
 
     // MSG_MAIN_MENU_HELP_11
     "X:Exit",
+
+    //MSG_MAIN_MENU_HELP_OVERLAY
+    "X:Select and configure screen overlays",
 
     // MSG_OPTION_MENU_TITLE
     "Emulator options",
@@ -410,6 +416,27 @@
 	//MSG_CHEAT_MENU_HELP_3,
 	FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Change page",
 
+    //MSG_OVERLAY_MENU_TITLE
+    "Overlay Selection",
+
+    //MSG_OVERLAY_MENU_0
+    "Overlay: %s",
+
+    //MSG_OVERLAY_MENU_1
+    "Enabled: %s",
+
+    //MSG_OVERLAY_MENU_2
+    "Back to main menu",
+
+    //MSG_OVERLAY_MENU_HELP_0
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Select overlay file",
+
+    //MSG_OVERLAY_MENU_HELP_1
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Toggle overlay on/off",
+
+    //MSG_OVERLAY_MENU_HELP_2
+    "X:Return to main menu",
+
     // MSG_NON_LOAD_GAME
     "Game is not loaded",
 
@@ -620,6 +647,9 @@
     // MSG_MAIN_MENU_11
     "退出FrogGBA",
 
+    //MSG_MAIN_MENU_OVERLAY
+    "覆盖层选项",
+
     // MSG_MAIN_MENU_HELP_0
     "○:读取  " FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择存档",
 
@@ -658,6 +688,9 @@
 
     // MSG_MAIN_MENU_HELP_11
     "○:退出",
+
+    //MSG_MAIN_MENU_HELP_OVERLAY
+    "○:选择和配置屏幕覆盖层",
 
     // MSG_OPTION_MENU_TITLE
     "模拟器设定",
@@ -973,6 +1006,27 @@
 	//MSG_CHEAT_MENU_HELP_3,
 	FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":翻页",
 
+    //MSG_OVERLAY_MENU_TITLE
+    "覆盖层选择",
+
+    //MSG_OVERLAY_MENU_0
+    "覆盖层: %s",
+
+    //MSG_OVERLAY_MENU_1
+    "启用: %s",
+
+    //MSG_OVERLAY_MENU_2
+    "返回主菜单",
+
+    //MSG_OVERLAY_MENU_HELP_0
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":选择覆盖层文件",
+
+    //MSG_OVERLAY_MENU_HELP_1
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":切换覆盖层开/关",
+
+    //MSG_OVERLAY_MENU_HELP_2
+    "○:返回主菜单",
+
     // MSG_NON_LOAD_GAME
     "没有读取游戏",
 
@@ -1183,6 +1237,9 @@
     // MSG_MAIN_MENU_11
     "退出FrogGBA",
 
+    //MSG_MAIN_MENU_OVERLAY
+    "覆蓋層選項",
+
     // MSG_MAIN_MENU_HELP_0
     "○:讀取  " FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇存档",
 
@@ -1221,6 +1278,9 @@
 
     // MSG_MAIN_MENU_HELP_11
     "○:退出",
+
+    //MSG_MAIN_MENU_HELP_OVERLAY
+    "○:選擇和配置屏幕覆蓋層",
 
     // MSG_OPTION_MENU_TITLE
     "模擬器設定",
@@ -1535,6 +1595,27 @@
 
 	//MSG_CHEAT_MENU_HELP_3,
 	FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":翻頁",
+
+    //MSG_OVERLAY_MENU_TITLE
+    "覆蓋層選擇",
+
+    //MSG_OVERLAY_MENU_0
+    "覆蓋層: %s",
+
+    //MSG_OVERLAY_MENU_1
+    "啓用: %s",
+
+    //MSG_OVERLAY_MENU_2
+    "返回主菜單",
+
+    //MSG_OVERLAY_MENU_HELP_0
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":選擇覆蓋層文件",
+
+    //MSG_OVERLAY_MENU_HELP_1
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":切換覆蓋層開/關",
+
+    //MSG_OVERLAY_MENU_HELP_2
+    "○:返回主菜單",
 
     // MSG_NON_LOAD_GAME
     "沒有讀取遊戲",

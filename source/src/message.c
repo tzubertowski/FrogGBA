@@ -84,6 +84,9 @@ const char *message[4][MSG_END] =
     // MSG_MAIN_MENU_11
     "FrogGBA�̏I��",
 
+    //MSG_MAIN_MENU_OVERLAY
+    "Overlay",
+
     // MSG_MAIN_MENU_HELP_0
     "��:���[�h  " FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":�X���b�g�I��",
 
@@ -122,6 +125,9 @@ const char *message[4][MSG_END] =
 
     // MSG_MAIN_MENU_HELP_11
     "��:�I��",
+
+    //MSG_MAIN_MENU_HELP_OVERLAY
+    "■:Select and configure screen overlays",
 
     // MSG_OPTION_MENU_TITLE
 	#include "text/option_menu_t.h"
@@ -428,6 +434,27 @@ const char *message[4][MSG_END] =
 
 	//MSG_CHEAT_MENU_HELP_3,
 	FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":�y�[�W��ύX",
+
+    //MSG_OVERLAY_MENU_TITLE
+    "Overlay Selection",
+
+    //MSG_OVERLAY_MENU_0
+    "Overlay: %s",
+
+    //MSG_OVERLAY_MENU_1
+    "Enabled: %s",
+
+    //MSG_OVERLAY_MENU_2
+    "Back to main menu",
+
+    //MSG_OVERLAY_MENU_HELP_0
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":Select overlay file",
+
+    //MSG_OVERLAY_MENU_HELP_1
+    FONT_CURSOR_LEFT FONT_CURSOR_RIGHT ":Toggle overlay on/off",
+
+    //MSG_OVERLAY_MENU_HELP_2
+    "X:Return to main menu",
 
     // MSG_NON_LOAD_GAME
     "�Q�[���̓��[�h����Ă��܂���",
