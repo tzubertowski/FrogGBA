@@ -107,6 +107,10 @@ static u8 used_priority_levels;
 u8 ALIGN_DATA layer_order[16];
 u32 layer_count;
 
+// Cache for tile base calculations to avoid redundant computations
+u8* tile_base_cache[4] = {NULL, NULL, NULL, NULL};
+u16 tile_base_bg_control[4] = {0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF};
+
 const u8 ALIGN_DATA active_layers[8] =
 {
   0x1F, 0x17, 0x1C, 0x14, 0x14, 0x14, 0x00, 0x00
@@ -944,15 +948,23 @@ static void order_layers(u8 layer_flags);
 
 #define tile_render(color_depth, combine_op, alpha_op)                        \
 {                                                                             \
-  u32 vertical_pixel_offset = (vertical_offset % 8) * tile_width_##color_depth; \
+  u32 vertical_pixel_offset = (vertical_offset & 7) * tile_width_##color_depth; \
   u32 vertical_pixel_flip = ((tile_size_##color_depth - tile_width_##color_depth) - vertical_pixel_offset) - vertical_pixel_offset; \
   tile_extra_variables_##color_depth();                                       \
-  u8 *tile_base = vram + ((((bg_control >> 2) & 0x03) * (1024 * 16)) + vertical_pixel_offset); \
-  u32 pixel_run = 256 - (horizontal_offset % 256);                            \
+  u8 *tile_base;                                                              \
+  /* Use cached tile base if available */                                     \
+  if (tile_base_bg_control[layer] == bg_control) {                            \
+    tile_base = tile_base_cache[layer] + vertical_pixel_offset;               \
+  } else {                                                                    \
+    tile_base = vram + ((((bg_control >> 2) & 0x03) << 14) + vertical_pixel_offset); \
+    tile_base_cache[layer] = vram + (((bg_control >> 2) & 0x03) << 14);       \
+    tile_base_bg_control[layer] = bg_control;                                 \
+  }                                                                           \
+  u32 pixel_run = 256 - (horizontal_offset & 0xFF);                          \
   u32 current_tile;                                                           \
                                                                               \
-  map_base += ((vertical_offset % 256) / 8) * 32;                             \
-  partial_tile_offset = (horizontal_offset % 8);                              \
+  map_base += (((vertical_offset & 0xFF) >> 3) << 5);                         \
+  partial_tile_offset = (horizontal_offset & 7);                              \
                                                                               \
   if (pixel_run >= end)                                                       \
   {                                                                           \
@@ -972,10 +984,10 @@ static void order_layers(u8 layer_flags);
       }                                                                       \
     }                                                                         \
                                                                               \
-    tile_run = end / 8;                                                       \
+    tile_run = end >> 3;                                                      \
     multiple_tile_map(combine_op, color_depth, alpha_op);                     \
                                                                               \
-    partial_tile_run = end % 8;                                               \
+    partial_tile_run = end & 7;                                               \
                                                                               \
     if (partial_tile_run != 0)                                                \
     {                                                                         \
@@ -990,14 +1002,14 @@ static void order_layers(u8 layer_flags);
       partial_tile_right_map(combine_op, color_depth, alpha_op);              \
     }                                                                         \
                                                                               \
-    tile_run = (pixel_run - partial_tile_run) / 8;                            \
+    tile_run = (pixel_run - partial_tile_run) >> 3;                            \
     multiple_tile_map(combine_op, color_depth, alpha_op);                     \
     map_ptr = second_ptr;                                                     \
     end -= pixel_run;                                                         \
-    tile_run = end / 8;                                                       \
+    tile_run = end >> 3;                                                      \
     multiple_tile_map(combine_op, color_depth, alpha_op);                     \
                                                                               \
-    partial_tile_run = end % 8;                                               \
+    partial_tile_run = end & 7;                                               \
     if (partial_tile_run != 0)                                                \
     {                                                                         \
       partial_tile_left_map(combine_op, color_depth, alpha_op);               \
@@ -1073,7 +1085,8 @@ static void render_scanline_text_##combine_op##_##alpha_op(u32 layer, u32 start,
   u32 i;                                                                      \
   render_scanline_dest_##alpha_op *dest_ptr = ((render_scanline_dest_##alpha_op *)scanline) + start; \
                                                                               \
-  u16 *map_base = (u16 *)(vram + (((bg_control >> 8) & 0x1F) * (1024 * 2)));  \
+  /* Optimize map base calculation - shift is faster than multiply */         \
+  u16 *map_base = (u16 *)(vram + (((bg_control >> 8) & 0x1F) << 11));         \
   u16 *map_ptr, *second_ptr;                                                  \
   u8 *tile_ptr;                                                               \
                                                                               \
@@ -1081,11 +1094,11 @@ static void render_scanline_text_##combine_op##_##alpha_op(u32 layer, u32 start,
                                                                               \
   if (((map_size & 0x02) != 0) && (vertical_offset >= 256))                   \
   {                                                                           \
-    map_base += ((map_width / 8) * 32) + (((vertical_offset - 256) / 8) * 32); \
+    map_base += ((map_width >> 3) << 5) + (((vertical_offset - 256) >> 3) << 5); \
   }                                                                           \
   else                                                                        \
   {                                                                           \
-    map_base += ((vertical_offset % 256) / 8) * 32;                           \
+    map_base += (((vertical_offset & 0xFF) >> 3) << 5);                       \
   }                                                                           \
                                                                               \
   if ((map_size & 0x01) != 0)                                                 \
@@ -1093,19 +1106,19 @@ static void render_scanline_text_##combine_op##_##alpha_op(u32 layer, u32 start,
     if (horizontal_offset >= 256)                                             \
     {                                                                         \
       horizontal_offset -= 256;                                               \
-      map_ptr = map_base + (32 * 32) + (horizontal_offset / 8);               \
+      map_ptr = map_base + (32 * 32) + (horizontal_offset >> 3);               \
       second_ptr = map_base;                                                  \
     }                                                                         \
     else                                                                      \
     {                                                                         \
-      map_ptr = map_base + (horizontal_offset / 8);                           \
+      map_ptr = map_base + (horizontal_offset >> 3);                           \
       second_ptr = map_base + (32 * 32);                                      \
     }                                                                         \
   }                                                                           \
   else                                                                        \
   {                                                                           \
-    horizontal_offset %= 256;                                                 \
-    map_ptr = map_base + (horizontal_offset / 8);                             \
+    horizontal_offset &= 0xFF;                                                \
+    map_ptr = map_base + (horizontal_offset >> 3);                             \
     second_ptr = map_base;                                                    \
   }                                                                           \
                                                                               \
@@ -2155,6 +2168,29 @@ render_scanline_obj_builder(copy, copy_bitmap, 1D, no_partial_alpha);
 render_scanline_obj_builder(copy, copy_bitmap, 2D, no_partial_alpha);
 
 
+// Global to track rendering stats for profiling
+static u32 active_sprite_count = 0;
+static u32 blend_operations = 0;
+static u32 active_layer_count = 0;
+static u32 current_video_mode = 0;
+
+
+u32 get_active_sprite_count(void) {
+  return active_sprite_count;
+}
+
+u32 get_blend_operations(void) {
+  return blend_operations;
+}
+
+u32 get_active_layers(void) {
+  return active_layer_count;
+}
+
+u32 get_video_mode(void) {
+  return current_video_mode;
+}
+
 static void order_obj(u8 video_mode)
 {
   s32 obj_num;
@@ -2185,6 +2221,9 @@ static void order_obj(u8 video_mode)
     }
   }
   used_priority_levels = 0;
+  
+  // Count active sprites for profiling
+  active_sprite_count = 0;
 
   for (obj_num = 127; obj_num >= 0; obj_num--, oam_ptr -= 4)
   {
@@ -2229,6 +2268,7 @@ static void order_obj(u8 video_mode)
 
         if (((obj_x + obj_width) > 0) && (obj_x < 240))
         {
+          active_sprite_count++;  // Count active sprites
           if (obj_y < 0)
           {
             obj_height += obj_y;
@@ -2296,6 +2336,9 @@ static void order_layers(u8 layer_flags)
       layer_count++;
     }
   }
+  
+  // Update global layer count for profiling
+  active_layer_count = layer_count;
 }
 
 #define fill_line(_start, _end)                                               \
@@ -3230,6 +3273,17 @@ void update_scanline(void)
   u16 dispcnt = pIO_REG(REG_DISPCNT);
   u16 *screen_offset = screen_texture + (pIO_REG(REG_VCOUNT) << 8);
   u8  video_mode = dispcnt & 0x07;
+  current_video_mode = video_mode;  // Track for profiling
+  
+  // Reset blend counter at start of frame (scanline 0)
+  if (pIO_REG(REG_VCOUNT) == 0) {
+    blend_operations = 0;
+    // Check if blend effects are enabled this frame
+    u16 bldcnt = pIO_REG(REG_BLDCNT);
+    if ((bldcnt & 0x3F) != 0) {  // Any source layers for blending
+      blend_operations = (bldcnt & 0x3F00) >> 8;  // Target layers as simple metric
+    }
+  }
 
   // If OAM has been modified since the last scanline has been updated then
   // reorder and reprofile the OBJ lists.

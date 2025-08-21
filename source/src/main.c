@@ -394,13 +394,8 @@ u32 update_gba(void)
           if (update_input() != 0)
             continue;
 
-          printf("main: skip_next_frame=%d\n", skip_next_frame);
           if (!skip_next_frame) {
-            printf("main: Calling update_screen()\n");
             (*update_screen)();
-            printf("main: update_screen() completed\n");
-          } else {
-            printf("main: Skipping frame\n");
           }
 
           update_gbc_sound(cpu_ticks);
@@ -575,9 +570,17 @@ static void synchronize(void)
     // fps
     if (psp_fps_debug != 0)
     {
-      char print_buffer[32];
-      sprintf(print_buffer, "%02ld(%02ld) VM:%s", (long)fps, (long)frames_drawn, 
-              volatile_mem_is_active() ? "ON" : "OFF");
+      char print_buffer[80];
+      extern u32 get_active_sprite_count(void);
+      extern u32 get_blend_operations(void);
+      extern u32 get_active_layers(void);
+      extern u32 get_video_mode(void);
+      u32 sprites = get_active_sprite_count();
+      u32 blends = get_blend_operations();
+      u32 layers = get_active_layers();
+      u32 vmode = get_video_mode();
+      sprintf(print_buffer, "%02ld(%02ld) M:%d S:%d B:%d L:%d", 
+              (long)fps, (long)frames_drawn, vmode, sprites, blends, layers);
       print_string(print_buffer, 0, 0, COLOR15_WHITE, COLOR15_BLACK);
     }
   }
