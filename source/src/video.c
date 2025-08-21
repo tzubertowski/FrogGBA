@@ -111,6 +111,9 @@ u32 layer_count;
 u8* tile_base_cache[4] = {NULL, NULL, NULL, NULL};
 u16 tile_base_bg_control[4] = {0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF};
 
+// Fast path tile rendering for common cases
+u32 fast_path_enabled = 1;
+
 const u8 ALIGN_DATA active_layers[8] =
 {
   0x1F, 0x17, 0x1C, 0x14, 0x14, 0x14, 0x00, 0x00
@@ -795,11 +798,51 @@ static void order_layers(u8 layer_flags);
 // necessary.
 
 #define multiple_tile_map(combine_op, color_depth, alpha_op)                  \
-  for (i = 0; i < tile_run; i++)                                              \
+  if (fast_path_enabled)                                                     \
   {                                                                           \
-    single_tile_map(tile, combine_op, color_depth, alpha_op);                 \
-    advance_dest_ptr_##combine_op(8);                                         \
-    map_ptr++;                                                                \
+    /* Fast path: check if all tiles in run are non-flipped */               \
+    u32 fast_path_ok = 1;                                                    \
+    u16 *check_ptr = map_ptr;                                                 \
+    u32 j;                                                                    \
+    for (j = 0; j < tile_run && j < 8; j++)                                   \
+    {                                                                         \
+      if ((check_ptr[j] & 0xC00) != 0) /* Check flip bits */                 \
+      {                                                                       \
+        fast_path_ok = 0;                                                     \
+        break;                                                                \
+      }                                                                       \
+    }                                                                         \
+    if (fast_path_ok && tile_run <= 8)                                       \
+    {                                                                         \
+      /* Fast path: render without flip checks */                            \
+      for (i = 0; i < tile_run; i++)                                          \
+      {                                                                       \
+        get_tile_##color_depth();                                             \
+        tile_noflip_##color_depth(combine_op, alpha_op);                      \
+        advance_dest_ptr_##combine_op(8);                                     \
+        map_ptr++;                                                            \
+      }                                                                       \
+    }                                                                         \
+    else                                                                      \
+    {                                                                         \
+      /* Fallback to normal path */                                          \
+      for (i = 0; i < tile_run; i++)                                          \
+      {                                                                       \
+        single_tile_map(tile, combine_op, color_depth, alpha_op);             \
+        advance_dest_ptr_##combine_op(8);                                     \
+        map_ptr++;                                                            \
+      }                                                                       \
+    }                                                                         \
+  }                                                                           \
+  else                                                                        \
+  {                                                                           \
+    /* Original path */                                                       \
+    for (i = 0; i < tile_run; i++)                                            \
+    {                                                                         \
+      single_tile_map(tile, combine_op, color_depth, alpha_op);               \
+      advance_dest_ptr_##combine_op(8);                                       \
+      map_ptr++;                                                              \
+    }                                                                         \
   }                                                                           \
 
 // Draws a partial tile from a tilemap clipped against the left edge of the
