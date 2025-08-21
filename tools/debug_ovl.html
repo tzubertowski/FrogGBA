@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVL File Debugger</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        input[type="file"] {
+            padding: 10px;
+            margin: 20px 0;
+            background: #3c3c3c;
+            color: white;
+            border: 1px solid #555;
+        }
+        .output {
+            background: #2d2d2d;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        canvas {
+            border: 1px solid #555;
+            display: block;
+            margin: 20px 0;
+            image-rendering: pixelated;
+        }
+        .success { color: #4ec9b0; }
+        .error { color: #f48771; }
+        .info { color: #dcdcaa; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 OVL File Debugger</h1>
+        <p>Load an OVL file to analyze its contents and visualize the overlay</p>
+        
+        <input type="file" id="fileInput" accept=".ovl">
+        
+        <div class="output" id="fileInfo"></div>
+        <canvas id="canvas" width="480" height="272" style="display:none;"></canvas>
+        <div class="output" id="pixelInfo"></div>
+    </div>
+    
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const pixelInfo = document.getElementById('pixelInfo');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        fileInput.addEventListener('change', handleFile);
+        
+        function handleFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                analyzeOVL(event.target.result, file.name);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        
+        function analyzeOVL(buffer, filename) {
+            const expectedSize = 480 * 272 * 2;
+            let info = `<span class="info">File: ${filename}</span>\n`;
+            info += `<span class="info">Size: ${buffer.byteLength} bytes</span>\n`;
+            
+            if (buffer.byteLength !== expectedSize) {
+                info += `<span class="error">❌ Invalid size! Expected ${expectedSize} bytes</span>\n`;
+                fileInfo.innerHTML = info;
+                return;
+            }
+            
+            info += `<span class="success">✓ Size correct (480×272×2)</span>\n\n`;
+            
+            const view = new DataView(buffer);
+            const imageData = ctx.createImageData(480, 272);
+            
+            let opaqueCount = 0;
+            let transparentCount = 0;
+            let colorStats = {
+                black: 0,
+                white: 0,
+                red: 0,
+                green: 0,
+                blue: 0,
+                other: 0
+            };
+            
+            // Sample first few pixels
+            info += `<span class="info">First 10 pixels (hex):</span>\n`;
+            for (let i = 0; i < 10; i++) {
+                const pixel = view.getUint16(i * 2, true); // little-endian
+                info += `  [${i}]: 0x${pixel.toString(16).padStart(4, '0')}`;
+                
+                // Decode pixel
+                const a = (pixel >> 15) & 1;
+                const b = (pixel >> 10) & 0x1F;
+                const g = (pixel >> 5) & 0x1F;
+                const r = pixel & 0x1F;
+                
+                info += ` = A:${a} R:${r} G:${g} B:${b}`;
+                if (a === 0) info += ` (transparent)`;
+                info += `\n`;
+            }
+            
+            // Process all pixels for visualization
+            for (let i = 0; i < 480 * 272; i++) {
+                const pixel = view.getUint16(i * 2, true);
+                
+                const a = (pixel >> 15) & 1;
+                const b = (pixel >> 10) & 0x1F;
+                const g = (pixel >> 5) & 0x1F;
+                const r = pixel & 0x1F;
+                
+                // Convert 5-bit to 8-bit
+                const r8 = (r << 3) | (r >> 2);
+                const g8 = (g << 3) | (g >> 2);
+                const b8 = (b << 3) | (b >> 2);
+                const a8 = a ? 255 : 0;
+                
+                // Set pixel in canvas
+                const idx = i * 4;
+                imageData.data[idx] = r8;
+                imageData.data[idx + 1] = g8;
+                imageData.data[idx + 2] = b8;
+                imageData.data[idx + 3] = a8;
+                
+                // Count statistics
+                if (a === 0) {
+                    transparentCount++;
+                } else {
+                    opaqueCount++;
+                    
+                    if (r < 5 && g < 5 && b < 5) colorStats.black++;
+                    else if (r > 27 && g > 27 && b > 27) colorStats.white++;
+                    else if (r > 20 && g < 10 && b < 10) colorStats.red++;
+                    else if (r < 10 && g > 20 && b < 10) colorStats.green++;
+                    else if (r < 10 && g < 10 && b > 20) colorStats.blue++;
+                    else colorStats.other++;
+                }
+            }
+            
+            info += `\n<span class="info">Pixel Statistics:</span>\n`;
+            info += `  Opaque: ${opaqueCount} (${(opaqueCount/1305.6).toFixed(1)}%)\n`;
+            info += `  Transparent: ${transparentCount} (${(transparentCount/1305.6).toFixed(1)}%)\n`;
+            
+            info += `\n<span class="info">Color Distribution (opaque pixels):</span>\n`;
+            info += `  Black: ${colorStats.black}\n`;
+            info += `  White: ${colorStats.white}\n`;
+            info += `  Red: ${colorStats.red}\n`;
+            info += `  Green: ${colorStats.green}\n`;
+            info += `  Blue: ${colorStats.blue}\n`;
+            info += `  Other: ${colorStats.other}\n`;
+            
+            // Find first and last opaque pixels
+            let firstOpaque = -1;
+            let lastOpaque = -1;
+            for (let i = 0; i < 480 * 272; i++) {
+                const pixel = view.getUint16(i * 2, true);
+                if (pixel & 0x8000) {
+                    if (firstOpaque === -1) firstOpaque = i;
+                    lastOpaque = i;
+                }
+            }
+            
+            if (firstOpaque >= 0) {
+                info += `\n<span class="info">Opaque pixel range:</span>\n`;
+                info += `  First: pixel ${firstOpaque} (x:${firstOpaque % 480}, y:${Math.floor(firstOpaque / 480)})\n`;
+                info += `  Last: pixel ${lastOpaque} (x:${lastOpaque % 480}, y:${Math.floor(lastOpaque / 480)})\n`;
+            }
+            
+            fileInfo.innerHTML = info;
+            
+            // Draw to canvas
+            ctx.putImageData(imageData, 0, 0);
+            canvas.style.display = 'block';
+            
+            // Analyze patterns
+            analyzePatterns(view);
+        }
+        
+        function analyzePatterns(view) {
+            let info = `<span class="info">Pattern Analysis:</span>\n`;
+            
+            // Check for repeating patterns (might indicate corruption)
+            let repeats = 0;
+            let lastPixel = 0;
+            for (let i = 0; i < 480 * 272; i++) {
+                const pixel = view.getUint16(i * 2, true);
+                if (i > 0 && pixel === lastPixel && pixel !== 0) {
+                    repeats++;
+                }
+                lastPixel = pixel;
+            }
+            
+            info += `  Repeated adjacent pixels: ${repeats}\n`;
+            
+            // Check line 0
+            let line0Opaque = 0;
+            for (let x = 0; x < 480; x++) {
+                const pixel = view.getUint16(x * 2, true);
+                if (pixel & 0x8000) line0Opaque++;
+            }
+            info += `  Line 0 opaque pixels: ${line0Opaque}\n`;
+            
+            // Check for vertical stripes (corruption pattern)
+            let stripePattern = true;
+            for (let x = 0; x < 480; x += 2) {
+                const pixel1 = view.getUint16(x * 2, true);
+                const pixel2 = view.getUint16((x + 480) * 2, true);
+                if (pixel1 !== pixel2) {
+                    stripePattern = false;
+                    break;
+                }
+            }
+            
+            if (stripePattern) {
+                info += `  <span class="error">⚠ Vertical stripe pattern detected (possible corruption)</span>\n`;
+            }
+            
+            pixelInfo.innerHTML = info;
+        }
+    </script>
+</body>
+</html>

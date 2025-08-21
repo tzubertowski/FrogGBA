@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNG to OVL Converter - FrogGBA Overlay Tool</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .upload-area {
+            border: 3px dashed #ddd;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: #fafafa;
+        }
+        
+        .upload-area:hover {
+            border-color: #667eea;
+            background: #f0f0ff;
+        }
+        
+        .upload-area.dragover {
+            border-color: #667eea;
+            background: #e0e0ff;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .upload-label {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .upload-label:hover {
+            background: #764ba2;
+        }
+        
+        .preview-container {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .preview-info {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .preview-canvas {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-width: 100%;
+            display: block;
+            margin: 0 auto;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #48bb78;
+            color: white;
+            border-radius: 25px;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        
+        .download-btn:hover {
+            background: #38a169;
+        }
+        
+        .info-box {
+            background: #e6f7ff;
+            border-left: 4px solid #1890ff;
+            padding: 15px;
+            margin-top: 30px;
+            border-radius: 4px;
+        }
+        
+        .info-box h3 {
+            margin-top: 0;
+            color: #0050b3;
+        }
+        
+        .info-box ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+        
+        .error {
+            background: #fff2f0;
+            border-left: 4px solid #ff4d4f;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .specs {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .spec-item {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .spec-label {
+            font-weight: bold;
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .spec-value {
+            font-size: 18px;
+            color: #333;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 PNG to OVL Converter</h1>
+        <p class="subtitle">Convert PNG overlays for FrogGBA (TempGBA mod)</p>
+        
+        <div class="upload-area" id="uploadArea">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2" style="margin-bottom: 20px;">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <p style="color: #666; margin: 10px 0;">Drag & drop your PNG file here, or</p>
+            <label for="fileInput" class="upload-label">Choose File</label>
+            <input type="file" id="fileInput" accept=".png,image/png">
+            <p style="color: #999; font-size: 14px; margin-top: 15px;">Recommended: 240×160 pixels with transparency</p>
+        </div>
+        
+        <div class="error" id="errorBox"></div>
+        
+        <div class="preview-container" id="previewContainer">
+            <div class="preview-info">
+                <h3>Preview & Info</h3>
+                <div class="specs">
+                    <div class="spec-item">
+                        <div class="spec-label">Original Size</div>
+                        <div class="spec-value" id="originalSize">-</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Output Size</div>
+                        <div class="spec-value">480×272</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Format</div>
+                        <div class="spec-value">RGB5551</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">File Size</div>
+                        <div class="spec-value">261.1 KB</div>
+                    </div>
+                </div>
+            </div>
+            
+            <canvas id="previewCanvas" class="preview-canvas"></canvas>
+            
+            <div style="text-align: center;">
+                <a id="downloadBtn" class="download-btn" download="overlay.ovl">⬇ Download OVL File</a>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h3>📘 How to Use</h3>
+            <ul>
+                <li>Select or drag a PNG file with your overlay design</li>
+                <li>The image will be automatically resized to 480×272 pixels (full PSP screen)</li>
+                <li>Transparent areas will let the game show through</li>
+                <li>Save the .ovl file to <code>PSP/GAME/FrogGBA/overlays/</code></li>
+                <li>Select your overlay in the emulator's menu</li>
+            </ul>
+            <p style="margin-top: 15px;"><strong>Tip:</strong> Use PNG images with transparency (alpha channel) for best results. 
+            Semi-transparent pixels will blend with the game display.</p>
+        </div>
+    </div>
+    
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const previewCanvas = document.getElementById('previewCanvas');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const errorBox = document.getElementById('errorBox');
+        const originalSizeEl = document.getElementById('originalSize');
+        
+        let currentOvlData = null;
+        
+        // Handle file selection
+        fileInput.addEventListener('change', handleFile);
+        
+        // Handle drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        });
+        
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        function handleFile(e) {
+            const file = e.target.files[0];
+            if (file) {
+                processFile(file);
+            }
+        }
+        
+        function showError(message) {
+            errorBox.textContent = message;
+            errorBox.style.display = 'block';
+            setTimeout(() => {
+                errorBox.style.display = 'none';
+            }, 5000);
+        }
+        
+        function processFile(file) {
+            if (!file.type.match('image/png')) {
+                showError('Please select a PNG file');
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const img = new Image();
+                
+                img.onload = function() {
+                    // Show original size
+                    originalSizeEl.textContent = `${img.width}×${img.height}`;
+                    
+                    // Set up canvas for PSP resolution
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 480;
+                    canvas.height = 272;
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Clear canvas with transparent background
+                    ctx.clearRect(0, 0, 480, 272);
+                    
+                    // Use different drawing strategy based on image size
+                    if (img.width === 480 && img.height === 272) {
+                        // Same size - draw directly
+                        ctx.drawImage(img, 0, 0);
+                    } else {
+                        // Different size - use nearest neighbor scaling to preserve thin lines
+                        ctx.imageSmoothingEnabled = false;
+                        ctx.mozImageSmoothingEnabled = false;
+                        ctx.webkitImageSmoothingEnabled = false;
+                        ctx.msImageSmoothingEnabled = false;
+                        
+                        // Draw image maintaining aspect ratio or stretch to fit
+                        ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, 480, 272);
+                    }
+                    
+                    // Get image data
+                    const imageData = ctx.getImageData(0, 0, 480, 272);
+                    const pixels = imageData.data;
+                    
+                    // Convert to OVL format (RGB5551)
+                    const ovlData = new ArrayBuffer(480 * 272 * 2);
+                    const ovlView = new DataView(ovlData);
+                    
+                    let offset = 0;
+                    let opaquePerLine = new Array(272).fill(0);
+                    let totalOpaque = 0;
+                    
+                    for (let y = 0; y < 272; y++) {
+                        for (let x = 0; x < 480; x++) {
+                            const idx = (y * 480 + x) * 4;
+                            const r = pixels[idx];
+                            const g = pixels[idx + 1];
+                            const b = pixels[idx + 2];
+                            const a = pixels[idx + 3];
+                            
+                            // Convert 8-bit to 5-bit color components
+                            const r5 = (r >> 3) & 0x1F;
+                            const g5 = (g >> 3) & 0x1F;
+                            const b5 = (b >> 3) & 0x1F;
+                            
+                            // Alpha detection: only fully opaque or nearly opaque pixels
+                            // This preserves transparency for scanlines and semi-transparent overlays
+                            const alphaBit = (a > 200) ? 1 : 0;
+                            
+                            // For better color preservation, don't modify RGB values if transparent
+                            // This preserves the original overlay colors in the RGB555 data
+                            
+                            if (alphaBit) {
+                                opaquePerLine[y]++;
+                                totalOpaque++;
+                            }
+                            
+                            // Pack into RGB5551 format (ABBBBBGGGGGRRRRR)
+                            const pixel = (alphaBit << 15) | (b5 << 10) | (g5 << 5) | r5;
+                            
+                            // Write as little-endian 16-bit value
+                            ovlView.setUint16(offset, pixel, true);
+                            offset += 2;
+                        }
+                    }
+                    
+                    // Log distribution for debugging
+                    console.log('Opaque pixels per line:', opaquePerLine.slice(0, 20).map((count, y) => count > 0 ? `Line ${y}: ${count}` : null).filter(x => x));
+                    console.log('Total opaque pixels:', totalOpaque);
+                    
+                    // Store the OVL data
+                    currentOvlData = ovlData;
+                    
+                    // Show preview
+                    previewCanvas.width = 480;
+                    previewCanvas.height = 272;
+                    const previewCtx = previewCanvas.getContext('2d');
+                    previewCtx.putImageData(imageData, 0, 0);
+                    
+                    // Set up download
+                    const blob = new Blob([ovlData], { type: 'application/octet-stream' });
+                    const url = URL.createObjectURL(blob);
+                    downloadBtn.href = url;
+                    
+                    // Set filename based on input file
+                    const baseName = file.name.replace(/\.png$/i, '');
+                    downloadBtn.download = baseName + '.ovl';
+                    
+                    // Show preview container
+                    previewContainer.style.display = 'block';
+                };
+                
+                img.src = e.target.result;
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>

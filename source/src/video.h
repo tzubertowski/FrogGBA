@@ -71,6 +71,11 @@ extern void (*update_screen)(void);
 
 void flip_screen(u32 vsync);
 
+// Overlay rendering functions
+void load_overlay(const char *filename);
+void render_overlay(void);
+void clear_overlay(void);
+
 void video_resolution_large(void);
 void video_resolution_small(void);
 

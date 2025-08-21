@@ -426,6 +426,12 @@
     "Enabled: %s",
 
     //MSG_OVERLAY_MENU_2
+    "X Offset: %d",
+
+    //MSG_OVERLAY_MENU_3
+    "Y Offset: %d",
+
+    //MSG_OVERLAY_MENU_4
     "Back to main menu",
 
     //MSG_OVERLAY_MENU_HELP_0
@@ -435,6 +441,12 @@
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Toggle overlay on/off",
 
     //MSG_OVERLAY_MENU_HELP_2
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Adjust X position (0-240)",
+
+    //MSG_OVERLAY_MENU_HELP_3
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":Adjust Y position (0-112)",
+
+    //MSG_OVERLAY_MENU_HELP_4
     "X:Return to main menu",
 
     // MSG_NON_LOAD_GAME
@@ -1016,6 +1028,12 @@
     "启用: %s",
 
     //MSG_OVERLAY_MENU_2
+    "X偏移: %d",
+
+    //MSG_OVERLAY_MENU_3
+    "Y偏移: %d",
+
+    //MSG_OVERLAY_MENU_4
     "返回主菜单",
 
     //MSG_OVERLAY_MENU_HELP_0
@@ -1025,6 +1043,12 @@
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":切换覆盖层开/关",
 
     //MSG_OVERLAY_MENU_HELP_2
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":调整X位置(0-240)",
+
+    //MSG_OVERLAY_MENU_HELP_3
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":调整Y位置(0-112)",
+
+    //MSG_OVERLAY_MENU_HELP_4
     "○:返回主菜单",
 
     // MSG_NON_LOAD_GAME
@@ -1606,6 +1630,12 @@
     "啓用: %s",
 
     //MSG_OVERLAY_MENU_2
+    "X偏移: %d",
+
+    //MSG_OVERLAY_MENU_3
+    "Y偏移: %d",
+
+    //MSG_OVERLAY_MENU_4
     "返回主菜單",
 
     //MSG_OVERLAY_MENU_HELP_0
@@ -1615,6 +1645,12 @@
     FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":切換覆蓋層開/關",
 
     //MSG_OVERLAY_MENU_HELP_2
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":調整X位置(0-240)",
+
+    //MSG_OVERLAY_MENU_HELP_3
+    FONT_CURSOR_LEFT_GBK FONT_CURSOR_RIGHT_GBK ":調整Y位置(0-112)",
+
+    //MSG_OVERLAY_MENU_HELP_4
     "○:返回主菜單",
 
     // MSG_NON_LOAD_GAME

@@ -48,6 +48,8 @@ u32 option_language = 1;
 // Overlay options
 u32 option_overlay_enabled = 0;
 u32 option_overlay_selected = 0;
+u32 option_overlay_offset_x = 120;  // X offset for game screen (0-240) - default center
+u32 option_overlay_offset_y = 56;   // Y offset for game screen (0-112) - default center
 
 u32 option_frameskip_type = FRAMESKIP_AUTO;
 u32 option_frameskip_value = 9;
@@ -390,8 +392,14 @@ u32 update_gba(void)
           if (update_input() != 0)
             continue;
 
-          if (!skip_next_frame)
+          printf("main: skip_next_frame=%d\n", skip_next_frame);
+          if (!skip_next_frame) {
+            printf("main: Calling update_screen()\n");
             (*update_screen)();
+            printf("main: update_screen() completed\n");
+          } else {
+            printf("main: Skipping frame\n");
+          }
 
           update_gbc_sound(cpu_ticks);
           gbc_sound_update = 0;
@@ -804,6 +812,24 @@ int user_main(int argc, char *argv[])
   
   // Initialize overlay cache at boot
   init_overlays_at_boot();
+  
+  // Load initial overlay if one is selected
+  if (option_overlay_selected > 0 && option_overlay_selected < 10) {
+    extern void load_overlay(const char *filename);
+    extern char overlay_names[][64];
+    extern int overlay_needs_update;
+    
+    FILE *debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "main: Loading initial overlay selected=%d enabled=%d\n", 
+              option_overlay_selected, option_overlay_enabled);
+      fclose(debug_log);
+    }
+    
+    load_overlay(overlay_names[option_overlay_selected]);
+    overlay_needs_update = 1; // Ensure overlay gets rendered
+  }
+  
 
   gamepak_filename[0] = 0;
 

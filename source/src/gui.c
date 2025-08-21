@@ -22,7 +22,7 @@
 #include <pspiofilemgr.h>
 
 #define GPSP_CONFIG_FILENAME  "froggba.cfg"
-#define GPSP_CONFIG_NUM       (17 + 16) // options + game pad config
+#define GPSP_CONFIG_NUM       (21 + 16) // options + game pad config + overlay options
 #define GPSP_GAME_CONFIG_NUM  (7 + 16)
 
 #define COLOR_BG            COLOR15( 8, 15, 12)  // Soft mint green background
@@ -279,10 +279,12 @@ static u32 overlays_scanned = 0; // Flag to track if we've already scanned
 // Global yes/no options - needed for overlay menu
 static const char *global_yes_no_options[2];
 
-// Global menu structures for overlay - must be here to avoid scope issues
-MenuOptionType overlay_options_global[3] = {
+// Global menu structures for overlay - must be here to avoid scope issues  
+MenuOptionType overlay_options_global[5] = {
   {NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, STRING_SELECTION_OPTION},
   {NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, STRING_SELECTION_OPTION}, 
+  {NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, NUMBER_SELECTION_OPTION},
+  {NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, NUMBER_SELECTION_OPTION},
   {NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, SUBMENU_OPTION}
 };
 
@@ -290,7 +292,7 @@ MenuType overlay_menu_global = {
   NULL, // init_function - will be set later
   NULL, // passive_function  
   overlay_options_global,
-  3
+  5
 };
 
 // Initialize overlays at emulator boot - called from main.c
@@ -331,9 +333,9 @@ void init_overlays_at_boot(void)
       if (!(dirent.d_stat.st_mode & FIO_SO_IFREG) || dirent.d_name[0] == '.')
         continue;
         
-      // Check if it's a PNG file
+      // Check if it's an OVL file (or PNG for backwards compatibility)
       ext = strrchr(dirent.d_name, '.');
-      if (ext && (strcasecmp(ext, ".png") == 0))
+      if (ext && (strcasecmp(ext, ".ovl") == 0 || strcasecmp(ext, ".png") == 0))
       {
         debug_log = fopen("froggba_debug.log", "a");
         if (debug_log) {
@@ -346,7 +348,7 @@ void init_overlays_at_boot(void)
         strncpy(overlay_names[num_overlays], dirent.d_name, sizeof(overlay_names[num_overlays]) - 1);
         overlay_names[num_overlays][sizeof(overlay_names[num_overlays]) - 1] = '\0';
         
-        // Remove .png extension from display name
+        // Remove .ovl or .png extension from display name
         char *dot = strrchr(overlay_names[num_overlays], '.');
         if (dot) *dot = '\0';
         
@@ -378,16 +380,101 @@ void init_overlays_at_boot(void)
   overlay_options_global[0].num_options = num_overlays;
 }
 
+// Forward declaration
+static void overlay_changed(void);
+
 // Empty function - overlays already loaded at boot
 void scan_overlay_files(void)
 {
   // Do nothing - overlays are cached from boot
 }
 
+// Called when overlay selection changes
+static void overlay_changed(void)
+{
+  extern int overlay_needs_update;
+  
+  FILE *debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "overlay_changed: selected=%d, num_overlays=%d, name='%s'\n", 
+            option_overlay_selected, num_overlays, 
+            option_overlay_selected < num_overlays ? overlay_names[option_overlay_selected] : "INVALID");
+    fclose(debug_log);
+  }
+  
+  if (option_overlay_selected < num_overlays) {
+    extern int overlay_needs_update;
+    load_overlay(overlay_names[option_overlay_selected]);
+    overlay_needs_update = 1;
+  }
+}
+
+// Called when overlay enabled/disabled changes
+static void overlay_enabled_changed(void)
+{
+  extern int overlay_needs_update;
+  extern void load_overlay(const char *filename);
+  extern char overlay_names[][64];
+  
+  FILE *debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "overlay_enabled_changed: enabled=%d, selected=%d\n", 
+            option_overlay_enabled, option_overlay_selected);
+    fclose(debug_log);
+  }
+  
+  if (option_overlay_enabled && option_overlay_selected > 0) {
+    // Load the selected overlay
+    load_overlay(overlay_names[option_overlay_selected]);
+    overlay_needs_update = 1;
+    
+    // FORCE TEST: Apply overlay immediately to test if rendering works
+    extern void apply_overlay_borders(void);
+    apply_overlay_borders();
+  } else {
+    // Clear overlay when disabled and force screen refresh
+    extern void clear_overlay(void);
+    extern void force_screen_refresh(void);
+    clear_overlay();
+    force_screen_refresh(); // Clear any remaining overlay pixels
+  }
+}
+
+// Called when X/Y offset changes - need to reapply overlay and regenerate display list
+static void overlay_offset_changed(void)
+{
+  extern void set_gba_resolution(void);
+  extern void force_screen_refresh(void);
+  extern int overlay_needs_update;
+  
+  // Force complete screen refresh
+  force_screen_refresh();
+  
+  // Mark overlay for re-rendering
+  overlay_needs_update = 1;
+  
+  // Regenerate display list with new offset - THIS IS CRITICAL
+  set_gba_resolution();
+  
+  // DEBUG: Log when offset changes
+  FILE *debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    extern u32 option_overlay_offset_x, option_overlay_offset_y;
+    fprintf(debug_log, "overlay_offset_changed: new offset X=%d Y=%d, set overlay_needs_update=1, called set_gba_resolution\n", 
+            option_overlay_offset_x, option_overlay_offset_y);
+    fclose(debug_log);
+  }
+}
+
 // This function is no longer needed - arrays are initialized at compile time
 
 // Initialize overlay menu structure - to be called when we have MSG available
 static void init_overlay_menu_late(void) {
+    FILE *debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+        fprintf(debug_log, "init_overlay_menu_late: Setting up overlay menu callbacks\n");
+        fclose(debug_log);
+    }
     // Set up the overlay menu options with proper MSG references
     overlay_options_global[0].display_string = MSG[MSG_OVERLAY_MENU_0];
     overlay_options_global[0].options = (void*)overlay_name_options;
@@ -395,16 +482,32 @@ static void init_overlay_menu_late(void) {
     overlay_options_global[0].num_options = MAX_OVERLAYS;
     overlay_options_global[0].help_string = MSG_OVERLAY_MENU_HELP_0;
     overlay_options_global[0].line_number = 0;
+    overlay_options_global[0].passive_function = overlay_changed;
     
     overlay_options_global[1].display_string = MSG[MSG_OVERLAY_MENU_1];
     overlay_options_global[1].current_option = &option_overlay_enabled;
     overlay_options_global[1].num_options = 2;
     overlay_options_global[1].help_string = MSG_OVERLAY_MENU_HELP_1;
     overlay_options_global[1].line_number = 1;
+    overlay_options_global[1].passive_function = overlay_enabled_changed;
     
     overlay_options_global[2].display_string = MSG[MSG_OVERLAY_MENU_2];
+    overlay_options_global[2].current_option = &option_overlay_offset_x;
+    overlay_options_global[2].num_options = 241; // 0-240
     overlay_options_global[2].help_string = MSG_OVERLAY_MENU_HELP_2;
     overlay_options_global[2].line_number = 2;
+    overlay_options_global[2].passive_function = overlay_offset_changed;
+    
+    overlay_options_global[3].display_string = MSG[MSG_OVERLAY_MENU_3];
+    overlay_options_global[3].current_option = &option_overlay_offset_y;
+    overlay_options_global[3].num_options = 113; // 0-112
+    overlay_options_global[3].help_string = MSG_OVERLAY_MENU_HELP_3;
+    overlay_options_global[3].line_number = 3;
+    overlay_options_global[3].passive_function = overlay_offset_changed;
+    
+    overlay_options_global[4].display_string = MSG[MSG_OVERLAY_MENU_4];
+    overlay_options_global[4].help_string = MSG_OVERLAY_MENU_HELP_4;
+    overlay_options_global[4].line_number = 4;
     
     // No init function needed - we scan at startup
     overlay_menu_global.init_function = NULL;
@@ -2349,10 +2452,14 @@ s32 save_config_file(void)
     file_options[13]  = option_analog_sensitivity;
     file_options[14]  = option_language;
     file_options[15]  = option_color_correction;
+    file_options[16]  = option_overlay_enabled;
+    file_options[17]  = option_overlay_selected;
+    file_options[18]  = option_overlay_offset_x;
+    file_options[19]  = option_overlay_offset_y;
 
     for (i = 0; i < 16; i++)
     {
-      file_options[17 + i] = gamepad_config_map[i];
+      file_options[21 + i] = gamepad_config_map[i];
     }
 
     FILE_WRITE_ARRAY(config_file, file_options);
@@ -2475,10 +2582,14 @@ s32 load_config_file(void)
       option_analog_sensitivity = file_options[13] % 10;
       option_language = file_options[14] % 2;  // Only Japanese (0) and English (1)
       option_color_correction = file_options[15] % 3;  // 0 = Off, 1 = GPSP, 2 = Retro
+      option_overlay_enabled = file_options[16] % 2;  // 0 = Off, 1 = On
+      option_overlay_selected = file_options[17] % 10;  // 0-9 overlay selection
+      option_overlay_offset_x = file_options[18] % 241;  // 0-240 X offset
+      option_overlay_offset_y = file_options[19] % 113;  // 0-112 Y offset
 
       for (i = 0; i < 16; i++)
       {
-        gamepad_config_map[i] = file_options[17 + i] % (BUTTON_ID_NONE + 1);
+        gamepad_config_map[i] = file_options[21 + i] % (BUTTON_ID_NONE + 1);
 
         if (gamepad_config_map[i] == BUTTON_ID_MENU)
           menu_button = i;

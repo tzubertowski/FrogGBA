@@ -311,3 +311,11 @@ int save_png(const char *path, u16 *screen_image)
   return res;
 }
 
+// Simple PNG overlay loader - loads 240x160 PNG with transparency
+int load_png_overlay(const char *path, u16 *overlay_buffer)
+{
+  // For now, return 0 (not implemented)
+  // A full PNG loader would require libpng or manual PNG decoding
+  // We'll use a simpler approach with raw binary overlays
+  return 0;
+}

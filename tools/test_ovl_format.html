@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVL Format Tester</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            display: block;
+            margin: 20px auto;
+        }
+        .output {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OVL Format Tester</h1>
+        <p>Test different pixel formats to diagnose the issue</p>
+        
+        <div>
+            <button onclick="testFormat1()">Test Format 1: ABBBBBGGGGGRRRRR (Current)</button>
+            <button onclick="testFormat2()">Test Format 2: ARRRRRGGGGGBBBBB</button>
+            <button onclick="testFormat3()">Test Format 3: Big Endian</button>
+            <button onclick="testSinglePixel()">Test Single Red Pixel</button>
+        </div>
+        
+        <canvas id="canvas" width="480" height="272"></canvas>
+        
+        <div class="output" id="output">Click a test button to generate OVL data</div>
+        
+        <a id="downloadBtn" href="#" download="test.ovl" style="display:none;">Download OVL</a>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const output = document.getElementById('output');
+        const downloadBtn = document.getElementById('downloadBtn');
+        
+        function clearCanvas() {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, 480, 272);
+        }
+        
+        function testFormat1() {
+            clearCanvas();
+            
+            // Draw a simple red square
+            ctx.fillStyle = 'red';
+            ctx.fillRect(100, 100, 50, 50);
+            
+            const imageData = ctx.getImageData(0, 0, 480, 272);
+            const pixels = imageData.data;
+            
+            const ovlData = new ArrayBuffer(480 * 272 * 2);
+            const ovlView = new DataView(ovlData);
+            
+            let offset = 0;
+            let log = "Format 1: ABBBBBGGGGGRRRRR (little-endian)\n";
+            let firstRed = true;
+            
+            for (let y = 0; y < 272; y++) {
+                for (let x = 0; x < 480; x++) {
+                    const idx = (y * 480 + x) * 4;
+                    const r = pixels[idx];
+                    const g = pixels[idx + 1];
+                    const b = pixels[idx + 2];
+                    const a = pixels[idx + 3];
+                    
+                    const r5 = (r >> 3) & 0x1F;
+                    const g5 = (g >> 3) & 0x1F;
+                    const b5 = (b >> 3) & 0x1F;
+                    const alphaBit = a > 128 ? 1 : 0;
+                    
+                    const pixel = (alphaBit << 15) | (b5 << 10) | (g5 << 5) | r5;
+                    ovlView.setUint16(offset, pixel, true); // little-endian
+                    
+                    if (r > 200 && g < 50 && b < 50 && firstRed) {
+                        log += `Red pixel at (${x},${y}): R=${r} G=${g} B=${b} A=${a}\n`;
+                        log += `  5-bit: R5=${r5} G5=${g5} B5=${b5} A=${alphaBit}\n`;
+                        log += `  Packed: 0x${pixel.toString(16).padStart(4, '0')}\n`;
+                        log += `  Bytes: ${(pixel & 0xFF).toString(16).padStart(2, '0')} ${((pixel >> 8) & 0xFF).toString(16).padStart(2, '0')}\n`;
+                        firstRed = false;
+                    }
+                    
+                    offset += 2;
+                }
+            }
+            
+            output.textContent = log;
+            setupDownload(ovlData, 'format1.ovl');
+        }
+        
+        function testFormat2() {
+            clearCanvas();
+            
+            // Draw a simple red square
+            ctx.fillStyle = 'red';
+            ctx.fillRect(100, 100, 50, 50);
+            
+            const imageData = ctx.getImageData(0, 0, 480, 272);
+            const pixels = imageData.data;
+            
+            const ovlData = new ArrayBuffer(480 * 272 * 2);
+            const ovlView = new DataView(ovlData);
+            
+            let offset = 0;
+            let log = "Format 2: ARRRRRGGGGGBBBBB (little-endian)\n";
+            let firstRed = true;
+            
+            for (let y = 0; y < 272; y++) {
+                for (let x = 0; x < 480; x++) {
+                    const idx = (y * 480 + x) * 4;
+                    const r = pixels[idx];
+                    const g = pixels[idx + 1];
+                    const b = pixels[idx + 2];
+                    const a = pixels[idx + 3];
+                    
+                    const r5 = (r >> 3) & 0x1F;
+                    const g5 = (g >> 3) & 0x1F;
+                    const b5 = (b >> 3) & 0x1F;
+                    const alphaBit = a > 128 ? 1 : 0;
+                    
+                    // Different bit packing order
+                    const pixel = (alphaBit << 15) | (r5 << 10) | (g5 << 5) | b5;
+                    ovlView.setUint16(offset, pixel, true); // little-endian
+                    
+                    if (r > 200 && g < 50 && b < 50 && firstRed) {
+                        log += `Red pixel at (${x},${y}): R=${r} G=${g} B=${b} A=${a}\n`;
+                        log += `  5-bit: R5=${r5} G5=${g5} B5=${b5} A=${alphaBit}\n`;
+                        log += `  Packed: 0x${pixel.toString(16).padStart(4, '0')}\n`;
+                        log += `  Bytes: ${(pixel & 0xFF).toString(16).padStart(2, '0')} ${((pixel >> 8) & 0xFF).toString(16).padStart(2, '0')}\n`;
+                        firstRed = false;
+                    }
+                    
+                    offset += 2;
+                }
+            }
+            
+            output.textContent = log;
+            setupDownload(ovlData, 'format2.ovl');
+        }
+        
+        function testFormat3() {
+            clearCanvas();
+            
+            // Draw a simple red square
+            ctx.fillStyle = 'red';
+            ctx.fillRect(100, 100, 50, 50);
+            
+            const imageData = ctx.getImageData(0, 0, 480, 272);
+            const pixels = imageData.data;
+            
+            const ovlData = new ArrayBuffer(480 * 272 * 2);
+            const ovlView = new DataView(ovlData);
+            
+            let offset = 0;
+            let log = "Format 3: ABBBBBGGGGGRRRRR (big-endian)\n";
+            let firstRed = true;
+            
+            for (let y = 0; y < 272; y++) {
+                for (let x = 0; x < 480; x++) {
+                    const idx = (y * 480 + x) * 4;
+                    const r = pixels[idx];
+                    const g = pixels[idx + 1];
+                    const b = pixels[idx + 2];
+                    const a = pixels[idx + 3];
+                    
+                    const r5 = (r >> 3) & 0x1F;
+                    const g5 = (g >> 3) & 0x1F;
+                    const b5 = (b >> 3) & 0x1F;
+                    const alphaBit = a > 128 ? 1 : 0;
+                    
+                    const pixel = (alphaBit << 15) | (b5 << 10) | (g5 << 5) | r5;
+                    ovlView.setUint16(offset, pixel, false); // big-endian
+                    
+                    if (r > 200 && g < 50 && b < 50 && firstRed) {
+                        log += `Red pixel at (${x},${y}): R=${r} G=${g} B=${b} A=${a}\n`;
+                        log += `  5-bit: R5=${r5} G5=${g5} B5=${b5} A=${alphaBit}\n`;
+                        log += `  Packed: 0x${pixel.toString(16).padStart(4, '0')}\n`;
+                        
+                        const byte1 = ovlView.getUint8(offset);
+                        const byte2 = ovlView.getUint8(offset + 1);
+                        log += `  Bytes: ${byte1.toString(16).padStart(2, '0')} ${byte2.toString(16).padStart(2, '0')}\n`;
+                        firstRed = false;
+                    }
+                    
+                    offset += 2;
+                }
+            }
+            
+            output.textContent = log;
+            setupDownload(ovlData, 'format3.ovl');
+        }
+        
+        function testSinglePixel() {
+            clearCanvas();
+            
+            const ovlData = new ArrayBuffer(480 * 272 * 2);
+            const ovlView = new DataView(ovlData);
+            
+            let offset = 0;
+            let log = "Single red pixel test at (240, 136)\n";
+            
+            for (let y = 0; y < 272; y++) {
+                for (let x = 0; x < 480; x++) {
+                    let pixel = 0;
+                    
+                    if (x == 240 && y == 136) {
+                        // Pure red pixel: A=1, B=0, G=0, R=31
+                        pixel = (1 << 15) | (0 << 10) | (0 << 5) | 31;
+                        log += `Red pixel: 0x${pixel.toString(16).padStart(4, '0')}\n`;
+                    }
+                    
+                    ovlView.setUint16(offset, pixel, true);
+                    offset += 2;
+                }
+            }
+            
+            output.textContent = log;
+            setupDownload(ovlData, 'single_pixel.ovl');
+        }
+        
+        function setupDownload(ovlData, filename) {
+            const blob = new Blob([ovlData], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            downloadBtn.href = url;
+            downloadBtn.download = filename;
+            downloadBtn.style.display = 'inline-block';
+            downloadBtn.textContent = `Download ${filename}`;
+        }
+    </script>
+</body>
+</html>
