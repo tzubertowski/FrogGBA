@@ -220,6 +220,9 @@ s32 load_bios(char *name);
 s32 load_gamepak(char *name);
 s32 load_backup(char *name);
 
+void save_last_played_game(char *game_path);
+s32 load_last_played_game(char *game_path, int max_path_length);
+
 u32 read_eeprom(void);
 u32 read_backup(u32 address);
 

@@ -3589,6 +3589,16 @@ static s32 load_gamepak_raw(char *name)
 
 s32 load_gamepak(char *name)
 {
+  FILE *debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "load_gamepak: Starting to load game: %s\n", name);
+    fclose(debug_log);
+  }
+
+  // Save the original full path for lastPlayed before any processing
+  char original_full_path[MAX_PATH];
+  strcpy(original_full_path, name);
+
   char *dot_position = strrchr(name, '.');
   char cheats_filename[MAX_FILE];
 
@@ -3674,6 +3684,16 @@ s32 load_gamepak(char *name)
 
   set_cpu_clock(PSP_CLOCK_222);
   scePowerUnlock(0);
+
+  // Save the last played game with the original full path
+  if (file_size >= 0) {
+    FILE *debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "load_gamepak: Saving last played game with full path: %s\n", original_full_path);
+      fclose(debug_log);
+    }
+    save_last_played_game(original_full_path);
+  }
 
   return file_size;
 
@@ -3894,5 +3914,85 @@ static void memory_read_savestate(SceUID savestate_file)
 static void memory_write_mem_savestate(SceUID savestate_file)
 {
   MEMORY_SAVESTATE_BODY(WRITE_MEM);
+}
+
+void save_last_played_game(char *game_path)
+{
+  SceUID lastplayed_file;
+  char lastplayed_path[MAX_PATH];
+  
+  sprintf(lastplayed_path, "%slastPlayed", main_path);
+  
+  FILE *debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "save_last_played_game: Saving to %s, content: %s\n", lastplayed_path, game_path);
+    fclose(debug_log);
+  }
+  
+  FILE_OPEN(lastplayed_file, lastplayed_path, WRITE);
+  if (FILE_CHECK_VALID(lastplayed_file)) {
+    FILE_WRITE(lastplayed_file, game_path, strlen(game_path));
+    FILE_CLOSE(lastplayed_file);
+    
+    debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "save_last_played_game: Successfully saved\n");
+      fclose(debug_log);
+    }
+  } else {
+    debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "save_last_played_game: Failed to open file for writing\n");
+      fclose(debug_log);
+    }
+  }
+}
+
+s32 load_last_played_game(char *game_path, int max_path_length)
+{
+  SceUID lastplayed_file;
+  char lastplayed_path[MAX_PATH];
+  s32 result = -1;
+  
+  sprintf(lastplayed_path, "%slastPlayed", main_path);
+  
+  FILE *debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "load_last_played_game: Looking for %s\n", lastplayed_path);
+    fclose(debug_log);
+  }
+  
+  FILE_OPEN(lastplayed_file, lastplayed_path, READ);
+  if (FILE_CHECK_VALID(lastplayed_file)) {
+    u32 file_size = file_length(lastplayed_path);
+    
+    debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "load_last_played_game: Found file, size=%d\n", file_size);
+      fclose(debug_log);
+    }
+    
+    if (file_size > 0 && file_size < max_path_length) {
+      FILE_READ(lastplayed_file, game_path, file_size);
+      game_path[file_size] = 0;  // Null terminate
+      
+      debug_log = fopen("froggba_debug.log", "a");
+      if (debug_log) {
+        fprintf(debug_log, "load_last_played_game: Read content: %s\n", game_path);
+        fclose(debug_log);
+      }
+      
+      result = 0;
+    }
+    FILE_CLOSE(lastplayed_file);
+  } else {
+    debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "load_last_played_game: File not found\n");
+      fclose(debug_log);
+    }
+  }
+  
+  return result;
 }
 

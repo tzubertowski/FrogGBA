@@ -68,6 +68,7 @@ u32 synchronize_flag = 1;
 u32 psp_fps_debug = 0;
 u32 option_color_correction = 0;
 u32 option_button_mapping = 0;  // 0 = X/O (X confirm, O cancel), 1 = O/X (O confirm, X cancel)
+u32 option_resume_on_boot = 0;  // 0 = off, 1 = on
 u32 fast_forward_speed = 0;  // 0 = 1x (off), 1 = 2x, 2 = 3x
 u32 layer_merge_enabled = 1;  // Layer merging optimization
 
@@ -813,6 +814,13 @@ static void setup_main(void)
 
 int user_main(int argc, char *argv[])
 {
+  FILE *debug_log = fopen("froggba_debug.log", "w");
+  if (debug_log) {
+    fprintf(debug_log, "user_main: Starting, argc=%d\n", argc);
+    fprintf(debug_log, "user_main: option_resume_on_boot=%d\n", option_resume_on_boot);
+    fclose(debug_log);
+  }
+
   char load_filename[MAX_FILE];
   const char *file_ext[] = { ".zip", ".gba", ".bin", ".agb", ".gbz", NULL };
 
@@ -847,8 +855,51 @@ int user_main(int argc, char *argv[])
 
   gamepak_filename[0] = 0;
 
+  // NOW check for resume on boot functionality AFTER config is loaded
+  debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "user_main: After setup_main, checking resume on boot, argc=%d, option=%d\n", argc, option_resume_on_boot);
+    fclose(debug_log);
+  }
+  
+  if (argc <= 1 && option_resume_on_boot != 0) {
+    debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "user_main: Attempting to resume last game\n");
+      fclose(debug_log);
+    }
+    
+    char last_game_path[MAX_PATH];
+    if (load_last_played_game(last_game_path, MAX_PATH) == 0) {
+      debug_log = fopen("froggba_debug.log", "a");
+      if (debug_log) {
+        fprintf(debug_log, "user_main: Found last game: %s\n", last_game_path);
+        fclose(debug_log);
+      }
+      
+      // We have a last played game, try to load it
+      if (load_gamepak(last_game_path) >= 0) {
+        // Successfully loaded last played game, skip normal loading logic
+        reset_gba();
+        set_cpu_clock(option_clock_speed);
+        sceDisplayWaitVblankStart();
+        video_resolution_small();
+        sound_pause = 0;
+        execute_arm_translate(reg[EXECUTE_CYCLES]);
+        return 0;
+      }
+      // If we failed to load last played game, continue with normal logic
+    }
+  }
+
   if (argc > 1)
   {
+    debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "user_main: Loading from argv[1]: %s\n", argv[1]);
+      fclose(debug_log);
+    }
+    
     if (load_gamepak((char *)argv[1]) < 0)
     {
       clear_screen(COLOR32_BLACK);
@@ -858,19 +909,52 @@ int user_main(int argc, char *argv[])
   }
   else
   {
+    debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "user_main: No args, checking for file to load\n");
+      fclose(debug_log);
+    }
+    
     if (load_file(file_ext, load_filename, dir_roms) < 0)
     {
+      debug_log = fopen("froggba_debug.log", "a");
+      if (debug_log) {
+        fprintf(debug_log, "user_main: No file selected, showing menu\n");
+        fclose(debug_log);
+      }
       menu();
     }
     else
     {
-      if (load_gamepak(load_filename) < 0)
+      debug_log = fopen("froggba_debug.log", "a");
+      if (debug_log) {
+        fprintf(debug_log, "user_main: File selected: %s\n", load_filename);
+        fclose(debug_log);
+      }
+      
+      // Construct full path when loading from file browser
+      char full_game_path[MAX_PATH];
+      sprintf(full_game_path, "%s%s", dir_roms, load_filename);
+      
+      debug_log = fopen("froggba_debug.log", "a");
+      if (debug_log) {
+        fprintf(debug_log, "user_main: Full path constructed: %s\n", full_game_path);
+        fclose(debug_log);
+      }
+      
+      if (load_gamepak(full_game_path) < 0)
       {
         clear_screen(COLOR32_BLACK);
         error_msg(MSG[MSG_ERR_LOAD_GAMEPACK], CONFIRMATION_CONT);
         menu();
       }
     }
+  }
+
+  debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "user_main: About to reset_gba()\n");
+    fclose(debug_log);
   }
 
   reset_gba();
@@ -918,10 +1002,43 @@ void quit(void)
 
 void reset_gba(void)
 {
+  FILE *debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "reset_gba: Starting\n");
+    fclose(debug_log);
+  }
+  
   clear_texture(0x7FFF);
+  
+  debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "reset_gba: clear_texture done\n");
+    fclose(debug_log);
+  }
+  
   init_memory();
+  
+  debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "reset_gba: init_memory done\n");
+    fclose(debug_log);
+  }
+  
   init_main();
+  
+  debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "reset_gba: init_main done\n");
+    fclose(debug_log);
+  }
+  
   reset_sound();
+  
+  debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "reset_gba: reset_sound done - completed\n");
+    fclose(debug_log);
+  }
 }
 
 
