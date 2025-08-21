@@ -63,8 +63,8 @@ u32 ALIGN_DATA spsr[7];
 
 
 // Optimized cache sizes - conservative approach without specialized caches
-#define READONLY_CODE_CACHE_SIZE          (1024 * 1024 * 4)  // 4MB for ROM/BIOS (increased from 2MB)  
-#define WRITABLE_CODE_CACHE_SIZE          (1024 * 512 * 1)   // 512KB for RAM (decreased from 1MB)
+#define READONLY_CODE_CACHE_SIZE          (1024 * 512 * 3)  // 1.5MB for ROM/BIOS (gpSP Kai size)
+#define WRITABLE_CODE_CACHE_SIZE          (1024 * 128 * 1)   // 128KB for RAM (gpSP Kai size)
  /* The following parameter needs to be at least enough bytes to hold
   * the generated code for the largest instruction on your platform.
   * In most cases, that will be the ARM instruction
@@ -144,16 +144,15 @@ typedef union
 } OpcodeDataType;
 
 
-/* gpSP-kai specialized translation caches for optimal performance */
-// TEMPORARILY DISABLED - debugging bus error
-// u8 ALIGN_DATA rom_translation_cache[ROM_TRANSLATION_CACHE_SIZE];
-// u8 *rom_translation_ptr = rom_translation_cache;
-//
-// u8 ALIGN_DATA ram_translation_cache[RAM_TRANSLATION_CACHE_SIZE];
-// u8 *ram_translation_ptr = ram_translation_cache;
-//
-// u8 ALIGN_DATA bios_translation_cache[BIOS_TRANSLATION_CACHE_SIZE];
-// u8 *bios_translation_ptr = bios_translation_cache;
+/* gpSP-kai static translation caches for optimal performance - using safe sizes */
+u8 ALIGN_DATA rom_translation_cache[READONLY_CODE_CACHE_SIZE];
+u8 *rom_translation_ptr = rom_translation_cache;
+
+u8 ALIGN_DATA ram_translation_cache[WRITABLE_CODE_CACHE_SIZE];
+u8 *ram_translation_ptr = ram_translation_cache;
+
+u8 ALIGN_DATA bios_translation_cache[READONLY_CODE_CACHE_SIZE];
+u8 *bios_translation_ptr = bios_translation_cache;
 
 /* Fallback unified caches (for backward compatibility) */
 // Static allocation replaced with dynamic allocation
@@ -4107,51 +4106,19 @@ static void init_translation_caches(void)
   // Debug logging
   printf("init_translation_caches: Starting initialization\n");
   
-  // Try to use volatile memory first
-  int volatile_available = volatile_mem_init();
-  printf("init_translation_caches: volatile memory available = %d\n", volatile_available);
+  // Use static translation caches (gpSP Kai approach) for better performance
+  readonly_cache_size = READONLY_CODE_CACHE_SIZE;
+  writable_cache_size = WRITABLE_CODE_CACHE_SIZE;
   
-  if (volatile_available) {
-    // Use moderate cache sizes with volatile memory (2MB + 1MB = 3MB total)
-    readonly_cache_size = 1024 * 1024 * 2;  // 2MB
-    writable_cache_size = 1024 * 1024 * 1;  // 1MB
-    
-    printf("init_translation_caches: Using volatile memory - readonly=%d KB, writable=%d KB\n", 
-           (int)(readonly_cache_size / 1024), (int)(writable_cache_size / 1024));
-    
-    readonly_code_cache = (u8*)volatile_mem_alloc(readonly_cache_size);
-    writable_code_cache = (u8*)volatile_mem_alloc(writable_cache_size);
-  } else {
-    // Fall back to regular memory with smaller sizes
-    readonly_cache_size = READONLY_CODE_CACHE_SIZE;   // 4MB
-    writable_cache_size = WRITABLE_CODE_CACHE_SIZE;   // 512KB
-    
-    printf("init_translation_caches: Using regular memory - readonly=%d KB, writable=%d KB\n", 
-           (int)(readonly_cache_size / 1024), (int)(writable_cache_size / 1024));
-    
-    readonly_code_cache = (u8*)malloc(readonly_cache_size);
-    writable_code_cache = (u8*)malloc(writable_cache_size);
-  }
+  printf("init_translation_caches: Using static caches - readonly=%d KB, writable=%d KB\n", 
+         (int)(readonly_cache_size / 1024), (int)(writable_cache_size / 1024));
   
-  // Check if allocations succeeded
-  if (!readonly_code_cache) {
-    printf("init_translation_caches: Failed to allocate readonly cache\n");
-    return;
-  }
+  // Point to static caches
+  readonly_code_cache = rom_translation_cache;
+  writable_code_cache = ram_translation_cache;
   
-  if (!writable_code_cache) {
-    printf("init_translation_caches: Failed to allocate writable cache\n");
-    if (volatile_available) {
-      volatile_mem_free(readonly_code_cache);
-    } else {
-      free(readonly_code_cache);
-    }
-    readonly_code_cache = NULL;
-    return;
-  }
-  
-  printf("init_translation_caches: readonly_code_cache allocated at %p\n", readonly_code_cache);
-  printf("init_translation_caches: writable_code_cache allocated at %p\n", writable_code_cache);
+  printf("init_translation_caches: readonly_code_cache at %p\n", readonly_code_cache);
+  printf("init_translation_caches: writable_code_cache at %p\n", writable_code_cache);
   
   // Initialize cache pointers
   readonly_next_code = readonly_code_cache;
