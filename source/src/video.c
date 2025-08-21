@@ -22,6 +22,11 @@
 #include "gba_cc_lut.h"
 #include "volume_icon.c"
 
+// Optimized color correction lookup tables (64KB total)
+static u16 gpsp_color_lut[32768] = {0};
+static u16 retro_color_lut[32768] = {0};
+static u8 color_luts_initialized = 0;
+
 // Global function pointers
 void (*update_screen)(void);
 int (*__draw_volume_status)(int draw);
@@ -3239,75 +3244,19 @@ void update_scanline(void)
     }
   }
 
-  // Apply color correction if enabled
-  if (option_color_correction == 1) // GPSP mode - authentic gpsp algorithm
+  // Apply color correction if enabled (optimized with lookup tables)
+  if (option_color_correction == 1) // GPSP mode - fast LUT lookup
   {
-    u32 x;
-    u16 src_color;
-    for (x = 0; x < 240; x++)
+    for (u32 x = 0; x < 240; x++)
     {
-      src_color = screen_offset[x];
-      
-      // Extract RGB555 components
-      u32 r = (src_color >> 10) & 0x1F;
-      u32 g = (src_color >> 5) & 0x1F;
-      u32 b = src_color & 0x1F;
-      
-      // GPSP color correction algorithm (simplified fixed-point version)
-      // Based on the gpsp constants and color mixing matrix
-      
-      // Convert to 0-255 range for calculations
-      r = (r << 3) | (r >> 2); // 5-bit to 8-bit
-      g = (g << 3) | (g >> 2); // 5-bit to 8-bit  
-      b = (b << 3) | (b >> 2); // 5-bit to 8-bit
-      
-      // Apply GPSP color mixing (approximated with integer math)
-      // Original uses: r_correct = 0.94 * (0.82*r + 0.24*g - 0.06*b)
-      u32 r_new = (205 * r + 61 * g) >> 8; // ~(0.82*r + 0.24*g) * 0.94
-      u32 g_new = (32 * r + 170 * g + 54 * b) >> 8; // ~(0.125*r + 0.665*g + 0.21*b) * 0.94  
-      u32 b_new = (50 * r + 19 * g + 186 * b) >> 8; // ~(0.195*r + 0.075*g + 0.73*b) * 0.94
-      
-      // Clamp to 255
-      r_new = (r_new > 255) ? 255 : r_new;
-      g_new = (g_new > 255) ? 255 : g_new;
-      b_new = (b_new > 255) ? 255 : b_new;
-      
-      // Convert back to 5-bit and reconstruct
-      r = r_new >> 3;
-      g = g_new >> 3;
-      b = b_new >> 3;
-      
-      screen_offset[x] = (r << 10) | (g << 5) | b | 0x8000;
+      screen_offset[x] = gpsp_color_lut[screen_offset[x] & 0x7FFF];
     }
   }
-  else if (option_color_correction == 2) // Retro mode - obvious GBA LCD look
+  else if (option_color_correction == 2) // Retro mode - fast LUT lookup
   {
-    u32 x;
-    u16 src_color;
-    for (x = 0; x < 240; x++)
+    for (u32 x = 0; x < 240; x++)
     {
-      src_color = screen_offset[x];
-      // Real GBA screen color correction - authentic washed out look
-      u16 r = (src_color >> 10) & 0x1F;
-      u16 g = (src_color >> 5) & 0x1F;
-      u16 b = src_color & 0x1F;
-      
-      // Real GBA LCD characteristics:
-      // - Lower contrast/saturation
-      // - Greenish/yellowish tint
-      // - Darker overall brightness
-      // - Washed out colors
-      
-      // Reduce overall brightness and saturation (real GBA was dim)
-      r = (r * 22) >> 5; // Reduce to ~69% brightness
-      g = (g * 24) >> 5; // Keep green slightly higher (~75%)
-      b = (b * 20) >> 5; // Reduce blue most (~63%)
-      
-      // Add characteristic GBA greenish tint
-      if (g < 28) g += 2; // Boost green slightly for LCD tint
-      if (r < 29) r += 1; // Slight warm yellow component
-      
-      screen_offset[x] = (r << 10) | (g << 5) | b | 0x8000;
+      screen_offset[x] = retro_color_lut[screen_offset[x] & 0x7FFF];
     }
   }
   // option_color_correction == 0 means Off - no processing
@@ -3318,6 +3267,67 @@ void update_scanline(void)
   affine_reference_y[1] += *((s16 *)io_registers + REG_BG3PD);
 }
 
+// Initialize color correction lookup tables (call once at startup)
+void init_color_correction_luts(void)
+{
+  if (color_luts_initialized)
+    return;
+    
+  printf("Initializing color correction lookup tables...\n");
+  
+  // Build GPSP color correction LUT
+  for (int rgb555 = 0; rgb555 < 32768; rgb555++)
+  {
+    // Extract RGB555 components
+    u32 r = (rgb555 >> 10) & 0x1F;
+    u32 g = (rgb555 >> 5) & 0x1F;
+    u32 b = rgb555 & 0x1F;
+    
+    // Convert to 0-255 range for calculations (same as original)
+    u32 r8 = (r << 3) | (r >> 2);
+    u32 g8 = (g << 3) | (g >> 2);
+    u32 b8 = (b << 3) | (b >> 2);
+    
+    // Apply GPSP color mixing (same math as original)
+    u32 r_new = (205 * r8 + 61 * g8) >> 8;
+    u32 g_new = (32 * r8 + 170 * g8 + 54 * b8) >> 8;
+    u32 b_new = (50 * r8 + 19 * g8 + 186 * b8) >> 8;
+    
+    // Clamp to 255
+    r_new = (r_new > 255) ? 255 : r_new;
+    g_new = (g_new > 255) ? 255 : g_new;
+    b_new = (b_new > 255) ? 255 : b_new;
+    
+    // Convert back to 5-bit and store
+    r = r_new >> 3;
+    g = g_new >> 3;
+    b = b_new >> 3;
+    
+    gpsp_color_lut[rgb555] = (r << 10) | (g << 5) | b | 0x8000;
+  }
+  
+  // Build Retro color correction LUT
+  for (int rgb555 = 0; rgb555 < 32768; rgb555++)
+  {
+    u16 r = (rgb555 >> 10) & 0x1F;
+    u16 g = (rgb555 >> 5) & 0x1F;
+    u16 b = rgb555 & 0x1F;
+    
+    // Apply retro correction (same as original)
+    r = (r * 22) >> 5;
+    g = (g * 24) >> 5;
+    b = (b * 20) >> 5;
+    
+    // Add characteristic GBA greenish tint
+    if (g < 28) g += 2;
+    if (r < 29) r += 1;
+    
+    retro_color_lut[rgb555] = (r << 10) | (g << 5) | b | 0x8000;
+  }
+  
+  color_luts_initialized = 1;
+  printf("Color correction LUTs initialized (128KB)\n");
+}
 
 void init_video(int devkit_version)
 {
@@ -3357,6 +3367,9 @@ void init_video(int devkit_version)
   update_screen = bitbilt_gu;
 
   load_volume_icon(devkit_version);
+  
+  // Initialize color correction lookup tables for performance
+  init_color_correction_luts();
 }
 
 void video_term(void)

@@ -37,6 +37,9 @@ int is_volatile_mem(void* ptr);
 // Get available volatile memory size
 size_t volatile_mem_available(void);
 
+// Check if volatile memory is currently active
+int volatile_mem_is_active(void);
+
 #ifdef __cplusplus
 }
 #endif
