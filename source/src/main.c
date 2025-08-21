@@ -855,6 +855,7 @@ void quit(void)
 
   sound_term();
   memory_term();
+  cpu_term();
   video_term();
 
   set_cpu_clock(PSP_CLOCK_222);
