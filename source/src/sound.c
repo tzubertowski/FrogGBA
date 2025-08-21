@@ -20,9 +20,13 @@
 
 #include "common.h"
 
+// Disable fast audio mode to retain audio quality
+// #define FAST_AUDIO_MODE
+
 
 #define SOUND_BUFFER_SIZE (SOUND_SAMPLES * 2)
 #define RING_BUFFER_SIZE  (32768)
+#define RING_BUFFER_MASK  (RING_BUFFER_SIZE - 1)
 
 u32 sound_pause = 0;
 
@@ -428,7 +432,7 @@ void adjust_direct_sound_buffer(u8 channel, u32 cpu_ticks)
   if (partial_ticks > 0x00FFFFFF)
     buffer_ticks++;
 
-  direct_sound_channel[channel].buffer_index = (gbc_sound_buffer_index + (buffer_ticks << 1)) % RING_BUFFER_SIZE;
+  direct_sound_channel[channel].buffer_index = (gbc_sound_buffer_index + (buffer_ticks << 1)) & RING_BUFFER_MASK;
 }
 
 void sound_timer_queue(u8 channel)
@@ -478,28 +482,47 @@ static u32 buffer_length(u32 top, u32 base, u32 length)
 
 #define RENDER_SAMPLE_NULL()                                                  \
 
+// Fast path: No interpolation for better performance
+#ifdef FAST_AUDIO_MODE
 #define RENDER_SAMPLE_RIGHT()                                                 \
-  sound_buffer[buffer_index + 1] += current_sample + FP08_24_TO_U32(((s64)next_sample - current_sample) * fifo_fractional); \
+  sound_buffer[buffer_index + 1] += current_sample
 
 #define RENDER_SAMPLE_LEFT()                                                  \
-  sound_buffer[buffer_index + 0] += current_sample + FP08_24_TO_U32(((s64)next_sample - current_sample) * fifo_fractional); \
+  sound_buffer[buffer_index + 0] += current_sample
 
 #define RENDER_SAMPLE_BOTH()                                                  \
-  dest_sample = current_sample + FP08_24_TO_U32(((s64)next_sample - current_sample) * fifo_fractional); \
+  sound_buffer[buffer_index + 0] += current_sample;                           \
+  sound_buffer[buffer_index + 1] += current_sample
+#else
+// Original interpolation (slower but higher quality)
+#define RENDER_SAMPLE_RIGHT()                                                 \
+  sound_buffer[buffer_index + 1] += current_sample + ((s32)(next_sample - current_sample) * (fifo_fractional >> 16) >> 8); \
+
+#define RENDER_SAMPLE_LEFT()                                                  \
+  sound_buffer[buffer_index + 0] += current_sample + ((s32)(next_sample - current_sample) * (fifo_fractional >> 16) >> 8); \
+
+#define RENDER_SAMPLE_BOTH()                                                  \
+  dest_sample = current_sample + ((s32)(next_sample - current_sample) * (fifo_fractional >> 16) >> 8); \
   sound_buffer[buffer_index + 0] += dest_sample;                              \
-  sound_buffer[buffer_index + 1] += dest_sample;                              \
+  sound_buffer[buffer_index + 1] += dest_sample;
+#endif                              \
 
 #define RENDER_SAMPLES(type)                                                  \
   while (fifo_fractional <= 0x00FFFFFF)                                       \
   {                                                                           \
     RENDER_SAMPLE_##type();                                                   \
     fifo_fractional += frequency_step;                                        \
-    buffer_index = (buffer_index + 2) % RING_BUFFER_SIZE;                     \
+    buffer_index = (buffer_index + 2) & RING_BUFFER_MASK;                     \
   }                                                                           \
 
 void sound_timer(FIXED08_24 frequency_step, u8 channel)
 {
   DirectSoundStruct *ds = direct_sound_channel + channel;
+  
+  // Fast path: Skip if channel is inactive
+  if (ds->status == DIRECT_SOUND_INACTIVE) {
+    return;
+  }
 
   FIXED08_24 fifo_fractional = ds->fifo_fractional;
   u32 fifo_base = ds->fifo_base;
@@ -510,9 +533,14 @@ void sound_timer(FIXED08_24 frequency_step, u8 channel)
   current_sample = ds->fifo[fifo_base] << 4;
 
   ds->fifo[fifo_base] = 0;
-  fifo_base = (fifo_base + 1) % 32;
+  fifo_base = (fifo_base + 1) & 31;  // Use mask instead of modulo
 
+#ifdef FAST_AUDIO_MODE
+  // Skip interpolation in fast mode - just use current sample
+  next_sample = current_sample;
+#else
   next_sample = ds->fifo[fifo_base] << 4;
+#endif
 
   if (sound_on == 1)
   {
@@ -660,6 +688,18 @@ void sound_timer(FIXED08_24 frequency_step, u8 channel)
     UPDATE_TONE_##sweep_op();                                                 \
   }                                                                           \
 
+// Optimized volume mixing with less operations
+#ifdef FAST_AUDIO_MODE
+#define GBC_SOUND_RENDER_SAMPLE_RIGHT()                                       \
+  sound_buffer[buffer_index + 1] += current_sample >> 14
+
+#define GBC_SOUND_RENDER_SAMPLE_LEFT()                                        \
+  sound_buffer[buffer_index + 0] += current_sample >> 14
+
+#define GBC_SOUND_RENDER_SAMPLE_BOTH()                                        \
+  sound_buffer[buffer_index + 0] += current_sample >> 14;                     \
+  sound_buffer[buffer_index + 1] += current_sample >> 14
+#else
 #define GBC_SOUND_RENDER_SAMPLE_RIGHT()                                       \
   sound_buffer[buffer_index + 1] += (current_sample * volume_right) >> 22;    \
 
@@ -667,25 +707,29 @@ void sound_timer(FIXED08_24 frequency_step, u8 channel)
   sound_buffer[buffer_index + 0] += (current_sample * volume_left ) >> 22;    \
 
 #define GBC_SOUND_RENDER_SAMPLE_BOTH()                                        \
-  GBC_SOUND_RENDER_SAMPLE_RIGHT();                                            \
-  GBC_SOUND_RENDER_SAMPLE_LEFT();                                             \
+  dest_sample = current_sample * ((volume_left + volume_right) >> 1) >> 22;   \
+  sound_buffer[buffer_index + 0] += dest_sample;                              \
+  sound_buffer[buffer_index + 1] += dest_sample;
+#endif                                             \
 
 #define GBC_SOUND_RENDER_SAMPLES(type, sample_length, envelope_op, sweep_op)  \
   for (i = 0; i < buffer_ticks; i++)                                          \
   {                                                                           \
-    current_sample = sample_data[FP08_24_TO_U32(sample_index) % sample_length]; \
+    current_sample = sample_data[FP08_24_TO_U32(sample_index) & (sample_length - 1)]; \
                                                                               \
     GBC_SOUND_RENDER_SAMPLE_##type();                                         \
                                                                               \
     sample_index += frequency_step;                                           \
-    buffer_index = (buffer_index + 2) % RING_BUFFER_SIZE;                     \
+    buffer_index = (buffer_index + 2) & RING_BUFFER_MASK;                     \
                                                                               \
     UPDATE_TONE_COUNTERS(envelope_op, sweep_op);                              \
   }                                                                           \
 
 #define GBC_NOISE_WRAP_FULL 32767
+#define GBC_NOISE_MASK_FULL (GBC_NOISE_WRAP_FULL)
 
 #define GBC_NOISE_WRAP_HALF 127
+#define GBC_NOISE_MASK_HALF (GBC_NOISE_WRAP_HALF)
 
 #define GET_NOISE_SAMPLE_FULL()                                               \
   current_sample = ((s32)(noise_table15[noise_index >> 5] << (noise_index & 0x1F)) >> 31) ^ 0x07; \
@@ -703,11 +747,11 @@ void sound_timer(FIXED08_24 frequency_step, u8 channel)
                                                                               \
     if (sample_index > 0x00FFFFFF)                                            \
     {                                                                         \
-      noise_index = (noise_index + 1) % GBC_NOISE_WRAP_##noise_type;          \
+      noise_index = (noise_index + 1) & GBC_NOISE_MASK_##noise_type;          \
       sample_index = FP08_24_FRACTIONAL_PART(sample_index);                   \
     }                                                                         \
                                                                               \
-    buffer_index = (buffer_index + 2) % RING_BUFFER_SIZE;                     \
+    buffer_index = (buffer_index + 2) & RING_BUFFER_MASK;                     \
                                                                               \
     UPDATE_TONE_COUNTERS(envelope_op, sweep_op);                              \
   }                                                                           \
@@ -810,12 +854,18 @@ void update_gbc_sound(u32 cpu_ticks)
   s32 volume_left, volume_right;
   u32 envelope_volume;
 
-  s32 current_sample;
+  s32 current_sample, dest_sample;
   s8 *sample_data;
 
   u64 count_ticks = delta_ticks(cpu_ticks, gbc_sound_last_cpu_ticks) * SOUND_FREQUENCY;
 
   buffer_ticks = FP08_24_TO_U32(count_ticks);
+  
+  // Early exit if no ticks to process
+  if (buffer_ticks == 0) {
+    return;
+  }
+  
   gbc_sound_partial_ticks += FP08_24_FRACTIONAL_PART(count_ticks);
 
   if (gbc_sound_partial_ticks > 0x00FFFFFF)
@@ -905,7 +955,7 @@ void update_gbc_sound(u32 cpu_ticks)
   pIO_REG(REG_SOUNDCNT_X) = sound_status;
 
   gbc_sound_last_cpu_ticks = cpu_ticks;
-  gbc_sound_buffer_index = (gbc_sound_buffer_index + (buffer_ticks << 1)) % RING_BUFFER_SIZE;
+  gbc_sound_buffer_index = (gbc_sound_buffer_index + (buffer_ticks << 1)) & RING_BUFFER_MASK;
 
   sound_thread_wakeup();
 }
@@ -965,7 +1015,7 @@ static void fill_sound_buffer(s16 *stream, u16 length)
       stream[i] = current_sample << 4;
       sound_buffer[sound_buffer_base] = 0;
 
-      sound_buffer_base = (sound_buffer_base + 1) % RING_BUFFER_SIZE;
+      sound_buffer_base = (sound_buffer_base + 1) & RING_BUFFER_MASK;
     }
   }
   else
@@ -975,7 +1025,7 @@ static void fill_sound_buffer(s16 *stream, u16 length)
       stream[i] = 0;
       sound_buffer[sound_buffer_base] = 0;
 
-      sound_buffer_base = (sound_buffer_base + 1) % RING_BUFFER_SIZE;
+      sound_buffer_base = (sound_buffer_base + 1) & RING_BUFFER_MASK;
     }
   }
 }
@@ -1009,7 +1059,8 @@ static int sound_update_thread(SceSize args, void *argp)
       sceKernelSleepThread();
 
       sound_sleep = 0;
-      sceKernelDelayThread(1);
+      // Reduced delay for faster response
+      sceKernelDelayThread(100);
       continue;
     }
 
