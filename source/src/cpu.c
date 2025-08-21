@@ -159,9 +159,11 @@ typedef union
 // Static allocation replaced with dynamic allocation
 u8 *readonly_code_cache = NULL;
 u8 *readonly_next_code = NULL;
+size_t readonly_cache_size = 0;
 
 u8 *writable_code_cache = NULL;
 u8 *writable_next_code = NULL;
+size_t writable_cache_size = 0;
 
 /* These represent Metadata Areas. */
 u32 *rom_branch_hash[ROM_BRANCH_HASH_SIZE];
@@ -3394,17 +3396,30 @@ static u8 *translate_block_##type(u32 pc)                                     \
       return NULL; /* internal error; satisfies the compiler */               \
   }                                                                           \
                                                                               \
+  /* Debug: Check cache pointers before use */                               \
+  if (!readonly_code_cache || !writable_code_cache) {                        \
+    printf("translate_block: ERROR - caches not initialized!\n");            \
+    printf("  readonly_code_cache = %p\n", readonly_code_cache);             \
+    printf("  writable_code_cache = %p\n", writable_code_cache);             \
+    return -1;                                                                \
+  }                                                                           \
+                                                                              \
   switch (translation_region)                                                 \
   {                                                                           \
     case TRANSLATION_REGION_READONLY:                                         \
       translation_ptr = readonly_next_code;                                   \
-      translation_cache_limit = readonly_code_cache + READONLY_CODE_CACHE_SIZE - TRANSLATION_CACHE_LIMIT_THRESHOLD; \
+      translation_cache_limit = readonly_code_cache + readonly_cache_size - TRANSLATION_CACHE_LIMIT_THRESHOLD; \
       break;                                                                  \
     case TRANSLATION_REGION_WRITABLE:                                         \
       translation_ptr = writable_next_code;                                   \
-      translation_cache_limit = writable_code_cache + WRITABLE_CODE_CACHE_SIZE - TRANSLATION_CACHE_LIMIT_THRESHOLD; \
+      translation_cache_limit = writable_code_cache + writable_cache_size - TRANSLATION_CACHE_LIMIT_THRESHOLD; \
       break;                                                                  \
   }                                                                           \
+                                                                              \
+  /* Debug: Print cache info */                                               \
+  printf("translate_block_%s: pc=0x%08X region=%d\n", #type, pc, translation_region); \
+  printf("  translation_ptr = %p\n", translation_ptr);                       \
+  printf("  cache_limit = %p\n", translation_cache_limit);                   \
                                                                               \
   update_metadata_area_start(pc);                                             \
                                                                               \
@@ -3907,6 +3922,12 @@ static u32 psp_cache_flush_counter = 0;
 
 void flush_translation_cache(TRANSLATION_REGION_TYPE translation_region, CACHE_FLUSH_REASON_TYPE flush_reason)
 {
+  // Safety check - caches must be initialized first
+  if (!readonly_code_cache || !writable_code_cache) {
+    printf("flush_translation_cache: WARNING - caches not initialized yet\n");
+    return;
+  }
+
 #ifdef PSP_REDUCE_CACHE_INVALIDATION
   // PSP MIPS32 Cache Invalidation Reduction Optimization 
   // Only enable when user explicitly enables optimizations
@@ -4063,44 +4084,47 @@ static void init_translation_caches(void)
   if (caches_initialized)
     return;
     
-  // Try to initialize volatile memory for extra 4MB
-  if (volatile_mem_init()) {
-    // We have volatile memory! Allocate larger caches
-    // Use 6MB for readonly (ROM) and 2MB for writable (RAM)
-    size_t readonly_size = 1024 * 1024 * 6;  // 6MB
-    size_t writable_size = 1024 * 1024 * 2;  // 2MB
-    
-    readonly_code_cache = (u8*)volatile_mem_alloc(readonly_size);
-    if (readonly_code_cache) {
-      readonly_next_code = readonly_code_cache;
-      memset(readonly_code_cache, 0, readonly_size);
-    }
-    
-    writable_code_cache = (u8*)volatile_mem_alloc(writable_size);
-    if (writable_code_cache) {
-      writable_next_code = writable_code_cache;
-      memset(writable_code_cache, 0, writable_size);
-    }
-  }
+  // Debug logging
+  printf("init_translation_caches: Starting initialization\n");
   
-  // Fallback to regular malloc if volatile memory failed
+  // For now, disable volatile memory until we can debug the crash
+  // Just use regular malloc with the standard sizes
+  readonly_cache_size = READONLY_CODE_CACHE_SIZE;
+  writable_cache_size = WRITABLE_CODE_CACHE_SIZE;
+  
+  printf("init_translation_caches: readonly_cache_size = %d, writable_cache_size = %d\n", 
+         (int)readonly_cache_size, (int)writable_cache_size);
+  
+  readonly_code_cache = (u8*)malloc(readonly_cache_size);
   if (!readonly_code_cache) {
-    readonly_code_cache = (u8*)malloc(READONLY_CODE_CACHE_SIZE);
-    readonly_next_code = readonly_code_cache;
-    memset(readonly_code_cache, 0, READONLY_CODE_CACHE_SIZE);
+    printf("init_translation_caches: Failed to allocate readonly cache\n");
+    return;
   }
+  printf("init_translation_caches: readonly_code_cache allocated at %p\n", readonly_code_cache);
   
+  readonly_next_code = readonly_code_cache;
+  memset(readonly_code_cache, 0, readonly_cache_size);
+  
+  writable_code_cache = (u8*)malloc(writable_cache_size);
   if (!writable_code_cache) {
-    writable_code_cache = (u8*)malloc(WRITABLE_CODE_CACHE_SIZE);
-    writable_next_code = writable_code_cache;
-    memset(writable_code_cache, 0, WRITABLE_CODE_CACHE_SIZE);
+    printf("init_translation_caches: Failed to allocate writable cache\n");
+    free(readonly_code_cache);
+    readonly_code_cache = NULL;
+    return;
   }
+  printf("init_translation_caches: writable_code_cache allocated at %p\n", writable_code_cache);
+  
+  writable_next_code = writable_code_cache;
+  memset(writable_code_cache, 0, writable_cache_size);
   
   caches_initialized = 1;
+  printf("init_translation_caches: Initialization complete\n");
 }
 
 void init_cpu(void)
 {
+  printf("init_cpu: Starting CPU initialization\n");
+  
   // Initialize translation caches (with volatile memory if available)
   init_translation_caches();
   
@@ -4157,19 +4181,18 @@ void cpu_term(void)
 {
   // Free translation caches
   if (readonly_code_cache) {
-    volatile_mem_free(readonly_code_cache);
+    free(readonly_code_cache);
     readonly_code_cache = NULL;
     readonly_next_code = NULL;
+    readonly_cache_size = 0;
   }
   
   if (writable_code_cache) {
-    volatile_mem_free(writable_code_cache);
+    free(writable_code_cache);
     writable_code_cache = NULL;
     writable_next_code = NULL;
+    writable_cache_size = 0;
   }
-  
-  // Shutdown volatile memory system
-  volatile_mem_shutdown();
 }
 
 
