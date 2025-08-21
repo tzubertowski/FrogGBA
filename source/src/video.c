@@ -111,6 +111,7 @@ const u8 ALIGN_DATA active_layers[8] =
 
 void set_gba_resolution(void);
 static void generate_display_list(float mag);
+static void generate_display_list_stretch(void);
 static void bitbilt_gu(void);
 static void bitbilt_sw(void);
 
@@ -3497,6 +3498,69 @@ static void bitbilt_gu(void)
   sceGuSync(0, GU_SYNC_FINISH);
 }
 
+// Stretch display list - stretches GBA screen to fill entire PSP screen (480x272)
+static void generate_display_list_stretch(void)
+{
+  u32 i, dx, dy, dw, dh;
+  Vertex *vertices, *vertices_tmp;
+
+  // Stretch to fill entire PSP screen
+  dw = PSP_SCREEN_WIDTH;  // 480 (instead of 240*mag)
+  dh = PSP_SCREEN_HEIGHT; // 272 (instead of 160*mag)
+  
+  // No offset for stretch mode - always use full screen
+  dx = 0;
+  dy = 0;
+  
+  FILE *debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "generate_display_list_stretch: stretching to full PSP screen dw=%d, dh=%d\n", dw, dh);
+    fclose(debug_log);
+  }
+
+  sceGuStart(GU_CALL, display_list_0);
+
+  sceGuClear(GU_COLOR_BUFFER_BIT | GU_FAST_CLEAR_BIT);
+
+  vertices = (Vertex *)sceGuGetMemory(VERTEX_COUNT * sizeof(Vertex));
+
+  if (vertices != NULL)
+  {
+    memset(vertices, 0, VERTEX_COUNT * sizeof(Vertex));
+
+    vertices_tmp = vertices;
+
+    for (i = 0; (i + SLICE) < GBA_SCREEN_WIDTH; i += SLICE)
+    {
+      vertices_tmp[0].u = i;
+      vertices_tmp[0].v = 0;
+      vertices_tmp[0].x = dx + ((i * dw) / GBA_SCREEN_WIDTH);
+      vertices_tmp[0].y = dy;
+
+      vertices_tmp[1].u = i + SLICE;
+      vertices_tmp[1].v = GBA_SCREEN_HEIGHT;
+      vertices_tmp[1].x = dx + (((i + SLICE) * dw) / GBA_SCREEN_WIDTH);
+      vertices_tmp[1].y = dy + dh;
+
+      vertices_tmp += 2;
+    }
+
+    vertices_tmp[0].u = i;
+    vertices_tmp[0].v = 0;
+    vertices_tmp[0].x = dx + ((i * dw) / GBA_SCREEN_WIDTH);
+    vertices_tmp[0].y = dy;
+
+    vertices_tmp[1].u = GBA_SCREEN_WIDTH;
+    vertices_tmp[1].v = GBA_SCREEN_HEIGHT;
+    vertices_tmp[1].x = dx + dw;
+    vertices_tmp[1].y = dy + dh;
+
+    sceGuDrawArray(GU_SPRITES, GU_TEXTURE_16BIT | GU_VERTEX_16BIT | GU_TRANSFORM_2D, VERTEX_COUNT, 0, vertices);
+  }
+
+  sceGuFinish();
+}
+
 
 #define NORMAL_BLEND(c0, c1) ((c0 & c1) + (((c0 ^ c1) & 0x7bde) >> 1))
 
@@ -3582,10 +3646,17 @@ void set_gba_resolution(void)
     fclose(debug_log);
   }
   
-  // If zoom mode is selected, force full screen regardless of scale setting
+  // Handle aspect ratio modes
   if (option_aspect_ratio == 1) {
-    // Zoom mode: fill entire screen (480x272)
+    // Zoom mode: fill entire screen (480x272) - crops top/bottom
     generate_display_list(2.0); // 240*2=480, 160*2=320 (will be clipped to 272)
+    update_screen = bitbilt_gu;
+    return;
+  }
+  else if (option_aspect_ratio == 2) {
+    // Stretch mode: stretch to fill entire PSP screen without cropping
+    // This distorts the aspect ratio but shows all content
+    generate_display_list_stretch(); // Custom stretch function
     update_screen = bitbilt_gu;
     return;
   }
@@ -4203,23 +4274,23 @@ void video_write_mem_savestate(SceUID savestate_file)
 #define OVERLAY_HEIGHT 272
 #define OVERLAY_SIZE (OVERLAY_WIDTH * OVERLAY_HEIGHT)
 
-// Overlay buffer - stores RGBA5551 format (1 bit alpha, 5 bits per color)
-static u16 overlay_buffer[OVERLAY_SIZE];
+// Overlay buffer - dynamically allocated to save memory when not in use
+static u16 *overlay_buffer = NULL;
 static int overlay_loaded = 0;
 static u32 overlay_enabled = 0;
 static int overlay_first_render = 1;
 int overlay_needs_update = 0;  // Flag to track when overlay needs re-rendering
 
-// Optimization: Pre-computed list of opaque pixel offsets
-#define MAX_OPAQUE_PIXELS 30000
-static u32 opaque_pixel_offsets[MAX_OPAQUE_PIXELS];
+// Optimization: Pre-computed list of opaque pixel offsets - reduced size
+#define MAX_OPAQUE_PIXELS 10000  // Reduced from 30000 to save memory
+static u32 *opaque_pixel_offsets = NULL;
 static int num_opaque_pixels = 0;
 
-// Ultra-fast overlay cache: pre-computed framebuffer writes
+// Ultra-fast overlay cache: pre-computed framebuffer writes - reduced size
 static struct {
   u32 framebuffer_offset;  // Final framebuffer position
   u16 pixel_color;         // Pixel color to write
-} overlay_write_cache[MAX_OPAQUE_PIXELS];
+} *overlay_write_cache = NULL;
 static int cache_valid = 0;
 
 // Function declaration
@@ -4259,6 +4330,35 @@ void load_overlay(const char *filename)
     fclose(debug_log);
   }
   
+  // Allocate overlay buffer if not already allocated
+  if (overlay_buffer == NULL) {
+    overlay_buffer = (u16*)safe_malloc(OVERLAY_SIZE * sizeof(u16));
+    if (overlay_buffer == NULL) {
+      debug_log = fopen("froggba_debug.log", "a");
+      if (debug_log) {
+        fprintf(debug_log, "load_overlay: Failed to allocate overlay buffer\n");
+        fclose(debug_log);
+      }
+      return;
+    }
+  }
+  
+  // Allocate cache arrays if not already allocated
+  if (opaque_pixel_offsets == NULL) {
+    opaque_pixel_offsets = (u32*)safe_malloc(MAX_OPAQUE_PIXELS * sizeof(u32));
+  }
+  if (overlay_write_cache == NULL) {
+    overlay_write_cache = safe_malloc(MAX_OPAQUE_PIXELS * sizeof(*overlay_write_cache));
+  }
+  if (opaque_pixel_offsets == NULL || overlay_write_cache == NULL) {
+    debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "load_overlay: Failed to allocate cache arrays\n");
+      fclose(debug_log);
+    }
+    return;
+  }
+
   // Try to open overlay file (using .ovl extension for raw overlay data)
   fd = sceIoOpen(filepath, PSP_O_RDONLY, 0777);
   if (fd >= 0) {
@@ -4305,9 +4405,30 @@ void clear_overlay(void)
   overlay_loaded = 0;
   num_opaque_pixels = 0; // Reset opaque pixel count
   overlay_needs_update = 0; // Reset update flag
+  cache_valid = 0; // Invalidate cache
   
   // Don't clear framebuffers here - let the game re-render naturally
   // The overlay system will just stop applying new overlay pixels
+}
+
+// Free overlay memory when not needed
+void free_overlay_memory(void) 
+{
+  if (overlay_buffer != NULL) {
+    free(overlay_buffer);
+    overlay_buffer = NULL;
+  }
+  if (opaque_pixel_offsets != NULL) {
+    free(opaque_pixel_offsets);
+    opaque_pixel_offsets = NULL;
+  }
+  if (overlay_write_cache != NULL) {
+    free(overlay_write_cache);
+    overlay_write_cache = NULL;
+  }
+  overlay_loaded = 0;
+  num_opaque_pixels = 0;
+  cache_valid = 0;
 }
 
 // Force a complete framebuffer refresh - only used when changing positions

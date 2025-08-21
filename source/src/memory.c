@@ -3451,17 +3451,41 @@ static s32 load_gamepak_raw(char *name)
   {
     u32 _gamepak_size = file_length(name);
 
+    // Validate file size - GBA ROMs must be at least 32KB and at most 32MB
+    if (_gamepak_size < 32768 || _gamepak_size > (32 * 1024 * 1024)) {
+      FILE_CLOSE(gamepak_file);
+      return -1;
+    }
+
     // If it's a big file size keep it don't close it, we'll
     // probably want to load it later
     if (_gamepak_size <= gamepak_ram_buffer_size)
     {
       FILE_READ(gamepak_file, gamepak_rom, _gamepak_size);
       FILE_CLOSE(gamepak_file);
+      
+      // Validate GBA ROM header - check for Nintendo logo at 0x04-0xA0
+      // At minimum, check the first 4 bytes after entry point
+      if (_gamepak_size >= 0x100) {
+        u8 *header = gamepak_rom + 0x04;
+        // Check for part of the Nintendo logo (known bytes)
+        if (header[0] != 0x24 || header[1] != 0xFF || header[2] != 0xAE || header[3] != 0x51) {
+          return -1;  // Not a valid GBA ROM
+        }
+      }
     }
     else
     {
       // Read in just enough for the header
       FILE_READ(gamepak_file, gamepak_rom, 0x100);
+      
+      // Validate GBA ROM header for large files too
+      u8 *header = gamepak_rom + 0x04;
+      // Check for part of the Nintendo logo (known bytes)
+      if (header[0] != 0x24 || header[1] != 0xFF || header[2] != 0xAE || header[3] != 0x51) {
+        FILE_CLOSE(gamepak_file);
+        return -1;  // Not a valid GBA ROM
+      }
 
       gamepak_file_large = gamepak_file;
 
@@ -3610,12 +3634,42 @@ void load_state(char *savestate_filename)
 
   sprintf(savestate_path, "%s%s", dir_state, savestate_filename);
 
+  // Temporarily free overlay memory to make room for save state operations
+  extern void free_overlay_memory(void);
+  extern void load_overlay(const char *filename);
+  extern u32 option_overlay_enabled;
+  extern u32 option_overlay_selected;
+  extern char overlay_names[10][64];
+  int need_restore_overlay = 0;
+  char saved_overlay_name[64] = {0};
+  
+  if (option_overlay_enabled && option_overlay_selected > 0) {
+    strcpy(saved_overlay_name, overlay_names[option_overlay_selected]);
+    free_overlay_memory();
+    need_restore_overlay = 1;
+  }
+
   scePowerLock(0);
 
   FILE_OPEN(savestate_file, savestate_path, READ);
 
   if (FILE_CHECK_VALID(savestate_file))
   {
+    // Check file size to ensure it's a valid save state
+    u32 savestate_file_size = file_length(savestate_path);
+    u32 expected_size = GBA_SCREEN_SIZE + sizeof(u64) + SAVESTATE_SIZE;
+    
+    if (savestate_file_size < expected_size) {
+      FILE_CLOSE(savestate_file);
+      scePowerUnlock(0);
+      // Restore overlay if we freed it earlier
+      if (need_restore_overlay) {
+        load_overlay(saved_overlay_name);
+      }
+      error_msg("Save state file is corrupted or incomplete.", 1);
+      return;
+    }
+
     FILE_SEEK(savestate_file, GBA_SCREEN_SIZE + sizeof(u64), SEEK_SET);
 
     SAVESTATE_BLOCK(read);
@@ -3631,6 +3685,11 @@ void load_state(char *savestate_filename)
   }
 
   scePowerUnlock(0);
+  
+  // Restore overlay if we freed it earlier
+  if (need_restore_overlay) {
+    load_overlay(saved_overlay_name);
+  }
 }
 
 void save_state(char *savestate_filename, u16 *screen_capture)
@@ -3642,7 +3701,31 @@ void save_state(char *savestate_filename, u16 *screen_capture)
 
   sprintf(savestate_path, "%s%s", dir_state, savestate_filename);
 
+  // Temporarily free overlay memory to make room for save state buffer
+  extern void free_overlay_memory(void);
+  extern void load_overlay(const char *filename);
+  extern u32 option_overlay_enabled;
+  extern u32 option_overlay_selected;
+  extern char overlay_names[10][64];
+  int need_restore_overlay = 0;
+  char saved_overlay_name[64] = {0};
+  
+  if (option_overlay_enabled && option_overlay_selected > 0) {
+    strcpy(saved_overlay_name, overlay_names[option_overlay_selected]);
+    free_overlay_memory();
+    need_restore_overlay = 1;
+  }
+
   savestate_write_buffer = (u8 *)safe_malloc(SAVESTATE_SIZE);
+  if (savestate_write_buffer == NULL) {
+    // Restore overlay if allocation failed
+    if (need_restore_overlay) {
+      load_overlay(saved_overlay_name);
+    }
+    scePowerUnlock(0);
+    error_msg("Could not allocate memory for save state.", 1);
+    return;
+  }
   memset(savestate_write_buffer, 0, SAVESTATE_SIZE);
 
   write_mem_ptr = savestate_write_buffer;
@@ -3666,6 +3749,11 @@ void save_state(char *savestate_filename, u16 *screen_capture)
   scePowerUnlock(0);
 
   free(savestate_write_buffer);
+  
+  // Restore overlay if we freed it earlier
+  if (need_restore_overlay) {
+    load_overlay(saved_overlay_name);
+  }
 }
 
 
