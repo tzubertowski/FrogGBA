@@ -4596,9 +4596,7 @@ void build_overlay_cache(void) {
 }
 
 void apply_overlay_borders(void) 
-{
-  
-  
+{  
   if (!option_overlay_enabled || !overlay_loaded || !cache_valid) return;
   if (overlay_rle_cache == NULL || num_rle_entries == 0) return;
   
@@ -4608,31 +4606,65 @@ void apply_overlay_borders(void)
   
   u32 max_offset = PSP_LINE_SIZE * PSP_SCREEN_HEIGHT;
   
-  // Process RLE cache entries - each entry can represent multiple pixels
-  int applied = 0;
+  // Ultra-optimized: Process RLE cache with minimal overhead
+  overlay_rle_entry *cache = overlay_rle_cache;
   for (int i = 0; i < num_rle_entries; i++) {
-    u32 start_offset = overlay_rle_cache[i].framebuffer_offset;
-    u16 color = overlay_rle_cache[i].pixel_color;
-    u16 run_length = overlay_rle_cache[i].run_length;
+    u32 start_offset = cache[i].framebuffer_offset;
+    u16 color = cache[i].pixel_color;
+    u16 run_length = cache[i].run_length;
     
-    // Bounds check for entire run
+    // Quick bounds check
     if (start_offset >= max_offset) continue;
     
-    // Write the run of pixels
-    for (int j = 0; j < run_length; j++) {
-      u32 offset = start_offset + j;
-      if (offset >= max_offset) break; // Safety check
+    // Optimized run writing with pointer arithmetic
+    u16 *fb0_ptr = &fb0[start_offset];
+    u16 *fb1_ptr = &fb1[start_offset];
+    
+    // Use memset-style approach for longer runs
+    if (run_length >= 16) {
+      // Bounds clamp
+      if (start_offset + run_length > max_offset) {
+        run_length = max_offset - start_offset;
+      }
       
-      fb0[offset] = color;
-      fb1[offset] = color;
-      applied++;
+      // Fill in chunks of 16 for maximum efficiency
+      int chunks = run_length / 16;
+      int remainder = run_length % 16;
+      
+      for (int c = 0; c < chunks; c++) {
+        int base = c * 16;
+        // Unroll 16 writes
+        fb0_ptr[base] = fb0_ptr[base+1] = fb0_ptr[base+2] = fb0_ptr[base+3] = color;
+        fb0_ptr[base+4] = fb0_ptr[base+5] = fb0_ptr[base+6] = fb0_ptr[base+7] = color;
+        fb0_ptr[base+8] = fb0_ptr[base+9] = fb0_ptr[base+10] = fb0_ptr[base+11] = color;
+        fb0_ptr[base+12] = fb0_ptr[base+13] = fb0_ptr[base+14] = fb0_ptr[base+15] = color;
+        
+        fb1_ptr[base] = fb1_ptr[base+1] = fb1_ptr[base+2] = fb1_ptr[base+3] = color;
+        fb1_ptr[base+4] = fb1_ptr[base+5] = fb1_ptr[base+6] = fb1_ptr[base+7] = color;
+        fb1_ptr[base+8] = fb1_ptr[base+9] = fb1_ptr[base+10] = fb1_ptr[base+11] = color;
+        fb1_ptr[base+12] = fb1_ptr[base+13] = fb1_ptr[base+14] = fb1_ptr[base+15] = color;
+      }
+      
+      // Handle remainder
+      int base = chunks * 16;
+      for (int j = 0; j < remainder; j++) {
+        fb0_ptr[base + j] = color;
+        fb1_ptr[base + j] = color;
+      }
+    } else {
+      // Small runs - direct assignment with bounds check
+      u16 safe_length = (start_offset + run_length > max_offset) ? 
+                        max_offset - start_offset : run_length;
+      for (int j = 0; j < safe_length; j++) {
+        fb0_ptr[j] = color;
+        fb1_ptr[j] = color;
+      }
     }
   }
   
-  
-  // Reduced cache flushes: Only flush every 4 frames
+  // Minimal cache flush - every 8 frames to reduce overhead
   static int flush_counter = 0;
-  if (++flush_counter >= 4) {
+  if (++flush_counter >= 8) {
     sceKernelDcacheWritebackAll();
     flush_counter = 0;
   }
@@ -4640,8 +4672,9 @@ void apply_overlay_borders(void)
 
 void render_overlay(void) 
 {
-  
-  if (option_overlay_enabled && overlay_loaded) {
+  // Apply borders every frame AFTER game content renders
+  // This ensures borders persist even if game overwrites framebuffer areas
+  if (option_overlay_enabled && overlay_loaded && cache_valid) {
     apply_overlay_borders();
   }
 }
