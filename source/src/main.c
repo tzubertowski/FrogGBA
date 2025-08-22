@@ -576,17 +576,8 @@ static void synchronize(void)
     if (psp_fps_debug != 0)
     {
       char print_buffer[80];
-      extern u32 get_active_sprite_count(void);
-      extern u32 get_blend_operations(void);
-      extern u32 get_active_layers(void);
-      extern u32 get_video_mode(void);
-      extern u32 fast_path_enabled;
-      u32 sprites = get_active_sprite_count();
-      u32 blends = get_blend_operations();
-      u32 layers = get_active_layers();
-      u32 vmode = get_video_mode();
-      sprintf(print_buffer, "%02ld(%02ld) M:%d S:%d B:%d L:%d F:%d G:%d", 
-              (long)fps, (long)frames_drawn, vmode, sprites, blends, layers, fast_path_enabled, layer_merge_enabled);
+      sprintf(print_buffer, "%02ld(%02ld)", 
+              (long)fps, (long)frames_drawn);
       print_string(print_buffer, 0, 0, COLOR15_WHITE, COLOR15_BLACK);
     }
   }

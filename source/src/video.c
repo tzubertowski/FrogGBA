@@ -2331,7 +2331,7 @@ static void order_obj(u8 video_mode)
 
         if (((obj_x + obj_width) > 0) && (obj_x < 240))
         {
-          active_sprite_count++;  // Count active sprites
+          // active_sprite_count++;  // DISABLED - counter not resetting properly
           if (obj_y < 0)
           {
             obj_height += obj_y;
