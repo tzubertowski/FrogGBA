@@ -834,14 +834,6 @@ int user_main(int argc, char *argv[])
     extern char overlay_names[][64];
     extern int overlay_needs_update;
     
-    /*
-    FILE *debug_log = fopen("froggba_debug.log", "a");
-    if (debug_log) {
-      fprintf(debug_log, "main: Loading initial overlay selected=%d enabled=%d\n", 
-              option_overlay_selected, option_overlay_enabled);
-      fclose(debug_log);
-    }
-    */
     
     load_overlay(overlay_names[option_overlay_selected]);
     overlay_needs_update = 1; // Ensure overlay gets rendered
@@ -898,12 +890,6 @@ int user_main(int argc, char *argv[])
 
   if (argc > 1)
   {
-    FILE *debug_log = fopen("froggba_debug.log", "a");
-    if (debug_log) {
-      fprintf(debug_log, "user_main: Loading from argv[1]: %s\n", argv[1]);
-      fclose(debug_log);
-    }
-    
     if (load_gamepak((char *)argv[1]) < 0)
     {
       clear_screen(COLOR32_BLACK);
@@ -913,19 +899,8 @@ int user_main(int argc, char *argv[])
   }
   else
   {
-    FILE *debug_log = fopen("froggba_debug.log", "a");
-    if (debug_log) {
-      fprintf(debug_log, "user_main: No args, checking for file to load\n");
-      fclose(debug_log);
-    }
-    
     if (load_file(file_ext, load_filename, dir_roms) < 0)
     {
-      FILE *debug_log = fopen("froggba_debug.log", "a");
-      if (debug_log) {
-        fprintf(debug_log, "user_main: No file selected, showing menu\n");
-        fclose(debug_log);
-      }
       menu();
     }
     else
