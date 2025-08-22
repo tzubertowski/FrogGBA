@@ -100,9 +100,6 @@ u8 ALIGN_DATA obj_priority_list[5][160][128];
 u8 ALIGN_DATA obj_priority_count[5][160];
 u8 ALIGN_DATA obj_alpha_count[160];
 
-// Track which scanlines had sprites for optimized clearing
-static u16 used_scanlines_mask[10];  // 160 bits packed into 10 u16s
-static u8 used_priority_levels;
 
 u8 ALIGN_DATA layer_order[16];
 u32 layer_count;
@@ -112,7 +109,7 @@ u8* tile_base_cache[4] = {NULL, NULL, NULL, NULL};
 u16 tile_base_bg_control[4] = {0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF};
 
 // Fast path tile rendering for common cases
-u32 fast_path_enabled = 1;
+u32 fast_path_enabled = 0;  // DISABLED - may contribute to blending issues
 
 // Layer merging system for static background optimization
 #define MAX_LAYER_CACHE_FRAMES 4
@@ -127,7 +124,7 @@ typedef struct {
 } layer_cache_t;
 
 static layer_cache_t layer_cache[4];
-static u32 layer_merge_enabled = 1;
+static u32 layer_merge_enabled = 0;  // DISABLED - testing if this affects blending
 
 const u8 ALIGN_DATA active_layers[8] =
 {
@@ -969,15 +966,8 @@ static void order_layers(u8 layer_flags);
   u32 vertical_pixel_offset = (vertical_offset & 7) * tile_width_##color_depth; \
   u32 vertical_pixel_flip = ((tile_size_##color_depth - tile_width_##color_depth) - vertical_pixel_offset) - vertical_pixel_offset; \
   tile_extra_variables_##color_depth();                                       \
-  u8 *tile_base;                                                              \
-  /* Use cached tile base if available */                                     \
-  if (tile_base_bg_control[layer] == bg_control) {                            \
-    tile_base = tile_base_cache[layer] + vertical_pixel_offset;               \
-  } else {                                                                    \
-    tile_base = vram + ((((bg_control >> 2) & 0x03) << 14) + vertical_pixel_offset); \
-    tile_base_cache[layer] = vram + (((bg_control >> 2) & 0x03) << 14);       \
-    tile_base_bg_control[layer] = bg_control;                                 \
-  }                                                                           \
+  /* DISABLED tile base caching - causes water transparency issues */         \
+  u8 *tile_base = vram + ((((bg_control >> 2) & 0x03) << 14) + vertical_pixel_offset); \
   u32 pixel_run = 256 - (horizontal_offset & 0xFF);                          \
   u32 current_tile;                                                           \
                                                                               \
@@ -1945,7 +1935,7 @@ BitmapLayerRenderStruct bitmap_mode_renderers[3] =
   }                                                                           \
   dest_ptr = scanline + obj_x;                                                \
                                                                               \
-  y_delta = vcount - (obj_y + middle_y);                                      \
+  y_delta = pIO_REG(REG_VCOUNT) - (obj_y + middle_y);                        \
                                                                               \
   obj_get_palette_##color_depth();                                            \
                                                                               \
@@ -2021,7 +2011,7 @@ BitmapLayerRenderStruct bitmap_mode_renderers[3] =
   }                                                                           \
   else                                                                        \
   {                                                                           \
-    vertical_offset = vcount - obj_y;                                         \
+    vertical_offset = pIO_REG(REG_VCOUNT) - obj_y;                           \
                                                                               \
     if (((obj_attribute_1 >> 13) & 0x01) != 0)                                \
     {                                                                         \
@@ -2125,7 +2115,6 @@ static void render_scanline_obj_##alpha_op##_##map_space(u32 priority, u32 start
   s32 obj_x, obj_y;                                                           \
   u32 obj_width, obj_height;                                                  \
   u16 obj_attribute_0, obj_attribute_1, obj_attribute_2;                      \
-  u16 vcount = pIO_REG(REG_VCOUNT);                                           \
   u32 tile_run;                                                               \
   u32 current_pixels;                                                         \
   u32 current_pixel;                                                          \
@@ -2137,8 +2126,8 @@ static void render_scanline_obj_##alpha_op##_##map_space(u32 priority, u32 start
   render_scanline_dest_##alpha_op *dest_ptr;                                  \
   u8 *obj_tile_base = vram + 0x10000;                                         \
   u8 *tile_ptr;                                                               \
-  u8 obj_count = obj_priority_count[priority][vcount];                        \
-  u8 *obj_list = obj_priority_list[priority][vcount];                         \
+  u8 obj_count = obj_priority_count[priority][pIO_REG(REG_VCOUNT)];      \
+  u8 *obj_list = obj_priority_list[priority][pIO_REG(REG_VCOUNT)];       \
                                                                               \
   for (obj_num = 0; obj_num < obj_count; obj_num++)                           \
   {                                                                           \
@@ -2295,28 +2284,9 @@ static void order_obj(u8 video_mode)
   u16 current_count;
   u16 *oam_ptr = oam_ram + 508;
 
-  // Optimized clearing - only clear scanlines that had sprites in the previous frame
-  for (int mask_idx = 0; mask_idx < 10; mask_idx++) {
-    u16 mask = used_scanlines_mask[mask_idx];
-    if (mask) {
-      for (int bit = 0; bit < 16 && (mask_idx * 16 + bit) < 160; bit++) {
-        if (mask & (1 << bit)) {
-          int scanline = mask_idx * 16 + bit;
-          obj_alpha_count[scanline] = 0;
-          for (int priority = 0; priority < 5; priority++) {
-            if (used_priority_levels & (1 << priority)) {
-              obj_priority_count[priority][scanline] = 0;
-            }
-          }
-        }
-      }
-      used_scanlines_mask[mask_idx] = 0; // Clear for this frame
-    }
-  }
-  used_priority_levels = 0;
-  
-  // Count active sprites for profiling
-  active_sprite_count = 0;
+  // Use simple memset clearing - sprite optimization may affect blending
+  memset(obj_priority_count, 0, 5 * 160);
+  memset(obj_alpha_count, 0, 160);
 
   for (obj_num = 127; obj_num >= 0; obj_num--, oam_ptr -= 4)
   {
@@ -2381,9 +2351,6 @@ static void order_obj(u8 video_mode)
               obj_priority_list[obj_priority][row][current_count] = obj_num;
               obj_priority_count[obj_priority][row] = current_count + 1;
               obj_alpha_count[row] = 1;
-              // Track usage for optimized clearing
-              used_scanlines_mask[row / 16] |= 1 << (row % 16);
-              used_priority_levels |= 1 << obj_priority;
             }
           }
           else
@@ -2396,9 +2363,6 @@ static void order_obj(u8 video_mode)
               current_count = obj_priority_count[obj_priority][row];
               obj_priority_list[obj_priority][row][current_count] = obj_num;
               obj_priority_count[obj_priority][row] = current_count + 1;
-              // Track usage for optimized clearing
-              used_scanlines_mask[row / 16] |= 1 << (row % 16);
-              used_priority_levels |= 1 << obj_priority;
             }
           }
         }
@@ -3152,7 +3116,7 @@ static void render_scanline_conditional_bitmap(u32 start, u32 end, u16 *scanline
                                                                               \
   if (window_##window_number##_y1 > window_##window_number##_y2)              \
   {                                                                           \
-    if ((((vcount <= window_##window_number##_y2) || (vcount > window_##window_number##_y1)) || (window_##window_number##_y2 > 227)) && \
+    if ((((pIO_REG(REG_VCOUNT) <= window_##window_number##_y2) || (pIO_REG(REG_VCOUNT) > window_##window_number##_y1)) || (window_##window_number##_y2 > 227)) && \
         (window_##window_number##_y1 <= 227))                                 \
     {                                                                         \
       window_x_coords(window_number);                                         \
@@ -3164,7 +3128,7 @@ static void render_scanline_conditional_bitmap(u32 start, u32 end, u16 *scanline
   }                                                                           \
   else                                                                        \
   {                                                                           \
-    if ((((vcount >= window_##window_number##_y1) && (vcount < window_##window_number##_y2)) || (window_##window_number##_y2 > 227)) && \
+    if ((((pIO_REG(REG_VCOUNT) >= window_##window_number##_y1) && (pIO_REG(REG_VCOUNT) < window_##window_number##_y2)) || (window_##window_number##_y2 > 227)) && \
         (window_##window_number##_y1 <= 227))                                 \
     {                                                                         \
       window_x_coords(window_number);                                         \
@@ -3346,7 +3310,6 @@ static void render_scanline_conditional_bitmap(u32 start, u32 end, u16 *scanline
 static void render_scanline_window_##type(u16 *scanline, u16 dispcnt)         \
 {                                                                             \
   u16 bldcnt = pIO_REG(REG_BLDCNT);                                           \
-  u16 vcount = pIO_REG(REG_VCOUNT);                                           \
   u16 winin  = pIO_REG(REG_WININ);                                            \
   u16 winout = pIO_REG(REG_WINOUT);                                           \
   u16 window_out_enable = winout & 0x3F;                                      \

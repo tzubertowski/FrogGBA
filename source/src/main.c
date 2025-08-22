@@ -898,7 +898,7 @@ int user_main(int argc, char *argv[])
 
   if (argc > 1)
   {
-    debug_log = fopen("froggba_debug.log", "a");
+    FILE *debug_log = fopen("froggba_debug.log", "a");
     if (debug_log) {
       fprintf(debug_log, "user_main: Loading from argv[1]: %s\n", argv[1]);
       fclose(debug_log);
@@ -913,7 +913,7 @@ int user_main(int argc, char *argv[])
   }
   else
   {
-    debug_log = fopen("froggba_debug.log", "a");
+    FILE *debug_log = fopen("froggba_debug.log", "a");
     if (debug_log) {
       fprintf(debug_log, "user_main: No args, checking for file to load\n");
       fclose(debug_log);
@@ -921,7 +921,7 @@ int user_main(int argc, char *argv[])
     
     if (load_file(file_ext, load_filename, dir_roms) < 0)
     {
-      debug_log = fopen("froggba_debug.log", "a");
+      FILE *debug_log = fopen("froggba_debug.log", "a");
       if (debug_log) {
         fprintf(debug_log, "user_main: No file selected, showing menu\n");
         fclose(debug_log);
