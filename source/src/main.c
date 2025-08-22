@@ -816,13 +816,6 @@ static void setup_main(void)
 
 int user_main(int argc, char *argv[])
 {
-  FILE *debug_log = fopen("froggba_debug.log", "w");
-  if (debug_log) {
-    fprintf(debug_log, "user_main: Starting, argc=%d\n", argc);
-    fprintf(debug_log, "user_main: option_resume_on_boot=%d\n", option_resume_on_boot);
-    fclose(debug_log);
-  }
-
   char load_filename[MAX_FILE];
   const char *file_ext[] = { ".zip", ".gba", ".bin", ".agb", ".gbz", NULL };
 
@@ -858,26 +851,9 @@ int user_main(int argc, char *argv[])
   gamepak_filename[0] = 0;
 
   // NOW check for resume on boot functionality AFTER config is loaded
-  debug_log = fopen("froggba_debug.log", "a");
-  if (debug_log) {
-    fprintf(debug_log, "user_main: After setup_main, checking resume on boot, argc=%d, option=%d\n", argc, option_resume_on_boot);
-    fclose(debug_log);
-  }
-  
   if (argc <= 1 && option_resume_on_boot != 0) {
-    debug_log = fopen("froggba_debug.log", "a");
-    if (debug_log) {
-      fprintf(debug_log, "user_main: Attempting to resume last game\n");
-      fclose(debug_log);
-    }
-    
     char last_game_path[MAX_PATH];
     if (load_last_played_game(last_game_path, MAX_PATH) == 0) {
-      debug_log = fopen("froggba_debug.log", "a");
-      if (debug_log) {
-        fprintf(debug_log, "user_main: Found last game: %s\n", last_game_path);
-        fclose(debug_log);
-      }
       
       // Check if it's already a full path (starts with "ms0:") or just a filename
       if (strncmp(last_game_path, "ms0:", 4) != 0) {
@@ -886,17 +862,6 @@ int user_main(int argc, char *argv[])
         strcpy(temp_filename, last_game_path);
         sprintf(last_game_path, "%s%s", dir_roms, temp_filename);
         
-        debug_log = fopen("froggba_debug.log", "a");
-        if (debug_log) {
-          fprintf(debug_log, "user_main: Constructed full path from filename: %s\n", last_game_path);
-          fclose(debug_log);
-        }
-      } else {
-        debug_log = fopen("froggba_debug.log", "a");
-        if (debug_log) {
-          fprintf(debug_log, "user_main: Using full path as-is: %s\n", last_game_path);
-          fclose(debug_log);
-        }
       }
       
       // We have a last played game, try to load it
@@ -908,11 +873,6 @@ int user_main(int argc, char *argv[])
         
         if (!will_load_auto_save) {
           // Only reset GBA if we're NOT going to load a save state
-          debug_log = fopen("froggba_debug.log", "a");
-          if (debug_log) {
-            fprintf(debug_log, "user_main: Auto save/load disabled, resetting GBA for fresh start\n");
-            fclose(debug_log);
-          }
           reset_gba();
         }
         
@@ -923,35 +883,9 @@ int user_main(int argc, char *argv[])
         
         // Try to load the auto-save state AFTER all initialization (only if enabled)
         if (will_load_auto_save) {
-          debug_log = fopen("froggba_debug.log", "a");
-          if (debug_log) {
-            fprintf(debug_log, "user_main: Auto save/load enabled, doing basic reset before loading save state\n");
-            fclose(debug_log);
-          }
-          
           // Do basic reset first, then load save state over it
           reset_gba();
-          
-          debug_log = fopen("froggba_debug.log", "a");
-          if (debug_log) {
-            fprintf(debug_log, "user_main: Basic reset done, attempting to load auto-save state\n");
-            fclose(debug_log);
-          }
-          
-          if (load_auto_resume_state() == 0) {
-            debug_log = fopen("froggba_debug.log", "a");
-            if (debug_log) {
-              fprintf(debug_log, "user_main: Auto-save loaded successfully\n");
-              fclose(debug_log);
-            }
-          } else {
-            // If auto-save loading failed, we already have reset_gba() called above
-            debug_log = fopen("froggba_debug.log", "a");
-            if (debug_log) {
-              fprintf(debug_log, "user_main: Auto-save load failed, continuing with fresh state\n");
-              fclose(debug_log);
-            }
-          }
+          load_auto_resume_state();
         }
         
         // Continue with execution
@@ -996,21 +930,9 @@ int user_main(int argc, char *argv[])
     }
     else
     {
-      debug_log = fopen("froggba_debug.log", "a");
-      if (debug_log) {
-        fprintf(debug_log, "user_main: File selected: %s\n", load_filename);
-        fclose(debug_log);
-      }
-      
       // Construct full path when loading from file browser
       char full_game_path[MAX_PATH];
       sprintf(full_game_path, "%s%s", dir_roms, load_filename);
-      
-      debug_log = fopen("froggba_debug.log", "a");
-      if (debug_log) {
-        fprintf(debug_log, "user_main: Full path constructed: %s\n", full_game_path);
-        fclose(debug_log);
-      }
       
       if (load_gamepak(full_game_path) < 0)
       {
@@ -1019,12 +941,6 @@ int user_main(int argc, char *argv[])
         menu();
       }
     }
-  }
-
-  debug_log = fopen("froggba_debug.log", "a");
-  if (debug_log) {
-    fprintf(debug_log, "user_main: About to reset_gba()\n");
-    fclose(debug_log);
   }
 
   reset_gba();
@@ -1074,43 +990,10 @@ void quit(void)
 
 void reset_gba(void)
 {
-  FILE *debug_log = fopen("froggba_debug.log", "a");
-  if (debug_log) {
-    fprintf(debug_log, "reset_gba: Starting\n");
-    fclose(debug_log);
-  }
-  
   clear_texture(0x7FFF);
-  
-  debug_log = fopen("froggba_debug.log", "a");
-  if (debug_log) {
-    fprintf(debug_log, "reset_gba: clear_texture done\n");
-    fclose(debug_log);
-  }
-  
   init_memory();
-  
-  debug_log = fopen("froggba_debug.log", "a");
-  if (debug_log) {
-    fprintf(debug_log, "reset_gba: init_memory done\n");
-    fclose(debug_log);
-  }
-  
   init_main();
-  
-  debug_log = fopen("froggba_debug.log", "a");
-  if (debug_log) {
-    fprintf(debug_log, "reset_gba: init_main done\n");
-    fclose(debug_log);
-  }
-  
   reset_sound();
-  
-  debug_log = fopen("froggba_debug.log", "a");
-  if (debug_log) {
-    fprintf(debug_log, "reset_gba: reset_sound done - completed\n");
-    fclose(debug_log);
-  }
 }
 
 
