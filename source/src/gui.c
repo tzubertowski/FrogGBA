@@ -22,7 +22,7 @@
 #include <pspiofilemgr.h>
 
 #define GPSP_CONFIG_FILENAME  "froggba.cfg"
-#define GPSP_CONFIG_NUM       (25 + 16) // options + game pad config + overlay options + aspect ratio + compatibility mode + button mapping + resume on boot
+#define GPSP_CONFIG_NUM       (26 + 16) // options + game pad config + overlay options + aspect ratio + compatibility mode + button mapping + resume on boot + auto save state
 #define GPSP_GAME_CONFIG_NUM  (7 + 16)
 
 #define COLOR_BG            COLOR15( 8, 15, 12)  // Soft mint green background
@@ -299,6 +299,19 @@ MenuType overlay_menu_global = {
   NULL, // passive_function  
   overlay_options_global,
   5
+};
+
+// Saving options submenu
+MenuOptionType saving_options_global[2] = {
+  STRING_SELECTION_OPTION(NULL, "Resume last game: %s", global_yes_no_options, &option_resume_on_boot, 2, 0, 0),
+  STRING_SELECTION_OPTION(NULL, "Auto save/load state: %s", global_yes_no_options, &option_auto_save_state, 2, 0, 1),
+};
+
+MenuType saving_menu_global = {
+  NULL, // init_function
+  NULL, // passive_function  
+  saving_options_global,
+  2
 };
 
 // Initialize overlays at emulator boot - called from main.c
@@ -1291,6 +1304,11 @@ void action_savestate(void)
 
 u32 menu(void)
 {
+  // Auto-save state before entering menu (only if auto save/load is enabled)
+  if (option_auto_save_state != 0) {
+    save_auto_resume_state();
+  }
+  
   // Use the same debug log as HOME button
   /*FILE *debug_log = fopen("froggba_debug.log", "a");
   if (debug_log) {
@@ -1597,7 +1615,16 @@ u32 menu(void)
       }
       add_recent_game(full_game_path);
 
+      // Always reset GBA first when loading a new game to clear previous state
       reset_gba();
+      
+      // Check if we should load auto-save state after reset
+      if (option_auto_save_state != 0) {
+        // Try to load auto-save state for this game
+        if (load_auto_resume_state() == 0) {
+          // Auto-save loaded successfully
+        }
+      }
       reg[CHANGED_PC_STATUS] = 1;
 
       return_value = 1;
@@ -1717,6 +1744,7 @@ u32 menu(void)
 	option_compatibility_mode = 0; // Default to fast mode
 	option_button_mapping = 0; // Default to X/O mapping
 	option_resume_on_boot = 0; // Default to off
+	option_auto_save_state = 0; // Default to off
 	psp_fps_debug = 0;
 	option_frameskip_type = FRAMESKIP_AUTO;
 	option_frameskip_value = 9;
@@ -2004,15 +2032,14 @@ u32 menu(void)
 
     STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_8], yes_no_options, &option_boot_mode, 2, MSG_OPTION_MENU_HELP_8, 14),
 
-    STRING_SELECTION_OPTION(NULL, "Resume game on boot: %s", yes_no_options, &option_resume_on_boot, 2, 0, 15),
 
-    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_9], update_backup_options, &option_update_backup, 2, MSG_OPTION_MENU_HELP_9, 16), 
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_9], update_backup_options, &option_update_backup, 2, MSG_OPTION_MENU_HELP_9, 15), 
 
-    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_10], language_options, &option_language, 2, MSG_OPTION_MENU_HELP_10, 17),
+    STRING_SELECTION_OPTION(NULL, MSG[MSG_OPTION_MENU_10], language_options, &option_language, 2, MSG_OPTION_MENU_HELP_10, 16),
 
-    ACTION_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_DEFAULT], MSG_OPTION_MENU_HELP_DEFAULT, 18),
+    ACTION_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_DEFAULT], MSG_OPTION_MENU_HELP_DEFAULT, 17),
 
-    ACTION_SUBMENU_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_11], MSG_OPTION_MENU_HELP_11, 19)
+    ACTION_SUBMENU_OPTION(NULL, NULL, MSG[MSG_OPTION_MENU_11], MSG_OPTION_MENU_HELP_11, 18)
   };
 
   MAKE_MENU(emulator, NULL, NULL);
@@ -2111,6 +2138,8 @@ u32 menu(void)
     SUBMENU_OPTION(&gamepad_config_menu, MSG[MSG_MAIN_MENU_5], MSG_MAIN_MENU_HELP_5, 7),
 
     SUBMENU_OPTION(&analog_config_menu, MSG[MSG_MAIN_MENU_6], MSG_MAIN_MENU_HELP_6, 8),
+
+    SUBMENU_OPTION(&saving_menu_global, "Saving options", 0, 9),
 
     SUBMENU_OPTION(&cheats_misc_menu, MSG[MSG_MAIN_MENU_CHEAT], MSG_MAIN_MENU_HELP_CHEAT, 10),
 
@@ -2690,10 +2719,11 @@ s32 save_config_file(void)
     file_options[21]  = option_compatibility_mode;
     file_options[22]  = option_button_mapping;
     file_options[23]  = option_resume_on_boot;
+    file_options[24]  = option_auto_save_state;
 
     for (i = 0; i < 16; i++)
     {
-      file_options[24 + i] = gamepad_config_map[i];
+      file_options[25 + i] = gamepad_config_map[i];
     }
 
     FILE_WRITE_ARRAY(config_file, file_options);
@@ -2824,13 +2854,14 @@ s32 load_config_file(void)
       option_compatibility_mode = file_options[21] % 2;  // 0 = Fast, 1 = Accurate
       option_button_mapping = file_options[22] % 2;  // 0 = X/O, 1 = O/X
       option_resume_on_boot = file_options[23] % 2;  // 0 = Off, 1 = On
+      option_auto_save_state = file_options[24] % 2; // 0 = Off, 1 = On
       
       // Update memory timing when loading config
       set_compatibility_mode(option_compatibility_mode);
 
       for (i = 0; i < 16; i++)
       {
-        gamepad_config_map[i] = file_options[24 + i] % (BUTTON_ID_NONE + 1);
+        gamepad_config_map[i] = file_options[25 + i] % (BUTTON_ID_NONE + 1);
 
         if (gamepad_config_map[i] == BUTTON_ID_MENU)
           menu_button = i;
@@ -2860,6 +2891,7 @@ s32 load_config_file(void)
   option_color_correction = 0;  // Default to Off
   option_button_mapping = 0;  // Default to X/O mapping
   option_resume_on_boot = 0;  // Default to Off
+  option_auto_save_state = 0; // Default to Off
 
   return -1;
 }

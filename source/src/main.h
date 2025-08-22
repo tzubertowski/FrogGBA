@@ -82,6 +82,7 @@ extern u32 psp_fps_debug;
 extern u32 option_color_correction;
 extern u32 option_button_mapping;
 extern u32 option_resume_on_boot;
+extern u32 option_auto_save_state;
 extern u32 fast_forward_speed;
 extern u32 option_compatibility_mode;
 

@@ -3996,3 +3996,124 @@ s32 load_last_played_game(char *game_path, int max_path_length)
   return result;
 }
 
+// Hidden slot 11 for auto-resume feature
+#define AUTO_RESUME_SLOT 11
+
+void save_auto_resume_state(void)
+{
+  char savestate_filename[MAX_PATH];
+  char savestate_ext[16];
+  
+  // Only save if auto save/load is enabled
+  extern u32 option_auto_save_state;
+  if (option_auto_save_state == 0) {
+    return;
+  }
+  
+  // Don't save if no game is loaded
+  if (gamepak_filename[0] == 0) {
+    FILE *debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "save_auto_resume_state: No game loaded, skipping auto-save\n");
+      fclose(debug_log);
+    }
+    return;
+  }
+  
+  // Generate filename for hidden slot 11
+  sprintf(savestate_ext, "_%d.svs", AUTO_RESUME_SLOT);
+  change_ext(gamepak_filename, savestate_filename, savestate_ext);
+  
+  FILE *debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "save_auto_resume_state: Saving to slot %d, file: %s\n", 
+            AUTO_RESUME_SLOT, savestate_filename);
+    fclose(debug_log);
+  }
+  
+  // Save state with a dummy screen capture for auto-save
+  u16 *dummy_screen = (u16 *)safe_malloc(GBA_SCREEN_SIZE);
+  if (dummy_screen != NULL) {
+    memset(dummy_screen, 0, GBA_SCREEN_SIZE);  // Fill with black screen
+    save_state(savestate_filename, dummy_screen);
+    free(dummy_screen);
+  } else {
+    debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "save_auto_resume_state: Failed to allocate dummy screen buffer\n");
+      fclose(debug_log);
+    }
+  }
+}
+
+s32 load_auto_resume_state(void)
+{
+  char savestate_filename[MAX_PATH];
+  char savestate_ext[16];
+  struct stat file_info;
+  
+  // Generate filename for hidden slot 11
+  sprintf(savestate_ext, "_%d.svs", AUTO_RESUME_SLOT);
+  change_ext(gamepak_filename, savestate_filename, savestate_ext);
+  
+  // Build full path
+  char full_savestate_path[MAX_PATH];
+  sprintf(full_savestate_path, "%s%s", dir_state, savestate_filename);
+  
+  FILE *debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "load_auto_resume_state: Looking for slot %d, file: %s\n", 
+            AUTO_RESUME_SLOT, full_savestate_path);
+    fclose(debug_log);
+  }
+  
+  // Check if auto-save state exists
+  if (stat(full_savestate_path, &file_info) == 0) {
+    debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "load_auto_resume_state: Found auto-save (size=%ld), loading...\n", 
+              (long)file_info.st_size);
+      fclose(debug_log);
+    }
+    
+    // Check if file has reasonable size (at least 100KB for a valid save state)
+    // GBA save states are typically 400-600KB
+    if (file_info.st_size < 100 * 1024) {
+      debug_log = fopen("froggba_debug.log", "a");
+      if (debug_log) {
+        fprintf(debug_log, "load_auto_resume_state: Auto-save file too small (%ld bytes), likely corrupted\n",
+                (long)file_info.st_size);
+        fclose(debug_log);
+      }
+      // Delete the corrupted file
+      remove(full_savestate_path);
+      return -1;
+    }
+    
+    // Try to load the state
+    debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "load_auto_resume_state: Calling load_state for %s\n", savestate_filename);
+      fclose(debug_log);
+    }
+    
+    load_state(savestate_filename);
+    
+    debug_log = fopen("froggba_debug.log", "a");
+    if (debug_log) {
+      fprintf(debug_log, "load_auto_resume_state: load_state completed successfully\n");
+      fclose(debug_log);
+    }
+    
+    return 0;
+  }
+  
+  debug_log = fopen("froggba_debug.log", "a");
+  if (debug_log) {
+    fprintf(debug_log, "load_auto_resume_state: No auto-save found\n");
+    fclose(debug_log);
+  }
+  
+  return -1;
+}
+

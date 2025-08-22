@@ -21,6 +21,7 @@
 
 #include "common.h"
 #include "volatile_mem.h"
+#include "gui.h"
 
 
 // Main Thread Params
@@ -69,6 +70,7 @@ u32 psp_fps_debug = 0;
 u32 option_color_correction = 0;
 u32 option_button_mapping = 0;  // 0 = X/O (X confirm, O cancel), 1 = O/X (O confirm, X cancel)
 u32 option_resume_on_boot = 0;  // 0 = off, 1 = on
+u32 option_auto_save_state = 0; // 0 = off, 1 = on
 u32 fast_forward_speed = 0;  // 0 = 1x (off), 1 = 2x, 2 = 3x
 u32 layer_merge_enabled = 1;  // Layer merging optimization
 
@@ -877,14 +879,82 @@ int user_main(int argc, char *argv[])
         fclose(debug_log);
       }
       
+      // Check if it's already a full path (starts with "ms0:") or just a filename
+      if (strncmp(last_game_path, "ms0:", 4) != 0) {
+        // It's just a filename, construct full path
+        char temp_filename[MAX_PATH];
+        strcpy(temp_filename, last_game_path);
+        sprintf(last_game_path, "%s%s", dir_roms, temp_filename);
+        
+        debug_log = fopen("froggba_debug.log", "a");
+        if (debug_log) {
+          fprintf(debug_log, "user_main: Constructed full path from filename: %s\n", last_game_path);
+          fclose(debug_log);
+        }
+      } else {
+        debug_log = fopen("froggba_debug.log", "a");
+        if (debug_log) {
+          fprintf(debug_log, "user_main: Using full path as-is: %s\n", last_game_path);
+          fclose(debug_log);
+        }
+      }
+      
       // We have a last played game, try to load it
       if (load_gamepak(last_game_path) >= 0) {
-        // Successfully loaded last played game, skip normal loading logic
-        reset_gba();
+        // Successfully loaded last played game
+        
+        // Check if we should load auto-save state
+        int will_load_auto_save = (option_auto_save_state != 0);
+        
+        if (!will_load_auto_save) {
+          // Only reset GBA if we're NOT going to load a save state
+          debug_log = fopen("froggba_debug.log", "a");
+          if (debug_log) {
+            fprintf(debug_log, "user_main: Auto save/load disabled, resetting GBA for fresh start\n");
+            fclose(debug_log);
+          }
+          reset_gba();
+        }
+        
         set_cpu_clock(option_clock_speed);
         sceDisplayWaitVblankStart();
         video_resolution_small();
         sound_pause = 0;
+        
+        // Try to load the auto-save state AFTER all initialization (only if enabled)
+        if (will_load_auto_save) {
+          debug_log = fopen("froggba_debug.log", "a");
+          if (debug_log) {
+            fprintf(debug_log, "user_main: Auto save/load enabled, doing basic reset before loading save state\n");
+            fclose(debug_log);
+          }
+          
+          // Do basic reset first, then load save state over it
+          reset_gba();
+          
+          debug_log = fopen("froggba_debug.log", "a");
+          if (debug_log) {
+            fprintf(debug_log, "user_main: Basic reset done, attempting to load auto-save state\n");
+            fclose(debug_log);
+          }
+          
+          if (load_auto_resume_state() == 0) {
+            debug_log = fopen("froggba_debug.log", "a");
+            if (debug_log) {
+              fprintf(debug_log, "user_main: Auto-save loaded successfully\n");
+              fclose(debug_log);
+            }
+          } else {
+            // If auto-save loading failed, we already have reset_gba() called above
+            debug_log = fopen("froggba_debug.log", "a");
+            if (debug_log) {
+              fprintf(debug_log, "user_main: Auto-save load failed, continuing with fresh state\n");
+              fclose(debug_log);
+            }
+          }
+        }
+        
+        // Continue with execution
         execute_arm_translate(reg[EXECUTE_CYCLES]);
         return 0;
       }
@@ -982,6 +1052,8 @@ int main(int argc, char *argv[])
 
 void quit(void)
 {
+  // Auto-save is already done in menu(), no need to duplicate here
+  
   update_backup_immediately();
   save_config_file();
 
