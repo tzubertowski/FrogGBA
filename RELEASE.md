@@ -1,8 +1,8 @@
-# 🐸 FrogGBA v0.2.2 – Performance Breakthrough
+# 🐸 FrogGBA v0.2.4 – Critical Fixes & Game Resume
 
-![froggba22](https://github.com/user-attachments/assets/placeholder-image.png)
+![froggba24](https://github.com/user-attachments/assets/placeholder-image.png)
 
-Major performance update inspired by gpSP Kai optimizations. This release brings significant FPS improvements in demanding games, eliminates micro-stutters, and makes the emulator more stable than ever.
+Critical update fixing major visual rendering issues and introducing convenient game resume functionality. This release prioritizes accuracy and user experience over raw performance.
 
 ---
 
@@ -15,29 +15,33 @@ Major performance update inspired by gpSP Kai optimizations. This release brings
 
 ---
 
-### 🆕 New in v0.2.2
+### 🆕 New in v0.2.4
 
-* **gpSP Kai Optimizations** – Implemented proven performance techniques from the legendary gpSP Kai, resulting in noticeable FPS gains.
-* **Fixed Multi-Layer Bottlenecks** – Games like Castlevania (water sections) now run at full speed with 4-layer Mode 0 rendering.
-* **Eliminated Micro-Stutters** – Smart cache management prevents stuttering during level transitions in games like Kirby Amazing Mirror.
-* **Optimized Memory Usage** – Reduced translation cache sizes to optimal levels (2MB ROM, 256KB RAM) for better PSP memory utilization.
-* **Enhanced Audio Processing** – Improved audio buffering reduces crackling and provides smoother sound output.
-* **Better Sprite Rendering** – Optimized sprite handling for games with many on-screen objects.
-* **Clean Exit Fix** – No more crashes (BSOD) when exiting the emulator.
+* **Resume Game on Boot** – Automatically resume your last played game when starting the emulator for seamless gaming sessions.
+* **Auto Save/Load States** – New automatic save state functionality with configurable intervals (1-30 minutes) to never lose progress.
+* **Split Resume Options** – Resume feature now split into two separate configurable options for better control over your gaming experience.
+* **Dedicated Saving Submenu** – Added organized submenu for all save-related settings and options.
 
----
+### 🛠️ Critical Fixes
 
-### ⚡ Performance Gains
-
-* **Castlevania Series** – Water sections now run at full speed (was ~15-20 FPS, now 30+ FPS)
-* **Golden Sun Series** – Battle effects and world map rendering improved
-* **Fire Emblem** – Large battle animations no longer cause slowdown
-* **Overall** – 10-25% performance improvement in most demanding titles
+* **Fixed Water Transparency Issues** – Resolved major visual bugs causing water and transparent effects to show vertical stripes instead of smooth transparency.
+* **Fixed Kirby Startup Logo** – Kirby's black startup logo now displays in proper colors thanks to corrected blending calculations.
+* **Eliminated Green Flickering** – No more green blinking during black transition screens in Castlevania and other games.
+* **Restored Visual Accuracy** – Disabled problematic optimizations that were causing widespread blending and alpha channel rendering issues.
 
 ---
 
-### 🎮 Carryover Features
+### ⚠️ Performance Impact
 
+* **Prioritized Accuracy** – Some optimizations were disabled to fix critical visual issues, resulting in slight performance reduction compared to v0.2.3.
+* **Visual Quality First** – Games now render correctly with proper transparency and blending effects, even if slightly slower.
+* **Stable Experience** – Rock-solid compatibility with correct sprite and background rendering across all tested games.
+
+---
+
+### 🎮 Retained Features
+
+* **Configurable X/O Button Mapping** – Swap X and O button functions to match your preferences (from v0.2.3)
 * **Recent Games Menu** – Quick access to your last played titles
 * **Lightning-Fast Overlays** – Full-screen borders with zero performance impact
 * **Custom Overlay Support** – Up to 10 designs with pixel-perfect positioning
@@ -49,21 +53,21 @@ Major performance update inspired by gpSP Kai optimizations. This release brings
 
 ### 🧠 Technical Details
 
-* Static translation caches for reduced memory fragmentation
-* Cache invalidation reduction for smoother frame pacing
-* Simplified tile rendering pipeline matching gpSP Kai approach
-* Pre-warmed cache lines to reduce initial load stutters
-* Optimized memory access patterns for PSP's architecture
+* **Disabled Tile Base Caching** – Reverted to direct tile calculation to fix transparency issues
+* **Removed VCOUNT Caching** – All vertical counter reads now access register directly for accurate timing
+* **Conservative Sprite Clearing** – Restored simple memset() approach for reliable sprite rendering
+* **Disabled Fast Path Optimizations** – Prioritized accuracy over performance for consistent visual output
+* **Enhanced Auto-Save System** – Robust state management with configurable timing intervals
 
 ---
 
 ### 🐛 Bug Fixes
 
-* Fixed BSOD on emulator exit
-* Eliminated micro-stutters during level transitions
-* Resolved glitchy tile rendering in certain games
-* Fixed recent games path handling
-* Improved save/load memory reliability
+* **Critical Blending Fix** – Water and transparent effects now render correctly without vertical stripe artifacts
+* **Alpha Channel Correction** – Fixed black sprites and logos appearing due to broken alpha blending
+* **Transition Screen Fix** – Eliminated green flickering during fade effects in various games
+* **Simplified FPS Display** – Removed problematic sprite counter that was incrementing infinitely
+* **Clean Release Build** – Removed all debug logging for production-ready performance
 
 ---
 
@@ -75,7 +79,7 @@ Major performance update inspired by gpSP Kai optimizations. This release brings
 
 ---
 
-**TL;DR:** FrogGBA v0.2.2 brings the performance optimizations from gpSP Kai to modern PSP homebrew. Enjoy full-speed emulation in previously slow games, butter-smooth transitions, and rock-solid stability. The best GBA experience on PSP just got even better. 🐸⚡
+**TL;DR:** FrogGBA v0.2.4 fixes critical visual rendering issues that were causing broken transparency and blending effects. Now includes convenient resume-on-boot and auto-save features for the best user experience. Visual accuracy is prioritized over raw performance. 🐸🎯
 
 ---
 
