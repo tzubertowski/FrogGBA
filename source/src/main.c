@@ -814,6 +814,7 @@ static void setup_main(void)
 
   load_setting_cfg();
   load_recent_games();
+  init_overlays_at_boot();
   load_bios_file();
 
   init_gamepak_buffer();
