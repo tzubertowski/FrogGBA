@@ -45,6 +45,19 @@ u32 option_analog_sensitivity = 4;
 u32 option_language = 0;
 u32 option_button_swap = 0;
 
+u32 option_aspect_ratio = 0;
+u32 option_overlay_enabled = 0;
+u32 option_overlay_selected = 0;
+u32 option_overlay_offset_x = 0;
+u32 option_overlay_offset_y = 0;
+u32 option_color_correction = 0;
+u32 option_button_mapping = 0;
+u32 option_resume_on_boot = 0;
+u32 option_auto_save_state = 0;
+u32 fast_forward_speed = 2;
+u32 option_me_engine = 0;
+u32 layer_merge_enabled = 0;
+
 u32 option_frameskip_type = FRAMESKIP_AUTO;
 u32 option_frameskip_value = 9;
 u32 option_clock_speed = PSP_CLOCK_333;
@@ -773,6 +786,7 @@ static void setup_main(void)
   sceImposeSetHomePopup(enable_home_menu ^ 1);
 
   load_setting_cfg();
+  load_recent_games();
   load_bios_file();
 
   init_gamepak_buffer();
@@ -818,12 +832,34 @@ int user_main(int argc, char *argv[])
   }
   else
   {
-    if (load_gamepak(load_filename) < 0)
+    // Check if resume on boot is enabled
+    if (option_resume_on_boot != 0)
     {
+      // Try to load the last played game
+      char last_game_path[MAX_PATH];
+      if (load_last_played_game(last_game_path, MAX_PATH) == 0)
+      {
+        // Last played game path loaded, try to load the game
+        if (load_gamepak(last_game_path) < 0)
+        {
+          // Failed to load last game, go to menu
+          clear_screen(COLOR32_BLACK);
+          menu();
+        }
+      }
+      else
+      {
+        // No last played game found, go to menu
+        clear_screen(COLOR32_BLACK);
+        menu();
+      }
+    }
+    else
+    {
+      // Resume disabled, go directly to load game menu
       clear_screen(COLOR32_BLACK);
-      error_msg(MSG[MSG_ERR_LOAD_GAMEPACK], CONFIRMATION_CONT);
-      menu();
-    } 
+      menu_load_game_direct();
+    }
   }
 
   reset_gba();

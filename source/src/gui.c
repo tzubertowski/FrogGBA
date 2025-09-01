@@ -1622,6 +1622,9 @@ u32 menu(void)
         sprintf(full_game_path, "%s%s", dir_roms, filename_buffer);
       }
       add_recent_game(full_game_path);
+      
+      // Save as last played game for resume on boot feature
+      save_last_played_game(full_game_path);
 
       // Always reset GBA first when loading a new game to clear previous state
       reset_gba();
@@ -2473,6 +2476,43 @@ u32 menu(void)
 
 
   return return_value;
+}
+
+// Direct load game menu - goes straight to file browser
+u32 menu_load_game_direct(void)
+{
+  const char *file_ext[] = { ".zip", ".gba", ".bin", ".agb", ".gbz", NULL };
+  char filename_buffer[MAX_PATH];
+  
+  // Go directly to file browser
+  clear_screen(COLOR32_BLACK);
+  if (load_file(file_ext, filename_buffer, dir_roms) == 0)
+  {
+    if (load_gamepak(filename_buffer) < 0)
+    {
+      // Failed to load, go to normal menu
+      clear_screen(COLOR32_BLACK);
+      return menu();
+    }
+    
+    // Track the loaded game
+    char full_game_path[MAX_PATH];
+    if (filename_buffer[0] == '/' || strstr(filename_buffer, ":/")) {
+      strcpy(full_game_path, filename_buffer);
+    } else {
+      sprintf(full_game_path, "%s%s", dir_roms, filename_buffer);
+    }
+    add_recent_game(full_game_path);
+    save_last_played_game(full_game_path);
+    
+    // Game loaded successfully
+    return 1;
+  }
+  else
+  {
+    // User cancelled or error, go to normal menu
+    return menu();
+  }
 }
 
 

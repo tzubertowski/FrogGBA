@@ -39,6 +39,7 @@ s32 save_config_file(void);
 s32 load_dir_cfg(char *file_name);
 
 u32 menu(void);
+u32 menu_load_game_direct(void);
 
 void action_loadstate(void);
 void action_savestate(void);
