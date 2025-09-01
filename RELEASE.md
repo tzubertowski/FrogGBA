@@ -1,169 +1,93 @@
-# 🐸 FrogGBA v0.3.0 – Enhanced Auto-Resume & Game Configuration System
+# 🐸 FrogGBA v0.3.0
 
-Major stability update with improved auto-resume functionality, per-game configuration system, and comprehensive bug fixes. This release focuses on reliability and user experience improvements.
+This release fixes critical performance and stability issues that have plagued recent versions. The main focus was restoring CPU optimizations that were previously disabled and resolving save state corruption that caused games to freeze or crash.
 
----
+## 📥 Installation
 
-### 📥 Install in 4 Steps
+1. Download and extract the release
+2. Copy the PSP folder to your Memory Stick root
+3. Place gba_bios.bin in PSP/GAME/FrogGBA/
+4. Launch from PSP Games menu (requires CFW)
 
-1. Download + unzip the release.
-2. Copy the **PSP** folder to your Memory Stick root.
-3. Drop `gba_bios.bin` into `PSP/GAME/FrogGBA/`.
-4. Launch FrogGBA from your PSP Games menu (CFW required).
+## ⚠️ Pokemon Unbound Compatibility Note
 
----
+This game requires specific settings to run properly:
+- In the game's audio menu, set to "Low Sound Quality" and "Mono"
+- Alternatively, disable background music entirely
+- Without these changes, expect severe performance issues
 
-### 🆕 New in v0.3.0
+## 🆕 Major Changes
 
-#### 🎮 Game Configuration System
-* **Per-Game Settings** – Automatic game detection via ROM header analysis
-* **Customizable Configurations** – Per-ROM settings for frame skip, audio, video optimizations, and controls
-* **Game-Specific Optimizations** – Better compatibility with ROM hacks and homebrew games
-* **Persistent Per-Game Config** – Settings automatically saved and restored for each game
+### Performance Improvements
 
-#### 🔧 Enhanced Auto-Resume System
-* **Fixed Resume Freezing** – Completely resolved auto-resume freeze issues that occurred with games like Castlevania and Advance Wars
-* **Improved State Loading** – Auto-save states now load immediately after reset for seamless gameplay
-* **Hidden Slot 11** – Uses invisible save slot 11 for auto-resume functionality without interfering with user saves
-* **Timing Optimization** – Fixed state loading timing to prevent emulation hangs
+The emulator now uses PSP's volatile memory partition (4MB extra RAM available on PSP 2000 and later models) for critical CPU caches. This approach, inspired by the DaedalusX64 N64 emulator, provides 2MB for ROM translation cache and 512KB for RAM translation cache with direct memory access.
 
-#### 📂 Recent Games Improvements  
-* **Path Doubling Fix** – Recent games now load correctly on first attempt (previously required two tries)
-* **Absolute Path Detection** – Improved handling of PSP absolute paths vs relative paths
-* **Instant Loading** – Recent games launch immediately without file-not-found errors
+Note: This is NOT the extended memory layout. PSP 1000 models are not supported as they lack the volatile memory partition.
 
-### 🛠️ Critical Fixes
+### CPU Optimization Restoration
 
-#### 🎯 Auto-Resume Stability
-* **Fixed Auto-Resume Freeze** – Games no longer freeze when loading save states on boot
-* **Resolved White Screen Issue** – Auto-resume now properly starts gameplay instead of showing blank screen  
-* **State Loading Timing** – Fixed emulation context issues when loading states during startup
-* **CPU State Restoration** – Proper CPU register restoration after state loads
+Previously disabled optimizations have been restored after fixing the underlying memory corruption issues:
+- Dynamic recompilation with proper MIPS32 instruction scheduling
+- Branch prediction and optimization
+- Memory access pattern fixes
+- 32-byte aligned functions for cache efficiency
 
-#### 📁 File System Improvements
-* **Recent Games Path Fix** – Fixed path doubling bug that caused "file not found" errors on first load attempt
-* **PSP Path Detection** – Better handling of ms0:/ and host0:/ absolute paths vs relative paths
-* **Load Path Resolution** – Improved path construction for both recent games and manual file selection
+### Save State Overhaul
 
-#### 🏗️ Repository Cleanup  
-* **Submodule Integration** – Added psp-media-engine-custom-core as proper git submodule
-* **Removed Duplicate Code** – Cleaned up 81,000+ lines of redundant reference code from repository
-* **Better Dependency Management** – Streamlined build process with automatic ME library inclusion
+Save states were completely broken in recent versions, causing freezes, infinite loading, and "bad jump" errors. The system has been rewritten with:
+- Delayed loading mechanism - states load after game initialization instead of during boot
+- Fixed infinite recursion in ROM page loading that caused stack overflows
+- Proper file handle restoration after state loads
+- Boundary checking for oversized page requests
 
----
+### Auto-Resume Fixes
 
-### ⚡ Performance & Stability
+The auto-resume feature would hang games during the "searching backup id" phase. This has been fixed by:
+- Loading save states after 60 frames instead of immediately
+- Separating boot resume and manual loading code paths
+- Ensuring consistent behavior regardless of how games are loaded
 
-* **Enhanced Reliability** – Fixed critical auto-resume and path handling bugs that caused crashes and hangs
-* **Improved User Experience** – Games now resume seamlessly without freeze or white screen issues  
-* **Cleaner Codebase** – Repository cleanup reduces compilation time and improves maintainability
-* **Better File Management** – Resolved file loading issues that required multiple attempts to load games
+## 🐛 Bug Fixes
 
----
+### Critical Issues
+- Save states causing system crashes and bad jump errors
+- Games hanging indefinitely when existing save states were present
+- First manual game load ignoring save states
+- Memory alignment crashes causing graphical corruption
+- Overlay menu showing no files
+- Stack overflow from infinite recursion in page loading
 
-### 🎮 Enhanced Features
+### Other Fixes
+- File handle cleanup and restoration
+- CPU register preservation after state loads
+- Memory leak prevention when switching games
+- Instruction cache invalidation issues
 
-#### 💾 Save & Resume System
-* **Auto Save/Load States** – Automatic save state functionality using hidden slot 11
-* **Resume Game on Boot** – Automatically resume your last played game when starting the emulator  
-* **Recent Games Menu** – Quick access to your last played titles (now works reliably on first try)
-* **Configurable Resume Options** – Choose between resume last game, load last save state, or both
+## 🔧 Technical Details
 
-#### 🎨 Visual & Controls
-* **Configurable X/O Button Mapping** – Swap X and O button functions to match your preferences
-* **Lightning-Fast Overlays** – Full-screen borders with zero performance impact
-* **Custom Overlay Support** – Up to 10 designs with pixel-perfect positioning
-* **Online Overlay Generator** – Create your own at [froggba.onrender.com](https://froggba.onrender.com)
-* **Multiple Aspect Ratios** – Choose your preferred display mode
-* **Fast Color Correction** – Hardware-accelerated color processing
+The volatile memory implementation allocates performance-critical caches outside the main RAM partition, providing zero-copy access to translation caches. This technique was adapted from DaedalusX64's approach to utilizing the PSP's hardware capabilities.
 
-#### 🔧 Advanced Options
-* **ME Engine Control** – Menu option for PSP Media Engine features (Auto/Disabled/Enabled)
-* **Per-Game Configurations** – Automatic ROM detection with customizable settings per game
-* **Debug Logging** – Optional froglog.txt for troubleshooting (can be enabled when needed)
+Save state loading has been moved from the initialization phase to the main game loop, executing after approximately one second of gameplay. This prevents corruption of the emulation context that occurred when states were loaded too early.
 
----
+## 💚 Compatibility
 
-### 🧠 Technical Details
+- Requires PSP 2000/3000/Go (volatile memory partition required)
+- PSP 1000 not supported
+- Any modern CFW
+- Based on TempGBA4PSP with restored gpSP Kai optimizations
 
-#### 🎯 Auto-Resume Architecture
-* **Immediate State Loading** – Auto-save states load immediately after reset instead of delayed loading
-* **Skip Execution Path** – Resume on boot bypasses normal loading flow to prevent conflicts
-* **CPU Context Management** – Proper PC status flags and register restoration after state loads
-* **Hidden Slot Implementation** – Uses slot 11 (invisible to users) for seamless auto-resume functionality
+## 🔍 Known Issues
 
-#### 📁 Path Resolution System
-* **Absolute Path Detection** – Improved detection of PSP device paths (ms0:/, host0:/) vs relative paths
-* **Path Construction Logic** – Smart path building that avoids doubling directory paths
-* **Recent Games Integration** – Fixed path handling for games launched from recent games menu
+- Pokemon Unbound requires audio adjustments (see note above)
+- Some ROM hacks may need custom settings
+- Old save states may not be compatible
 
-#### 🏗️ Development Infrastructure  
-* **Git Submodule Integration** – PSP Media Engine library now properly managed as submodule
-* **Repository Cleanup** – Removed 81,000+ lines of redundant reference code
-* **Build System Improvements** – Streamlined compilation with automatic dependency inclusion
-* **Enhanced Debug Framework** – Comprehensive logging system for troubleshooting complex issues
+## Credits
 
----
-
-### 🐛 Bug Fixes
-
-#### 🎮 Gameplay Issues Resolved
-* **Auto-Resume Freeze Fix** – Games like Castlevania and Advance Wars no longer freeze when auto-loading save states
-* **Recent Games Loading Fix** – Games now load successfully on first attempt instead of requiring multiple tries
-* **White Screen Resolution** – Fixed auto-resume causing blank screens instead of proper gameplay  
-* **State Loading Context** – Resolved emulation hangs when loading states during startup sequence
-
-#### 📂 File System Fixes
-* **Path Doubling Prevention** – Eliminated ms0:/PSP/GAME/FrogGBA/roms/ being added twice to file paths
-* **Absolute Path Handling** – Proper detection and handling of PSP device paths vs relative filenames
-* **Recent Games Path Correction** – Fixed path construction for games stored in recent games menu
-
-#### 🔧 Development & Build Fixes  
-* **Submodule Integration** – Proper git submodule setup for psp-media-engine-custom-core dependency
-* **Compilation Dependencies** – ME library now automatically included when submodule is present
-* **Repository History Cleanup** – Removed duplicate/reference code that was bloating the repository
-
----
-
-### 🛠️ Building from Source (New!)
-
-FrogGBA now uses proper git submodules for easy building:
-
-```bash
-# Clone with submodules
-git clone --recursive https://github.com/yourusername/FrogGBA.git
-cd FrogGBA
-
-# Build with Docker (recommended)
-./build.sh
-
-# Or build manually if you have PSP SDK installed
-cd source
-make
-```
-
-The PSP Media Engine library is automatically included as a submodule, eliminating the need for manual dependency setup.
-
----
-
-### 💚 Compatibility
-
-* Works on all PSP models (1000/2000/3000/Go)
-* CFW required (any modern CFW works)  
-* Based on heavily modified TempGBA4PSP with gpSP Kai optimizations
-* Repository now properly structured with git submodules for dependencies
-
----
-
-**TL;DR:** FrogGBA v0.3.0 delivers major stability improvements with fixed auto-resume functionality, resolved recent games loading issues, and a new per-game configuration system. No more freezes, white screens, or file-not-found errors. Enhanced repository structure with proper submodule management for easier building and maintenance. 🐸🎯
-
----
-
-### Credits
-
-* Original gpSP by Exophase
-* gpSP Kai optimizations by takka
-* TempGBA4PSP base
-* FrogGBA improvements by the community
+- Original gpSP by Exophase
+- gpSP Kai optimizations by takka
+- TempGBA4PSP base
+- Volatile memory technique from DaedalusX64
+- FrogGBA community contributions
 
 GPL v2+ Licensed
