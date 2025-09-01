@@ -20,6 +20,7 @@
 
 
 #include "common.h"
+#include "volatile_mem.h"
 
 
 // Main Thread Params
@@ -893,6 +894,7 @@ void quit(void)
   sound_term();
   memory_term();
   video_term();
+  cpu_term();
 
   set_cpu_clock(PSP_CLOCK_222);
 
@@ -1150,6 +1152,8 @@ void *safe_malloc(size_t size)
 {
   void *p;
 
+  // Temporarily disable volatile memory in safe_malloc to avoid BSOD
+  // Only use regular memory allocation until we debug the issue
   if ((p = memalign(MEM_ALIGN, size)) == NULL)
   {
     clear_screen(COLOR32_BLACK);
@@ -1158,6 +1162,14 @@ void *safe_malloc(size_t size)
   }
 
   return p;
+}
+
+void safe_free(void *ptr)
+{
+  if (!ptr) return;
+  
+  // Simple free - no volatile memory detection for now
+  free(ptr);
 }
 
 
