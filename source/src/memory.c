@@ -2809,12 +2809,85 @@ static u32 evict_gamepak_page(void)
   return page_index;
 }
 
+static int load_page_recursion_guard = 0; // Prevent infinite recursion
+
 u8 *load_gamepak_page(u32 physical_index)
 {
-  if (physical_index >= (gamepak_size >> 15))
+  // Simple recursion check - if we're already in this function, return immediately
+  if (load_page_recursion_guard > 0) {
+    FILE *debug_log = fopen("froglog.txt", "a");
+    if (debug_log) {
+      fprintf(debug_log, "LOAD_PAGE: RECURSION DETECTED - returning fallback\n");
+      fclose(debug_log);
+    }
+    return gamepak_rom; // Return safe fallback to break infinite recursion
+  }
+  
+  load_page_recursion_guard++;
+  
+  // Comprehensive debug to see exactly what's happening
+  static int page_load_count = 0;
+  if (page_load_count < 20) { // Log first 20 calls with full details
+    FILE *debug_log = fopen("froglog.txt", "a");
+    if (debug_log) {
+      fprintf(debug_log, "LOAD_PAGE: Call #%d - page %ld, guard=%d, file_handle=%d\n", 
+              page_load_count + 1, (long)physical_index, load_page_recursion_guard, gamepak_file_large);
+      fclose(debug_log);
+    }
+    page_load_count++;
+  }
+  
+  // Check if file handle is invalid and return early
+  if (!FILE_CHECK_VALID(gamepak_file_large)) {
+    static int invalid_handle_count = 0;
+    if (invalid_handle_count < 5) {
+      FILE *debug_log = fopen("froglog.txt", "a");
+      if (debug_log) {
+        fprintf(debug_log, "LOAD_PAGE: ERROR - Invalid file handle (count=%d)\n", invalid_handle_count + 1);
+        fclose(debug_log);
+      }
+      invalid_handle_count++;
+    }
+    load_page_recursion_guard--;
     return gamepak_rom;
+  }
+
+  if (physical_index >= (gamepak_size >> 15)) {
+    // Handle oversized page requests by wrapping to valid ROM range
+    u32 max_pages = (gamepak_size >> 15);
+    u32 wrapped_index = physical_index % max_pages;
+    
+    static int oversized_count = 0;
+    if (oversized_count < 5) {
+      FILE *debug_log = fopen("froglog.txt", "a");
+      if (debug_log) {
+        fprintf(debug_log, "LOAD_PAGE: Page %ld too large (max=%ld), wrapping to page %ld\n", 
+                (long)physical_index, (long)max_pages, (long)wrapped_index);
+        fclose(debug_log);
+      }
+      oversized_count++;
+    }
+    
+    // Recursively call with wrapped index
+    load_page_recursion_guard--;
+    return load_gamepak_page(wrapped_index);
+  }
+
+  // Remove debug logging to avoid recursion issues
+  // FILE *debug_log = fopen("froglog.txt", "a");
+  // if (debug_log) {
+  //   fprintf(debug_log, "LOAD_PAGE: About to call evict_gamepak_page()\n");
+  //   fclose(debug_log);
+  // }
 
   u32 page_index = evict_gamepak_page();
+  
+  // debug_log = fopen("froglog.txt", "a");
+  // if (debug_log) {
+  //   fprintf(debug_log, "LOAD_PAGE: evict_gamepak_page returned %d\n", page_index);
+  //   fclose(debug_log);
+  // }
+  
   u32 page_offset = page_index * (32 * 1024);
   u8 *swap_location = gamepak_rom + page_offset;
 
@@ -2822,8 +2895,65 @@ u8 *load_gamepak_page(u32 physical_index)
   gamepak_memory_map[page_index].physical_index = physical_index;
   page_time++;
 
-  FILE_SEEK(gamepak_file_large, physical_index * (32 * 1024), SEEK_SET);
-  FILE_READ(gamepak_file_large, swap_location, (32 * 1024));
+  // debug_log = fopen("froglog.txt", "a");
+  // if (debug_log) {
+  //   fprintf(debug_log, "LOAD_PAGE: About to seek to offset %d\n", physical_index * (32 * 1024));
+  //   fclose(debug_log);
+  // }
+
+  // Use sceIoLseek directly with debugging  
+  int seek_result = sceIoLseek(gamepak_file_large, physical_index * (32 * 1024), PSP_SEEK_SET);
+  
+  // debug_log = fopen("froglog.txt", "a");
+  // if (debug_log) {
+  //   fprintf(debug_log, "LOAD_PAGE: Seek completed, result=%d\n", seek_result);
+  //   fclose(debug_log);
+  // }
+  
+  // Check seek result
+  if (seek_result < 0) {
+    static int seek_fail_count = 0;
+    if (seek_fail_count < 5) {
+      FILE *debug_log = fopen("froglog.txt", "a");
+      if (debug_log) {
+        fprintf(debug_log, "LOAD_PAGE: ERROR - Seek failed, result=%d (count=%d)\n", seek_result, seek_fail_count + 1);
+        fclose(debug_log);
+      }
+      seek_fail_count++;
+    }
+    load_page_recursion_guard--;
+    return gamepak_rom;
+  }
+  
+  // debug_log = fopen("froglog.txt", "a");
+  // if (debug_log) {
+  //   fprintf(debug_log, "LOAD_PAGE: About to read 32KB\n");
+  //   fclose(debug_log);
+  // }
+  
+  // Use sceIoRead directly with debugging
+  int bytes_read = sceIoRead(gamepak_file_large, swap_location, (32 * 1024));
+  
+  // debug_log = fopen("froglog.txt", "a");
+  // if (debug_log) {
+  //   fprintf(debug_log, "LOAD_PAGE: Read completed, bytes_read=%d\n", bytes_read);
+  //   fclose(debug_log);
+  // }
+  
+  // Check read result
+  if (bytes_read <= 0) {
+    static int read_fail_count = 0;
+    if (read_fail_count < 5) {
+      FILE *debug_log = fopen("froglog.txt", "a");
+      if (debug_log) {
+        fprintf(debug_log, "LOAD_PAGE: ERROR - Read failed, bytes=%d (count=%d)\n", bytes_read, read_fail_count + 1);
+        fclose(debug_log);
+      }
+      read_fail_count++;
+    }
+    load_page_recursion_guard--;
+    return gamepak_rom;
+  }
 
   memory_map_read[(0x8000000 / (32 * 1024)) + physical_index] = swap_location;
   memory_map_read[(0xA000000 / (32 * 1024)) + physical_index] = swap_location;
@@ -2833,6 +2963,18 @@ u8 *load_gamepak_page(u32 physical_index)
   if ((rtc_state != RTC_DISABLED) && (physical_index == 0))
     memcpy(swap_location + 0xC4, rtc_registers, sizeof(rtc_registers));
 
+  // Log completion for first 20 calls
+  static int page_complete_count = 0;
+  if (page_complete_count < 20) {
+    FILE *debug_log = fopen("froglog.txt", "a");
+    if (debug_log) {
+      fprintf(debug_log, "LOAD_PAGE: COMPLETED #%d - page %ld successfully\n", page_complete_count + 1, (long)physical_index);
+      fclose(debug_log);
+    }
+    page_complete_count++;
+  }
+
+  load_page_recursion_guard--;
   return swap_location;
 }
 
@@ -3057,9 +3199,25 @@ static void load_backup_id(void)
 //  backup_id[0] = 0;
 
   u32 iterations = 0;
-  for ( ; addr > 0x08000000; addr -= 4)
+  u32 max_iterations = 500000; // Limit to prevent infinite loops
+  FILE *debug_log = fopen("froglog.txt", "a");
+  if (debug_log) {
+    fprintf(debug_log, "BACKUP_ID: Starting backup ID search, addr=0x%08lX, gamepak_size=%ld, max_iterations=%ld\n", (unsigned long)addr, (long)gamepak_size, (long)max_iterations);
+    fclose(debug_log);
+  }
+  
+  for ( ; addr > 0x08000000 && iterations < max_iterations; addr -= 4)
   {
     iterations++;
+    
+    // Debug every 10000 iterations to track progress
+    if (iterations % 10000 == 0) {
+      debug_log = fopen("froglog.txt", "a");
+      if (debug_log) {
+        fprintf(debug_log, "BACKUP_ID: iteration %ld, addr=0x%08lX\n", (long)iterations, (unsigned long)addr);
+        fclose(debug_log);
+      }
+    }
     
     new_region = addr >> 15;
 
@@ -3068,8 +3226,22 @@ static void load_backup_id(void)
       region = new_region;
       block = memory_map_read[region];
 
-      if (block == NULL)
+      if (block == NULL) {
+        debug_log = fopen("froglog.txt", "a");
+        if (debug_log) {
+          fprintf(debug_log, "BACKUP_ID: Loading page for region %ld (physical_index %ld)\n", (long)region, (long)(region & 0x3FF));
+          fclose(debug_log);
+        }
         block = load_gamepak_page(region & 0x3FF);
+        if (block == NULL) {
+          debug_log = fopen("froglog.txt", "a");
+          if (debug_log) {
+            fprintf(debug_log, "BACKUP_ID: ERROR - load_gamepak_page returned NULL!\n");
+            fclose(debug_log);
+          }
+          return; // Exit if we can't load a page
+        }
+      }
     }
 
     data = (u32 *)(block + (addr & 0x7FFC));
@@ -3165,6 +3337,16 @@ static void load_backup_id(void)
       }
       break;
     }
+  }
+  
+  debug_log = fopen("froglog.txt", "a");
+  if (debug_log) {
+    if (iterations >= max_iterations) {
+      fprintf(debug_log, "BACKUP_ID: Hit iteration limit (%ld), stopping search. backup_type=%d\n", (long)iterations, backup_type);
+    } else {
+      fprintf(debug_log, "BACKUP_ID: Completed backup ID search after %ld iterations, backup_type=%d\n", (long)iterations, backup_type);
+    }
+    fclose(debug_log);
   }
 }
 
@@ -3746,7 +3928,7 @@ s32 load_gamepak(char *name)
     save_last_played_game(original_full_path);
     debug_log = fopen("froglog.txt", "a");
     if (debug_log) {
-      fprintf(debug_log, "GAMEPAK: load_gamepak COMPLETE, returning file_size=%d\n", file_size);
+      fprintf(debug_log, "GAMEPAK: load_gamepak COMPLETE, returning file_size=%ld\n", (long)file_size);
       fclose(debug_log);
     }
   }
@@ -4036,7 +4218,7 @@ s32 load_last_played_game(char *game_path, int max_path_length)
   if (FILE_CHECK_VALID(lastplayed_file)) {
     u32 file_size = file_length(lastplayed_path);
     
-    if (file_size > 0 && file_size < max_path_length) {
+    if (file_size > 0 && (int)file_size < max_path_length) {
       FILE_READ(lastplayed_file, game_path, file_size);
       game_path[file_size] = 0;  // Null terminate
       result = 0;
@@ -4147,6 +4329,46 @@ s32 load_auto_resume_state(void)
     
     // Try to load the state
     load_state(savestate_filename);
+    
+    // CRITICAL FIX: Re-open the gamepak file after loading save state
+    // Save states don't preserve file handles, so gamepak_file_large becomes invalid
+    debug_log = fopen("froglog.txt", "a");
+    if (debug_log) {
+      fprintf(debug_log, "AUTO_RESUME: Save state loaded, re-opening gamepak file\n");
+      fclose(debug_log);
+    }
+    
+    // CRITICAL FIX: Reinitialize translation caches after loading save state
+    // Save states don't preserve volatile memory allocation state
+    debug_log = fopen("froglog.txt", "a");
+    if (debug_log) {
+      fprintf(debug_log, "AUTO_RESUME: Reinitializing translation caches for volatile memory\n");
+      fclose(debug_log);
+    }
+    
+    extern void init_cpu(void);
+    init_cpu();
+    
+    // Close any existing handle (should already be invalid, but be safe)
+    if (FILE_CHECK_VALID(gamepak_file_large)) {
+      FILE_CLOSE(gamepak_file_large);
+    }
+    
+    // Re-open the gamepak file
+    char full_gamepak_path[MAX_PATH];
+    if (gamepak_filename[0] == '/' || strstr(gamepak_filename, ":/")) {
+      strcpy(full_gamepak_path, gamepak_filename);
+    } else {
+      sprintf(full_gamepak_path, "%s%s", dir_roms, gamepak_filename);
+    }
+    
+    FILE_OPEN(gamepak_file_large, full_gamepak_path, READ);
+    
+    debug_log = fopen("froglog.txt", "a");
+    if (debug_log) {
+      fprintf(debug_log, "AUTO_RESUME: Gamepak file re-opened, handle=%d, valid=%d\n", gamepak_file_large, FILE_CHECK_VALID(gamepak_file_large));
+      fclose(debug_log);
+    }
     
     debug_log = fopen("froglog.txt", "a");
     if (debug_log) {

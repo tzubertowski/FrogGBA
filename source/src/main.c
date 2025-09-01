@@ -847,6 +847,12 @@ int user_main(int argc, char *argv[])
           clear_screen(COLOR32_BLACK);
           menu();
         }
+        else
+        {
+          // Game loaded successfully
+          // Note: reset_gba() and auto-save loading will be handled after main initialization
+          // to avoid interfering with backup ID detection during resume
+        }
       }
       else
       {
@@ -863,14 +869,55 @@ int user_main(int argc, char *argv[])
     }
   }
 
+  // Always reset first to ensure clean state
   reset_gba();
+  
+  // If we're resuming a game with auto-save state enabled, load it after reset
+  if (gamepak_filename[0] != 0 && option_resume_on_boot != 0 && option_auto_save_state != 0) {
+    // Small delay to ensure system is fully initialized
+    sceKernelDelayThread(100000); // 0.1 second delay
+    
+    // Try to load auto-save state for the resumed game
+    if (load_auto_resume_state() == 0) {
+      printf("Auto-resume: Loaded saved state for resumed game\n");
+      FILE *debug_log = fopen("froglog.txt", "a");
+      if (debug_log) {
+        fprintf(debug_log, "MAIN: Auto-resume completed successfully, continuing to CPU clock setup\n");
+        fclose(debug_log);
+      }
+    }
+  }
+
+  FILE *debug_log = fopen("froglog.txt", "a");
+  if (debug_log) {
+    fprintf(debug_log, "MAIN: About to set CPU clock\n");
+    fclose(debug_log);
+  }
 
   set_cpu_clock(option_clock_speed);
+
+  debug_log = fopen("froglog.txt", "a");
+  if (debug_log) {
+    fprintf(debug_log, "MAIN: CPU clock set, about to initialize video\n");
+    fclose(debug_log);
+  }
 
   sceDisplayWaitVblankStart();
   video_resolution_small();
 
+  debug_log = fopen("froglog.txt", "a");
+  if (debug_log) {
+    fprintf(debug_log, "MAIN: Video initialized, about to start sound and execute\n");
+    fclose(debug_log);
+  }
+
   sound_pause = 0;
+
+  debug_log = fopen("froglog.txt", "a");
+  if (debug_log) {
+    fprintf(debug_log, "MAIN: About to call execute_arm_translate\n");
+    fclose(debug_log);
+  }
 
   // We'll never actually return from here.
   execute_arm_translate(reg[EXECUTE_CYCLES]);
@@ -1152,8 +1199,8 @@ void *safe_malloc(size_t size)
 {
   void *p;
 
-  // Temporarily disable volatile memory in safe_malloc to avoid BSOD
-  // Only use regular memory allocation until we debug the issue
+  // Conservative approach - disable dynamic volatile allocation to prevent BSOD
+  // Keep only the translation cache optimizations which are working well
   if ((p = memalign(MEM_ALIGN, size)) == NULL)
   {
     clear_screen(COLOR32_BLACK);
@@ -1168,7 +1215,7 @@ void safe_free(void *ptr)
 {
   if (!ptr) return;
   
-  // Simple free - no volatile memory detection for now
+  // Simple and safe - no volatile memory detection to avoid BSOD
   free(ptr);
 }
 

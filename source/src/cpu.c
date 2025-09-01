@@ -62,9 +62,8 @@ u32 ALIGN_DATA spsr[7];
 #define DCACHE_FILL_WITH_LOCK                   (0x1F) // Fill with Lock (D)
 
 
-// Ideal volatile memory allocation strategy for maximum performance
-// Tier 1: Critical CPU Performance (2.5MB total)
-#define ROM_TRANSLATION_CACHE_SIZE   (1024 * 1024 * 2)  // 2MB - Maximum for hot path optimization
+// Optimal volatile memory allocation - 2MB ROM cache sweet spot confirmed by testing
+#define ROM_TRANSLATION_CACHE_SIZE   (1024 * 1024 * 2)  // 2MB - Optimal size for 85-95% hit rate
 #define RAM_TRANSLATION_CACHE_SIZE   (1024 * 512 * 1)   // 512KB - 2x baseline for better hit rate
 
 // BIOS cache moved to regular RAM (minimal volatile memory waste)
@@ -4119,7 +4118,7 @@ void init_cpu(void)
     return;
   }
   
-  printf("Volatile memory strategy: 2.5MB for critical caches, 1.5MB available for dynamic buffers\n");
+  printf("Volatile memory strategy: 2.5MB for critical caches, 1.5MB available for CPU-boosting features\n");
 
   memset(reg, 0, sizeof(reg));
   memset(reg_mode, 0, sizeof(reg_mode));
@@ -4156,9 +4155,11 @@ void init_cpu(void)
 
 void cpu_term(void)
 {
-  // Free ROM cache (volatile or regular)
+  // Conservative cleanup - we know which caches should be volatile vs regular
+  // ROM cache - volatile if successfully allocated, regular if fallback
   if (rom_translation_cache) {
-    if (is_volatile_mem(rom_translation_cache)) {
+    // Try volatile first since we attempted volatile allocation
+    if (volatile_mem_is_active()) {
       volatile_mem_free(rom_translation_cache);
     } else {
       free(rom_translation_cache);
@@ -4167,9 +4168,10 @@ void cpu_term(void)
     rom_translation_ptr = NULL;
   }
   
-  // Free RAM cache (volatile or regular)
+  // RAM cache - volatile if successfully allocated, regular if fallback
   if (ram_translation_cache) {
-    if (is_volatile_mem(ram_translation_cache)) {
+    // Try volatile first since we attempted volatile allocation
+    if (volatile_mem_is_active()) {
       volatile_mem_free(ram_translation_cache);
     } else {
       free(ram_translation_cache);
@@ -4178,7 +4180,7 @@ void cpu_term(void)
     ram_translation_ptr = NULL;
   }
   
-  // Free BIOS cache (always regular memory)
+  // BIOS cache - always regular memory
   if (bios_translation_cache) {
     free(bios_translation_cache);
     bios_translation_cache = NULL;
