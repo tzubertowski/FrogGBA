@@ -22,6 +22,9 @@
 #include "common.h"
 #include "volatile_mem.h"
 
+// Global variable for delayed save state loading
+int delayed_load_save_state = 0;
+
 
 // Main Thread Params
 #define PRIORITY       (32)
@@ -318,12 +321,35 @@ u32 update_gba(void)
 {
   s32 i;
   IRQ_TYPE irq_raised = IRQ_NONE;
+  static int frame_count = 0;
 
   do
   {
     reg[CPU_DMA_HACK] = 0;
 
     update_gba_loop:
+    
+    // Check for delayed save state loading after a few frames
+    if (delayed_load_save_state && frame_count > 60) { // Wait ~1 second (60 frames)
+      delayed_load_save_state = 0; // Clear flag
+      
+      FILE *debug_log = fopen("froglog.txt", "a");
+      if (debug_log) {
+        fprintf(debug_log, "UPDATE_GBA: Loading delayed save state after %d frames\n", frame_count);
+        fclose(debug_log);
+      }
+      
+      // Load the save state now that game is running
+      extern s32 load_manual_auto_save_state(void);
+      int result = load_manual_auto_save_state();
+      
+      debug_log = fopen("froglog.txt", "a");
+      if (debug_log) {
+        fprintf(debug_log, "UPDATE_GBA: Save state load result=%d (0=success)\n", result);
+        fclose(debug_log);
+      }
+    }
+    frame_count++;
 
     if (sleep_flag != 0)
       psp_sleep_loop();
@@ -872,19 +898,14 @@ int user_main(int argc, char *argv[])
   // Always reset first to ensure clean state
   reset_gba();
   
-  // If we're resuming a game with auto-save state enabled, load it after reset
-  if (gamepak_filename[0] != 0 && option_resume_on_boot != 0 && option_auto_save_state != 0) {
-    // Small delay to ensure system is fully initialized
-    sceKernelDelayThread(100000); // 0.1 second delay
+  // If we have a game loaded and auto-save state is enabled, set flag for delayed loading
+  if (gamepak_filename[0] != 0 && option_auto_save_state != 0) {
+    delayed_load_save_state = 1;
     
-    // Try to load auto-save state for the resumed game
-    if (load_auto_resume_state() == 0) {
-      printf("Auto-resume: Loaded saved state for resumed game\n");
-      FILE *debug_log = fopen("froglog.txt", "a");
-      if (debug_log) {
-        fprintf(debug_log, "MAIN: Auto-resume completed successfully, continuing to CPU clock setup\n");
-        fclose(debug_log);
-      }
+    FILE *debug_log = fopen("froglog.txt", "a");
+    if (debug_log) {
+      fprintf(debug_log, "MAIN: Set delayed save state loading flag for boot game: %s\n", gamepak_filename);
+      fclose(debug_log);
     }
   }
 
@@ -913,14 +934,23 @@ int user_main(int argc, char *argv[])
 
   sound_pause = 0;
 
-  debug_log = fopen("froglog.txt", "a");
-  if (debug_log) {
-    fprintf(debug_log, "MAIN: About to call execute_arm_translate\n");
-    fclose(debug_log);
+  // Delayed save state loading is now handled inside update_gba() after game is running
+
+  FILE *debug_log2 = fopen("froglog.txt", "a");
+  if (debug_log2) {
+    fprintf(debug_log2, "MAIN: About to call execute_arm_translate with cycles=%u\n", reg[EXECUTE_CYCLES]);
+    fclose(debug_log2);
   }
 
   // We'll never actually return from here.
   execute_arm_translate(reg[EXECUTE_CYCLES]);
+  
+  // This should never be reached
+  debug_log2 = fopen("froglog.txt", "a");
+  if (debug_log2) {
+    fprintf(debug_log2, "MAIN: ERROR - Unexpectedly returned from execute_arm_translate\n");
+    fclose(debug_log2);
+  }
 
   return 0;
 }

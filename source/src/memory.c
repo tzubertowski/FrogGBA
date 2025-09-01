@@ -4279,7 +4279,7 @@ void save_auto_resume_state(void)
   }
 }
 
-s32 load_auto_resume_state(void)
+s32 load_auto_resume_state_internal(int is_auto_resume)
 {
   char savestate_filename[MAX_PATH];
   char savestate_ext[16];
@@ -4338,16 +4338,21 @@ s32 load_auto_resume_state(void)
       fclose(debug_log);
     }
     
-    // CRITICAL FIX: Reinitialize translation caches after loading save state
-    // Save states don't preserve volatile memory allocation state
-    debug_log = fopen("froglog.txt", "a");
-    if (debug_log) {
-      fprintf(debug_log, "AUTO_RESUME: Reinitializing translation caches for volatile memory\n");
-      fclose(debug_log);
+    // CRITICAL FIX: Only reinitialize translation caches for auto-resume
+    // Manual game loading doesn't need this as the system is already in a good state
+    if (is_auto_resume) {
+      debug_log = fopen("froglog.txt", "a");
+      if (debug_log) {
+        fprintf(debug_log, "AUTO_RESUME: Freeing old caches and reinitializing for volatile memory\n");
+        fclose(debug_log);
+      }
+      
+      // First free existing caches to prevent memory leaks and address conflicts
+      extern void cpu_term(void);
+      extern void init_cpu(void);
+      cpu_term();
+      init_cpu();
     }
-    
-    extern void init_cpu(void);
-    init_cpu();
     
     // Close any existing handle (should already be invalid, but be safe)
     if (FILE_CHECK_VALID(gamepak_file_large)) {
@@ -4385,5 +4390,17 @@ s32 load_auto_resume_state(void)
   }
   
   return -1;
+}
+
+// Wrapper for auto-resume (boot time) - includes CPU reinitialization
+s32 load_auto_resume_state(void)
+{
+  return load_auto_resume_state_internal(1);
+}
+
+// Wrapper for manual game loading - no CPU reinitialization needed
+s32 load_manual_auto_save_state(void)
+{
+  return load_auto_resume_state_internal(0);
 }
 

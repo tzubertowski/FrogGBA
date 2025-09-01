@@ -1589,6 +1589,13 @@ u32 menu(void)
 
   void menu_load_file(void)
   {
+    // Debug: Log function entry
+    FILE *debug_log = fopen("froglog.txt", "a");
+    if (debug_log) {
+      fprintf(debug_log, "MANUAL_LOAD: Entered menu_load_file() function\n");
+      fclose(debug_log);
+    }
+    
     const char *file_ext[] = { ".zip", ".gba", ".bin", ".agb", ".gbz", NULL };
 
     save_game_config_file();
@@ -1629,14 +1636,31 @@ u32 menu(void)
       // Always reset GBA first when loading a new game to clear previous state
       reset_gba();
       
-      // Check if we should load auto-save state after reset
+      // FORCE first_load to 0 so save states work immediately
+      first_load = 0;
+      
+      // Debug: Check if we reach this point and what the option value is
+      FILE *debug_log = fopen("froglog.txt", "a");
+      if (debug_log) {
+        fprintf(debug_log, "MANUAL_LOAD: Reached auto-save check, option_auto_save_state=%d\n", option_auto_save_state);
+        fclose(debug_log);
+      }
+      
+      // Set flag to load slot 11 save state after game boots (delayed loading)
       if (option_auto_save_state != 0) {
-        // Try to load auto-save state for this game
-        if (load_auto_resume_state() == 0) {
-          // Auto-save loaded successfully
+        extern int delayed_load_save_state;
+        delayed_load_save_state = 1;
+        
+        FILE *debug_log = fopen("froglog.txt", "a");
+        if (debug_log) {
+          fprintf(debug_log, "MANUAL_LOAD: Set delayed save state loading flag\n");
+          fclose(debug_log);
         }
       }
       reg[CHANGED_PC_STATUS] = 1;
+      
+      // Mark that we've successfully loaded our first game  
+      first_load = 0;
 
       return_value = 1;
       repeat = 0;
