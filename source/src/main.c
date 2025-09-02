@@ -371,7 +371,7 @@ u32 update_gba(void)
               fprintf(debug_log, "  ANALYSIS: STMDB should store to decreasing addresses: 0xd4,0xd0,0xcc,0xc8,0xc4\n");
               
               // Check if I/O registers are changing
-              extern u8 io_registers[0x400];
+              extern u16 io_registers[0x400];
               u32 dma2_src = ADDRESS32(io_registers, 0xD4);
               u32 dma2_dst_low = ADDRESS32(io_registers, 0xD0); 
               fprintf(debug_log, "  IO_CHECK: DMA2_SRC(0xD4)=0x%08lx, DMA2_DST_LOW(0xD0)=0x%08lx\n",
