@@ -329,8 +329,8 @@ u32 update_gba(void)
 
     update_gba_loop:
     
-    // Debug: Log first few frames to see if game is running
-    if (frame_count < 5) {
+    // Debug: Log more frames to track execution after workaround
+    if (frame_count < 10) {
       FILE *debug_log = fopen("froglog.txt", "a");
       if (debug_log) {
         fprintf(debug_log, "UPDATE_GBA: Frame %d, PC=0x%08lx, cycles=%lu, CPSR=0x%08lx\n", 
@@ -344,6 +344,30 @@ u32 update_gba(void)
                   (unsigned long)last_pc, (unsigned long)reg[REG_PC]);
         }
         last_pc = reg[REG_PC];
+        
+        // Debug the instruction at 0x080001fc after workaround
+        if (frame_count > 2 && reg[REG_PC] == 0x080001fc) {
+          extern u8 *memory_map_read[8192];
+          u8 *rom_page = memory_map_read[0x080001fc >> 15];
+          if (rom_page) {
+            u32 curr_instr = *((u32*)(rom_page + (0x080001fc & 0x7FFF)));
+            fprintf(debug_log, "  DEBUG: Instruction at 0x080001fc = 0x%08lx\n", (unsigned long)curr_instr);
+            
+            // Check if this PC is also getting stuck
+            static u32 fc_stuck_count = 0;
+            static u32 last_fc_frame = 0;
+            if (frame_count != last_fc_frame + 1) {
+              fc_stuck_count = 1;
+            } else {
+              fc_stuck_count++;
+            }
+            last_fc_frame = frame_count;
+            
+            if (fc_stuck_count > 2) {
+              fprintf(debug_log, "  WARNING: PC stuck at 0x080001fc for %lu frames\n", (unsigned long)fc_stuck_count);
+            }
+          }
+        }
         // Workaround: If stuck at 0x080001f8 with problematic STMDB, skip to next instruction
         if (frame_count > 0 && reg[REG_PC] == 0x080001f8) {
           // This is the problematic STMDB r0!, {r0,r7,fp,sp,lr} with r0=DMA2 register
