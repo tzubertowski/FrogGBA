@@ -351,7 +351,6 @@ u32 update_gba(void)
             fprintf(debug_log, "  STUCK: r0=0x%08lx, r7=0x%08lx, fp=0x%08lx, sp=0x%08lx, lr=0x%08lx\n",
                     (unsigned long)reg[0], (unsigned long)reg[7], (unsigned long)reg[11],
                     (unsigned long)reg[13], (unsigned long)reg[14]);
-            extern u32 irq_raised;
             fprintf(debug_log, "  STUCK: irq_raised=0x%08lx\n", (unsigned long)irq_raised);
           }
         }
