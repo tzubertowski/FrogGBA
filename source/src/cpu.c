@@ -4106,8 +4106,4 @@ void cpu_write_mem_savestate(SceUID savestate_file)
   CPU_SAVESTATE_BODY(WRITE_MEM);
 }
 
-void cpu_term(void)
-{
-  // Cleanup function for CPU resources
-  // No volatile memory to clean up in this version
-}
+
