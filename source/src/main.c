@@ -346,12 +346,22 @@ u32 update_gba(void)
             u32 curr_instr = *((u32*)(rom_page + (0x080001f8 & 0x7FFF)));
             u32 next_instr = *((u32*)(rom_page + ((0x080001f8 + 4) & 0x7FFF)));
             fprintf(debug_log, "  STUCK: 0x080001f4: 0x%08lx\n", (unsigned long)prev_instr);
-            fprintf(debug_log, "  STUCK: 0x080001f8: 0x%08lx <- PC HERE\n", (unsigned long)curr_instr);
+            fprintf(debug_log, "  STUCK: 0x080001f8: 0x%08lx <- PC HERE (STMDB r0!, {r0,r7,fp,sp,lr})\n", (unsigned long)curr_instr);
             fprintf(debug_log, "  STUCK: 0x080001fc: 0x%08lx\n", (unsigned long)next_instr);
-            fprintf(debug_log, "  STUCK: r0=0x%08lx, r7=0x%08lx, fp=0x%08lx, sp=0x%08lx, lr=0x%08lx\n",
+            fprintf(debug_log, "  STUCK: r0=0x%08lx (DMA0CNT), r7=0x%08lx, fp=0x%08lx, sp=0x%08lx, lr=0x%08lx\n",
                     (unsigned long)reg[0], (unsigned long)reg[7], (unsigned long)reg[11],
                     (unsigned long)reg[13], (unsigned long)reg[14]);
-            fprintf(debug_log, "  STUCK: irq_raised=0x%08lx\n", (unsigned long)irq_raised);
+            fprintf(debug_log, "  STUCK: irq_raised=0x%08lx, condition LS should be %s\n", 
+                    (unsigned long)irq_raised, 
+                    ((reg[REG_CPSR] & (1<<1)) || !(reg[REG_CPSR] & (1<<2))) ? "TRUE" : "FALSE");
+            
+            // Check if the instruction is somehow jumping back to itself
+            if (frame_count == 5) {
+              fprintf(debug_log, "  ANALYSIS: PC stuck at 0x080001f8 for 5 frames\n");
+              fprintf(debug_log, "  ANALYSIS: This STMDB instruction tries to store registers to I/O space\n");
+              fprintf(debug_log, "  ANALYSIS: r0=0x040000d4 is DMA0 control register - should not be used as stack\n");
+              fprintf(debug_log, "  ANALYSIS: This suggests ROM corruption or emulation bug\n");
+            }
           }
         }
         fclose(debug_log);
