@@ -347,15 +347,13 @@ u32 update_gba(void)
         // Workaround: If stuck at 0x080001f8 with problematic STMDB, skip to next instruction
         if (frame_count > 0 && reg[REG_PC] == 0x080001f8) {
           // This is the problematic STMDB r0!, {r0,r7,fp,sp,lr} with r0=DMA2 register
-          // Skip it by advancing PC to next instruction
+          // Apply workaround after frame 2, but log debug info first
           if (frame_count >= 2) {
             fprintf(debug_log, "  WORKAROUND: Skipping problematic STMDB instruction at 0x080001f8\n");
             fprintf(debug_log, "  WORKAROUND: Advancing PC from 0x080001f8 to 0x080001fc\n");
             reg[REG_PC] = 0x080001fc; // Move to next instruction
-          }
-        
-        // Debug logging (keep existing debug code)
-        if (frame_count > 0 && reg[REG_PC] == 0x080001f8) {
+          } else {
+            // Debug logging for stuck PC
           extern u8 *memory_map_read[8192];
           u8 *rom_page = memory_map_read[0x080001f8 >> 15];
           if (rom_page) {
@@ -388,6 +386,7 @@ u32 update_gba(void)
                       (unsigned long)dma2_src, (unsigned long)dma2_dst_low);
             }
           }
+        }
         }
         fclose(debug_log);
       }
