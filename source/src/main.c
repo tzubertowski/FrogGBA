@@ -337,6 +337,16 @@ u32 update_gba(void)
                 frame_count, (unsigned long)reg[REG_PC], (unsigned long)cpu_ticks, 
                 (unsigned long)reg[REG_CPSR]);
         
+        // Debug: Check if PC advancement is fundamentally broken
+        static u32 prev_cycles = 0;
+        u32 cycles_delta = cpu_ticks - prev_cycles;
+        prev_cycles = cpu_ticks;
+        
+        if (frame_count > 1 && cycles_delta > 0 && reg[REG_PC] == last_pc) {
+          fprintf(debug_log, "  EMULATION_BUG: Executed %lu cycles but PC didn't advance!\n", (unsigned long)cycles_delta);
+          fprintf(debug_log, "  EMULATION_BUG: This suggests broken PC increment in CPU emulation\n");
+        }
+        
         // Track PC changes - if it's moving away from 0x080001f8 but coming back
         static u32 last_pc = 0;
         if (frame_count > 0 && reg[REG_PC] != last_pc) {
@@ -365,6 +375,13 @@ u32 update_gba(void)
             
             if (fc_stuck_count > 2) {
               fprintf(debug_log, "  WARNING: PC stuck at 0x080001fc for %lu frames\n", (unsigned long)fc_stuck_count);
+              
+              // Another workaround: skip this instruction too if stuck for 3+ frames
+              if (fc_stuck_count >= 3) {
+                fprintf(debug_log, "  WORKAROUND2: Skipping stuck ANDS instruction at 0x080001fc\n");
+                fprintf(debug_log, "  WORKAROUND2: Advancing PC from 0x080001fc to 0x08000200\n");
+                reg[REG_PC] = 0x08000200; // Move to next instruction
+              }
             }
           }
         }
