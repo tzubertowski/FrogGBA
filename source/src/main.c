@@ -329,6 +329,36 @@ u32 update_gba(void)
 
     update_gba_loop:
     
+    // Debug: Log first few frames to see if game is running
+    if (frame_count < 5) {
+      FILE *debug_log = fopen("froglog.txt", "a");
+      if (debug_log) {
+        fprintf(debug_log, "UPDATE_GBA: Frame %d, PC=0x%08lx, cycles=%lu, CPSR=0x%08lx\n", 
+                frame_count, (unsigned long)reg[REG_PC], (unsigned long)cpu_ticks, 
+                (unsigned long)reg[REG_CPSR]);
+        // If stuck at same PC, log what's there
+        if (frame_count > 0 && reg[REG_PC] == 0x080001f8) {
+          extern u8 *memory_map_read[8192];
+          u8 *rom_page = memory_map_read[0x080001f8 >> 15];
+          if (rom_page) {
+            // Show context around stuck instruction
+            u32 prev_instr = *((u32*)(rom_page + ((0x080001f8 - 4) & 0x7FFF)));
+            u32 curr_instr = *((u32*)(rom_page + (0x080001f8 & 0x7FFF)));
+            u32 next_instr = *((u32*)(rom_page + ((0x080001f8 + 4) & 0x7FFF)));
+            fprintf(debug_log, "  STUCK: 0x080001f4: 0x%08lx\n", (unsigned long)prev_instr);
+            fprintf(debug_log, "  STUCK: 0x080001f8: 0x%08lx <- PC HERE\n", (unsigned long)curr_instr);
+            fprintf(debug_log, "  STUCK: 0x080001fc: 0x%08lx\n", (unsigned long)next_instr);
+            fprintf(debug_log, "  STUCK: r0=0x%08lx, r7=0x%08lx, fp=0x%08lx, sp=0x%08lx, lr=0x%08lx\n",
+                    (unsigned long)reg[0], (unsigned long)reg[7], (unsigned long)reg[11],
+                    (unsigned long)reg[13], (unsigned long)reg[14]);
+            extern u32 irq_raised;
+            fprintf(debug_log, "  STUCK: irq_raised=0x%08lx\n", (unsigned long)irq_raised);
+          }
+        }
+        fclose(debug_log);
+      }
+    }
+    
     // Check for delayed save state loading after a few frames
     if (delayed_load_save_state && frame_count > 60) { // Wait ~1 second (60 frames)
       delayed_load_save_state = 0; // Clear flag
@@ -665,7 +695,19 @@ static void init_main(void)
 {
   s32 i;
 
+  FILE *debug_log = fopen("froglog.txt", "a");
+  if (debug_log) {
+    fprintf(debug_log, "INIT_MAIN: Starting GBA initialization\n");
+    fclose(debug_log);
+  }
+
   init_cpu();
+
+  debug_log = fopen("froglog.txt", "a");
+  if (debug_log) {
+    fprintf(debug_log, "INIT_MAIN: CPU initialized, setting up system\n");
+    fclose(debug_log);
+  }
 
   skip_next_frame = 0;
 
@@ -710,6 +752,11 @@ static void init_main(void)
 
   caches_inited = 1;
 
+  debug_log = fopen("froglog.txt", "a");
+  if (debug_log) {
+    fprintf(debug_log, "INIT_MAIN: GBA initialization completed\n");
+    fclose(debug_log);
+  }
 }
 
 
@@ -939,10 +986,22 @@ int user_main(int argc, char *argv[])
 
   FILE *debug_log2 = fopen("froglog.txt", "a");
   if (debug_log2) {
-    fprintf(debug_log2, "MAIN: About to call execute_arm_translate with cycles=%u\n", reg[EXECUTE_CYCLES]);
+    fprintf(debug_log2, "MAIN: About to call execute_arm_translate with cycles=%lu\n", (unsigned long)reg[EXECUTE_CYCLES]);
     fclose(debug_log2);
   }
 
+  // Add debug info about initial CPU state
+  FILE *debug_cpu = fopen("froglog.txt", "a");
+  if (debug_cpu) {
+    fprintf(debug_cpu, "MAIN: Initial CPU state - PC=0x%08lx, CPSR=0x%08lx, SP=0x%08lx\n", 
+            (unsigned long)reg[REG_PC], (unsigned long)reg[REG_CPSR], (unsigned long)reg[REG_SP]);
+    extern struct BiosData bios;
+    extern u32 gamepak_size;
+    fprintf(debug_cpu, "MAIN: BIOS loaded=1, ROM size=%lu bytes\n", 
+            (unsigned long)gamepak_size);
+    fclose(debug_cpu);
+  }
+  
   // We'll never actually return from here.
   execute_arm_translate(reg[EXECUTE_CYCLES]);
   
