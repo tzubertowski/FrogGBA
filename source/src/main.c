@@ -336,6 +336,14 @@ u32 update_gba(void)
         fprintf(debug_log, "UPDATE_GBA: Frame %d, PC=0x%08lx, cycles=%lu, CPSR=0x%08lx\n", 
                 frame_count, (unsigned long)reg[REG_PC], (unsigned long)cpu_ticks, 
                 (unsigned long)reg[REG_CPSR]);
+        
+        // Track PC changes - if it's moving away from 0x080001f8 but coming back
+        static u32 last_pc = 0;
+        if (frame_count > 0 && reg[REG_PC] != last_pc) {
+          fprintf(debug_log, "  PC_CHANGE: 0x%08lx -> 0x%08lx\n", 
+                  (unsigned long)last_pc, (unsigned long)reg[REG_PC]);
+        }
+        last_pc = reg[REG_PC];
         // If stuck at same PC, log what's there
         if (frame_count > 0 && reg[REG_PC] == 0x080001f8) {
           extern u8 *memory_map_read[8192];
@@ -359,8 +367,15 @@ u32 update_gba(void)
             if (frame_count == 5) {
               fprintf(debug_log, "  ANALYSIS: PC stuck at 0x080001f8 for 5 frames\n");
               fprintf(debug_log, "  ANALYSIS: This STMDB instruction tries to store registers to I/O space\n");
-              fprintf(debug_log, "  ANALYSIS: r0=0x040000d4 is DMA0 control register - should not be used as stack\n");
-              fprintf(debug_log, "  ANALYSIS: This suggests ROM corruption or emulation bug\n");
+              fprintf(debug_log, "  ANALYSIS: r0=0x040000d4 is DMA2 source address, not DMA0CNT\n");
+              fprintf(debug_log, "  ANALYSIS: STMDB should store to decreasing addresses: 0xd4,0xd0,0xcc,0xc8,0xc4\n");
+              
+              // Check if I/O registers are changing
+              extern u8 io_registers[0x400];
+              u32 dma2_src = ADDRESS32(io_registers, 0xD4);
+              u32 dma2_dst_low = ADDRESS32(io_registers, 0xD0); 
+              fprintf(debug_log, "  IO_CHECK: DMA2_SRC(0xD4)=0x%08lx, DMA2_DST_LOW(0xD0)=0x%08lx\n",
+                      (unsigned long)dma2_src, (unsigned long)dma2_dst_low);
             }
           }
         }
