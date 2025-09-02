@@ -3867,6 +3867,10 @@ s32 load_gamepak(char *name)
     debug_log = fopen("froglog.txt", "a");
     if (debug_log) {
       fprintf(debug_log, "GAMEPAK: About to load game config for: %s %s %s\n", game_title, game_code, maker_code);
+      fprintf(debug_log, "GAMEPAK: ROM Entry point: 0x%08x, Header CRC: 0x%02x\n",
+              ADDRESS32(gamepak_rom, 0x00), gamepak_rom[0xBC]);
+      fprintf(debug_log, "GAMEPAK: ROM size: %u bytes, First instruction: 0x%08x\n", 
+              gamepak_size, ADDRESS32(gamepak_rom, 0x08));
       fclose(debug_log);
     }
     load_game_config(game_title, game_code, maker_code);

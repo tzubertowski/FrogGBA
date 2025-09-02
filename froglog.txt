@@ -1,0 +1,109 @@
+GAMEPAK: About to load game config for: PINBALL ADV APZP 7J
+GAMEPAK: ROM Entry point: 0xea00002e, Header CRC: 0x00
+GAMEPAK: ROM size: 8388608 bytes, First instruction: 0x21a29a69
+GAMEPAK: Game config loaded, backup_type=3
+GAMEPAK: About to scan backup ID
+BACKUP_ID: Starting backup ID search, addr=0x087FFFFC, gamepak_size=8388608, max_iterations=500000
+BACKUP_ID: iteration 10000, addr=0x087F63C0
+BACKUP_ID: iteration 20000, addr=0x087EC780
+BACKUP_ID: iteration 30000, addr=0x087E2B40
+BACKUP_ID: iteration 40000, addr=0x087D8F00
+BACKUP_ID: iteration 50000, addr=0x087CF2C0
+BACKUP_ID: iteration 60000, addr=0x087C5680
+BACKUP_ID: iteration 70000, addr=0x087BBA40
+BACKUP_ID: iteration 80000, addr=0x087B1E00
+BACKUP_ID: iteration 90000, addr=0x087A81C0
+BACKUP_ID: iteration 100000, addr=0x0879E580
+BACKUP_ID: iteration 110000, addr=0x08794940
+BACKUP_ID: iteration 120000, addr=0x0878AD00
+BACKUP_ID: iteration 130000, addr=0x087810C0
+BACKUP_ID: iteration 140000, addr=0x08777480
+BACKUP_ID: iteration 150000, addr=0x0876D840
+BACKUP_ID: iteration 160000, addr=0x08763C00
+BACKUP_ID: iteration 170000, addr=0x08759FC0
+BACKUP_ID: iteration 180000, addr=0x08750380
+BACKUP_ID: iteration 190000, addr=0x08746740
+BACKUP_ID: iteration 200000, addr=0x0873CB00
+BACKUP_ID: iteration 210000, addr=0x08732EC0
+BACKUP_ID: iteration 220000, addr=0x08729280
+BACKUP_ID: iteration 230000, addr=0x0871F640
+BACKUP_ID: iteration 240000, addr=0x08715A00
+BACKUP_ID: iteration 250000, addr=0x0870BDC0
+BACKUP_ID: iteration 260000, addr=0x08702180
+BACKUP_ID: iteration 270000, addr=0x086F8540
+BACKUP_ID: iteration 280000, addr=0x086EE900
+BACKUP_ID: iteration 290000, addr=0x086E4CC0
+BACKUP_ID: iteration 300000, addr=0x086DB080
+BACKUP_ID: iteration 310000, addr=0x086D1440
+BACKUP_ID: iteration 320000, addr=0x086C7800
+BACKUP_ID: iteration 330000, addr=0x086BDBC0
+BACKUP_ID: iteration 340000, addr=0x086B3F80
+BACKUP_ID: iteration 350000, addr=0x086AA340
+BACKUP_ID: iteration 360000, addr=0x086A0700
+BACKUP_ID: iteration 370000, addr=0x08696AC0
+BACKUP_ID: iteration 380000, addr=0x0868CE80
+BACKUP_ID: iteration 390000, addr=0x08683240
+BACKUP_ID: iteration 400000, addr=0x08679600
+BACKUP_ID: iteration 410000, addr=0x0866F9C0
+BACKUP_ID: iteration 420000, addr=0x08665D80
+BACKUP_ID: iteration 430000, addr=0x0865C140
+BACKUP_ID: iteration 440000, addr=0x08652500
+BACKUP_ID: iteration 450000, addr=0x086488C0
+BACKUP_ID: iteration 460000, addr=0x0863EC80
+BACKUP_ID: iteration 470000, addr=0x08635040
+BACKUP_ID: iteration 480000, addr=0x0862B400
+BACKUP_ID: iteration 490000, addr=0x086217C0
+BACKUP_ID: iteration 500000, addr=0x08617B80
+BACKUP_ID: Hit iteration limit (500000), stopping search. backup_type=3
+GAMEPAK: Backup ID scan complete
+GAMEPAK: About to load backup file
+GAMEPAK: Backup loaded
+GAMEPAK: About to set CPU clock and unlock power
+GAMEPAK: About to save last played game
+GAMEPAK: load_gamepak COMPLETE, returning file_size=8388608
+INIT_MAIN: Starting GBA initialization
+INIT_MAIN: CPU initialized, setting up system
+INIT_MAIN: GBA initialization completed
+MAIN: About to set CPU clock
+MAIN: CPU clock set, about to initialize video
+MAIN: Video initialized, about to start sound and execute
+MAIN: About to call execute_arm_translate with cycles=272
+MAIN: Initial CPU state - PC=0x08000000, CPSR=0x0000001f, SP=0x03007f00
+MAIN: BIOS loaded=1, ROM size=8388608 bytes
+UPDATE_GBA: Frame 0, PC=0x080001f8, cycles=0, CPSR=0x0000003f
+UPDATE_GBA: Frame 1, PC=0x080001f8, cycles=271, CPSR=0x0000003f
+  STUCK: 0x080001f4: 0x6081494d
+  STUCK: 0x080001f8: 0x92006881 <- PC HERE (STMDB r0!, {r0,r7,fp,sp,lr})
+  STUCK: 0x080001fc: 0x21c06003
+  STUCK: r0=0x040000d4 (DMA0CNT), r7=0x00000000, fp=0x00000000, sp=0x03007edc, lr=0x080000f0
+  STUCK: irq_raised=0x00000000, condition LS should be TRUE
+UPDATE_GBA: Frame 2, PC=0x080001f8, cycles=272, CPSR=0x0000003f
+  EMULATION_BUG: Executed 1 cycles but PC didn't advance!
+  EMULATION_BUG: This suggests broken PC increment in CPU emulation
+  WORKAROUND: Skipping problematic STMDB instruction at 0x080001f8
+  WORKAROUND: Advancing PC from 0x080001f8 to 0x080001fc
+UPDATE_GBA: Frame 3, PC=0x080001fc, cycles=544, CPSR=0x0000003f
+  PC_CHANGE: 0x080001f8 -> 0x080001fc
+  DEBUG: Instruction at 0x080001fc = 0x21c06003
+UPDATE_GBA: Frame 4, PC=0x080001fc, cycles=1504, CPSR=0x0000003f
+  EMULATION_BUG: Executed 960 cycles but PC didn't advance!
+  EMULATION_BUG: This suggests broken PC increment in CPU emulation
+  DEBUG: Instruction at 0x080001fc = 0x21c06003
+UPDATE_GBA: Frame 5, PC=0x080001fc, cycles=1776, CPSR=0x0000003f
+  EMULATION_BUG: Executed 272 cycles but PC didn't advance!
+  EMULATION_BUG: This suggests broken PC increment in CPU emulation
+  DEBUG: Instruction at 0x080001fc = 0x21c06003
+  WARNING: PC stuck at 0x080001fc for 3 frames
+  WORKAROUND2: Skipping stuck ANDS instruction at 0x080001fc
+  WORKAROUND2: Advancing PC from 0x080001fc to 0x08000200
+UPDATE_GBA: Frame 6, PC=0x08000200, cycles=2736, CPSR=0x0000003f
+  PC_CHANGE: 0x080001fc -> 0x08000200
+UPDATE_GBA: Frame 7, PC=0x08000200, cycles=3008, CPSR=0x0000003f
+  EMULATION_BUG: Executed 272 cycles but PC didn't advance!
+  EMULATION_BUG: This suggests broken PC increment in CPU emulation
+UPDATE_GBA: Frame 8, PC=0x08000200, cycles=3968, CPSR=0x0000003f
+  EMULATION_BUG: Executed 960 cycles but PC didn't advance!
+  EMULATION_BUG: This suggests broken PC increment in CPU emulation
+UPDATE_GBA: Frame 9, PC=0x08000200, cycles=4240, CPSR=0x0000003f
+  EMULATION_BUG: Executed 272 cycles but PC didn't advance!
+  EMULATION_BUG: This suggests broken PC increment in CPU emulation
