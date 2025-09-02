@@ -23,7 +23,6 @@
 // - block memory needs psr swapping and user mode reg swapping
 
 #include "common.h"
-#include "volatile_mem.h"
 
 // Default
 s32 idle_loop_targets = 0;
@@ -62,12 +61,10 @@ u32 ALIGN_DATA spsr[7];
 #define DCACHE_FILL_WITH_LOCK                   (0x1F) // Fill with Lock (D)
 
 
-// Optimal volatile memory allocation - 2MB ROM cache sweet spot confirmed by testing
-#define ROM_TRANSLATION_CACHE_SIZE   (1024 * 1024 * 2)  // 2MB - Optimal size for 85-95% hit rate
-#define RAM_TRANSLATION_CACHE_SIZE   (1024 * 512 * 1)   // 512KB - 2x baseline for better hit rate
-
-// BIOS cache moved to regular RAM (minimal volatile memory waste)
-#define BIOS_TRANSLATION_CACHE_SIZE  (1024 * 128 * 1)   // 128KB in regular RAM - sufficient for <1% usage
+// gpSP-kai specialized translation cache architecture for optimal performance
+#define ROM_TRANSLATION_CACHE_SIZE   (1024 * 512 * 3)  // 1.5MB for ROM code (hot path)
+#define RAM_TRANSLATION_CACHE_SIZE   (1024 * 128 * 1)  // 128KB for RAM code (dynamic)  
+#define BIOS_TRANSLATION_CACHE_SIZE  (1024 * 128 * 1)  // 128KB for BIOS code (system calls)
 
 // Fallback unified caches (reduced since we have specialized caches)
 #define READONLY_CODE_CACHE_SIZE          (1024 * 1024 * 2)  // 2MB fallback
@@ -152,14 +149,14 @@ typedef union
 
 
 /* gpSP-kai specialized translation caches for optimal performance */
-u8 *rom_translation_cache = NULL;
-u8 *rom_translation_ptr = NULL;
+u8 ALIGN_DATA rom_translation_cache[ROM_TRANSLATION_CACHE_SIZE];
+u8 *rom_translation_ptr = rom_translation_cache;
 
-u8 *ram_translation_cache = NULL;
-u8 *ram_translation_ptr = NULL;
+u8 ALIGN_DATA ram_translation_cache[RAM_TRANSLATION_CACHE_SIZE];
+u8 *ram_translation_ptr = ram_translation_cache;
 
-u8 *bios_translation_cache = NULL;
-u8 *bios_translation_ptr = NULL;
+u8 ALIGN_DATA bios_translation_cache[BIOS_TRANSLATION_CACHE_SIZE];
+u8 *bios_translation_ptr = bios_translation_cache;
 
 /* Fallback unified caches (for backward compatibility) */
 u8 ALIGN_DATA readonly_code_cache[READONLY_CODE_CACHE_SIZE];
@@ -4060,66 +4057,6 @@ void set_cpu_mode(CPU_MODE_TYPE new_mode)
 
 void init_cpu(void)
 {
-  // Initialize volatile memory system for additional 4MB RAM
-  int volatile_init_result = volatile_mem_init();
-  if (!volatile_init_result) {
-    printf("Warning: Volatile memory initialization failed, using regular memory only\n");
-  }
-  
-  // Tier 1: Critical CPU Performance - ROM and RAM caches in volatile memory (2.5MB total)
-  
-  // ROM cache - highest priority (2MB volatile)
-  if (volatile_init_result && volatile_mem_is_active()) {
-    rom_translation_cache = (u8*)volatile_mem_alloc(ROM_TRANSLATION_CACHE_SIZE);
-  } else {
-    rom_translation_cache = NULL;
-  }
-  
-  if (rom_translation_cache) {
-    rom_translation_ptr = rom_translation_cache;
-    printf("ROM translation cache allocated in volatile memory: %d KB\n", ROM_TRANSLATION_CACHE_SIZE / 1024);
-  } else {
-    printf("ROM translation cache allocated in regular memory\n");
-    rom_translation_cache = (u8*)malloc(ROM_TRANSLATION_CACHE_SIZE);
-    if (!rom_translation_cache) {
-      printf("CRITICAL: Failed to allocate ROM translation cache!\n");
-      return;
-    }
-    rom_translation_ptr = rom_translation_cache;
-  }
-  
-  // RAM cache - high priority (512KB volatile) 
-  if (volatile_init_result && volatile_mem_is_active()) {
-    ram_translation_cache = (u8*)volatile_mem_alloc(RAM_TRANSLATION_CACHE_SIZE);
-  } else {
-    ram_translation_cache = NULL;
-  }
-  
-  if (ram_translation_cache) {
-    ram_translation_ptr = ram_translation_cache;
-    printf("RAM translation cache allocated in volatile memory: %d KB\n", RAM_TRANSLATION_CACHE_SIZE / 1024);
-  } else {
-    printf("RAM translation cache allocated in regular memory\n");
-    ram_translation_cache = (u8*)malloc(RAM_TRANSLATION_CACHE_SIZE);
-    if (!ram_translation_cache) {
-      printf("CRITICAL: Failed to allocate RAM translation cache!\n");
-      return;
-    }
-    ram_translation_ptr = ram_translation_cache;
-  }
-  
-  // BIOS cache - regular RAM (128KB) - don't waste precious volatile memory
-  bios_translation_cache = (u8*)malloc(BIOS_TRANSLATION_CACHE_SIZE);
-  if (bios_translation_cache) {
-    bios_translation_ptr = bios_translation_cache;
-    printf("BIOS translation cache allocated in regular memory: %d KB\n", BIOS_TRANSLATION_CACHE_SIZE / 1024);
-  } else {
-    printf("CRITICAL: Failed to allocate BIOS translation cache!\n");
-    return;
-  }
-  
-  printf("Volatile memory strategy: 2.5MB for critical caches, 1.5MB available for CPU-boosting features\n");
-
   memset(reg, 0, sizeof(reg));
   memset(reg_mode, 0, sizeof(reg_mode));
   memset(spsr, 0, sizeof(spsr));
@@ -4151,44 +4088,6 @@ void init_cpu(void)
 
   reg[CPU_HALT_STATE] = CPU_ACTIVE;
   reg[CHANGED_PC_STATUS] = 0;
-}
-
-void cpu_term(void)
-{
-  // Conservative cleanup - we know which caches should be volatile vs regular
-  // ROM cache - volatile if successfully allocated, regular if fallback
-  if (rom_translation_cache) {
-    // Try volatile first since we attempted volatile allocation
-    if (volatile_mem_is_active()) {
-      volatile_mem_free(rom_translation_cache);
-    } else {
-      free(rom_translation_cache);
-    }
-    rom_translation_cache = NULL;
-    rom_translation_ptr = NULL;
-  }
-  
-  // RAM cache - volatile if successfully allocated, regular if fallback
-  if (ram_translation_cache) {
-    // Try volatile first since we attempted volatile allocation
-    if (volatile_mem_is_active()) {
-      volatile_mem_free(ram_translation_cache);
-    } else {
-      free(ram_translation_cache);
-    }
-    ram_translation_cache = NULL;
-    ram_translation_ptr = NULL;
-  }
-  
-  // BIOS cache - always regular memory
-  if (bios_translation_cache) {
-    free(bios_translation_cache);
-    bios_translation_cache = NULL;
-    bios_translation_ptr = NULL;
-  }
-  
-  // Shutdown volatile memory system
-  volatile_mem_shutdown();
 }
 
 
