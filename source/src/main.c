@@ -337,6 +337,9 @@ u32 update_gba(void)
                 frame_count, (unsigned long)reg[REG_PC], (unsigned long)cpu_ticks, 
                 (unsigned long)reg[REG_CPSR]);
         
+        // Track PC changes - if it's moving away from 0x080001f8 but coming back
+        static u32 last_pc = 0;
+        
         // Debug: Check if PC advancement is fundamentally broken
         static u32 prev_cycles = 0;
         u32 cycles_delta = cpu_ticks - prev_cycles;
@@ -346,9 +349,6 @@ u32 update_gba(void)
           fprintf(debug_log, "  EMULATION_BUG: Executed %lu cycles but PC didn't advance!\n", (unsigned long)cycles_delta);
           fprintf(debug_log, "  EMULATION_BUG: This suggests broken PC increment in CPU emulation\n");
         }
-        
-        // Track PC changes - if it's moving away from 0x080001f8 but coming back
-        static u32 last_pc = 0;
         if (frame_count > 0 && reg[REG_PC] != last_pc) {
           fprintf(debug_log, "  PC_CHANGE: 0x%08lx -> 0x%08lx\n", 
                   (unsigned long)last_pc, (unsigned long)reg[REG_PC]);
