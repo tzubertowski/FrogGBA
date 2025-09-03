@@ -22,12 +22,13 @@
 #define SOUND_H
 
 
-#define SOUND_SAMPLES   (800)
-#define SOUND_FREQUENCY (48000)
+// Optimize audio for performance - match gpSP settings
+#define SOUND_SAMPLES   (736)
+#define SOUND_FREQUENCY (22050)
 
-// Lower quality settings (can enable for performance)
-// #define SOUND_SAMPLES   (736)
-// #define SOUND_FREQUENCY (44100)
+// Higher quality settings (worse performance)
+// #define SOUND_SAMPLES   (800)
+// #define SOUND_FREQUENCY (48000)
 
 extern u32 sound_pause;
 
