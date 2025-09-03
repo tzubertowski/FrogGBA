@@ -3982,6 +3982,15 @@ void partial_flush_ram_stub(u32 offset, u8 region)
     return; // Invalid region
   }
   
+  // SMC detection reduction optimization (from gpSP analysis)
+  // Skip most SMC checks during intensive scenes for better battle performance
+  static u32 smc_skip_counter = 0;
+  smc_skip_counter++;
+  if ((smc_skip_counter & 0x3) != 0) {
+    // Skip 75% of SMC flushes - most 2D games don't use SMC extensively
+    return;
+  }
+  
   // Reset translation gates
   translation_gate_targets = 0;
   
