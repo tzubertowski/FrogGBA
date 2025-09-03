@@ -4107,3 +4107,8 @@ void cpu_write_mem_savestate(SceUID savestate_file)
 }
 
 
+
+void cpu_term(void)
+{
+  // Cleanup function stub - baseline version doesn't need cleanup
+}
