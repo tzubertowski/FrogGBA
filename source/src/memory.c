@@ -3536,13 +3536,28 @@ static s32 load_gamepak_raw(char *name)
       return -1;
     }
 
+    // Record the ROM's absolute path whichever load path is taken. Everything
+    // that reopens the gamepak reads gamepak_filename_raw, and leaving it empty
+    // for RAM-resident ROMs made those reopens fail.
+    if (strrchr(name, '/') != NULL)
+    {
+      strcpy(gamepak_filename_raw, name);
+    }
+    else
+    {
+      char current_dir[MAX_PATH];
+
+      getcwd(current_dir, MAX_PATH);
+      sprintf(gamepak_filename_raw, "%s/%s", current_dir, name);
+    }
+
     // If it's a big file size keep it don't close it, we'll
     // probably want to load it later
     if (_gamepak_size <= gamepak_ram_buffer_size)
     {
       FILE_READ(gamepak_file, gamepak_rom, _gamepak_size);
       FILE_CLOSE(gamepak_file);
-      
+
       // Validate GBA ROM header - check for Nintendo logo at 0x04-0xA0
       // At minimum, check the first 4 bytes after entry point
       if (_gamepak_size >= 0x100) {
@@ -3557,7 +3572,7 @@ static s32 load_gamepak_raw(char *name)
     {
       // Read in just enough for the header
       FILE_READ(gamepak_file, gamepak_rom, 0x100);
-      
+
       // Validate GBA ROM header for large files too
       u8 *header = gamepak_rom + 0x04;
       // Check for part of the Nintendo logo (known bytes)
@@ -3567,18 +3582,6 @@ static s32 load_gamepak_raw(char *name)
       }
 
       gamepak_file_large = gamepak_file;
-
-      if (strrchr(name, '/') != NULL)
-      {
-        strcpy(gamepak_filename_raw, name);
-      }
-      else
-      {
-        char current_dir[MAX_PATH];
-
-        getcwd(current_dir, MAX_PATH);
-        sprintf(gamepak_filename_raw, "%s/%s", current_dir, name);
-      }
     }
 
     return _gamepak_size;
@@ -3785,6 +3788,29 @@ void load_state(char *savestate_filename)
     oam_update = 1;
     gbc_sound_update = 1;
     reg[CHANGED_PC_STATUS] = 1;
+
+    // Every translated block was compiled against the memory contents this
+    // load has just replaced, so discard them all. Without this the recompiler
+    // keeps running stale code: input stops responding, sound distorts, and
+    // execution eventually jumps to a wild address.
+    //
+    // Do not use cpu_term()/init_cpu() for this. init_cpu() memsets reg[] and
+    // resets the PC, which throws away the state just restored and restarts the
+    // game from the BIOS.
+    flush_translation_cache(TRANSLATION_REGION_READONLY, FLUSH_REASON_LOADING_ROM);
+    flush_translation_cache(TRANSLATION_REGION_WRITABLE, FLUSH_REASON_NATIVE_BRANCHING);
+  }
+  else
+  {
+    // Nothing was restored: the file is missing or too short. Report it,
+    // because silently doing nothing is indistinguishable from a successful
+    // load.
+    FILE *debug_log = fopen("froglog.txt", "a");
+    if (debug_log) {
+      fprintf(debug_log, "LOAD_STATE: nothing loaded - '%s' missing or too small\n",
+              savestate_path);
+      fclose(debug_log);
+    }
   }
 
   scePowerUnlock(0);

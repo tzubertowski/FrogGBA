@@ -1999,6 +1999,14 @@ u32 menu(void)
 
   void gamepak_file_reopen(void)
   {
+    // A RAM-resident ROM is never read through this handle, so failing to
+    // reopen it is not fatal. Only paged ROMs genuinely cannot continue.
+    if (gamepak_size <= gamepak_ram_buffer_size)
+    {
+      gamepak_file_large = -1;
+      return;
+    }
+
     for (i = 0; i < 5; i++)
     {
       FILE_OPEN(gamepak_file_large, gamepak_filename_raw, READ);

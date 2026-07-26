@@ -149,6 +149,7 @@ extern char gamepak_filename_raw[MAX_FILE];
 extern SceUID gamepak_file_large;
 extern u8 *gamepak_rom;
 extern u32 gamepak_ram_buffer_size;
+extern u32 gamepak_size;
 
 extern u32 oam_update;
 
