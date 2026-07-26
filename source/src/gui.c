@@ -152,9 +152,13 @@ typedef struct _MenuType MenuType;
   STRING_SELECTION_OPTION                                                     \
 }                                                                             \
 
+// action_function is deliberately NULL: it used to hold menu_select_savestate,
+// a nested function, and calling through that pointer jumped to a wild address
+// (bus error, EPC 0EAFE6A0). The slot rows are dispatched inline in
+// CURSOR_SELECT instead, matching how every other action option here works.
 #define SAVESTATE_OPTION(number)                                              \
 {                                                                             \
-  menu_select_savestate,                                                      \
+  NULL,                                                                       \
   NULL,                                                                       \
   NULL,                                                                       \
   savestate_timestamps[number],                                               \
@@ -1259,6 +1263,17 @@ static void get_savestate_info(char *filename, u16 *snapshot, char *timestamp)
   scePowerUnlock(0);
 }
 
+// Reads the screenshot a save state was written with, for the slot preview in
+// the save-state menu. get_savestate_info fills the buffer with a "no state"
+// placeholder when the slot is empty.
+static void load_savestate_preview(u32 slot, u16 *preview, char *timestamp)
+{
+  char state_filename[MAX_FILE];
+
+  get_savestate_filename(slot, state_filename);
+  get_savestate_info(state_filename, preview, timestamp);
+}
+
 static void get_savestate_filename(u32 slot, char *name_buffer)
 {
   char savestate_ext[16];
@@ -1984,6 +1999,14 @@ u32 menu(void)
 
   void gamepak_file_reopen(void)
   {
+    // A RAM-resident ROM is never read through this handle, so failing to
+    // reopen it is not fatal. Only paged ROMs genuinely cannot continue.
+    if (gamepak_size <= gamepak_ram_buffer_size)
+    {
+      gamepak_file_large = -1;
+      return;
+    }
+
     for (i = 0; i < 5; i++)
     {
       FILE_OPEN(gamepak_file_large, gamepak_filename_raw, READ);
@@ -2229,11 +2252,39 @@ u32 menu(void)
   set_cpu_clock(PSP_CLOCK_222);
   
   choose_menu(&main_menu);
-  
+
+  // Save-state slot preview. While a slot row is highlighted the panel shows
+  // that slot's saved screenshot instead of the paused game; anywhere else it
+  // shows the live screen. Refreshed only when the highlighted row changes,
+  // because each refresh reads a screenshot off the memory stick.
+  MenuType *previewed_menu = NULL;
+  u32 previewed_option = (u32)-1;
+
+  #define REFRESH_SAVESTATE_PREVIEW()                                         \
+    do {                                                                      \
+      if (current_menu == &savestate_menu && current_option != NULL &&         \
+          current_option->line_number < 10 && savestate_screen != NULL)        \
+      {                                                                       \
+        savestate_slot = current_option->line_number;                          \
+        load_savestate_preview(savestate_slot, savestate_screen, line_buffer); \
+        screen_image_ptr = savestate_screen;                                   \
+      }                                                                       \
+      else                                                                    \
+      {                                                                       \
+        screen_image_ptr = current_screen;                                     \
+      }                                                                       \
+    } while (0)
 
   while (repeat)
   {
     clear_screen(COLOR15_TO_32(COLOR_BG));
+
+    if (current_menu != previewed_menu || current_option_num != previewed_option)
+    {
+      previewed_menu = current_menu;
+      previewed_option = current_option_num;
+      REFRESH_SAVESTATE_PREVIEW();
+    }
 
     if ((counter % 30) == 0)
 	{
@@ -2392,7 +2443,43 @@ u32 menu(void)
             break;
 
           case ACTION_OPTION:
-            if (current_option->action_function != NULL)
+            // The save-state submenu's rows share line numbers with the main
+            // menu's own actions, so resolve them by menu first.
+            if (current_menu == &savestate_menu)
+            {
+              if (current_option->line_number < 10)
+              {
+                // A slot row: savestate_action selects save versus load.
+                savestate_slot = current_option->line_number;
+
+                if (savestate_action != 0)
+                  action_savestate();
+                else
+                  action_loadstate();
+
+                return_value = 1;
+                repeat = 0;
+              }
+              else if (current_option->line_number == 11)
+              {
+                // "Load state from file": browse dir_state for a .svs.
+                const char *state_ext[] = { ".svs", NULL };
+
+                if (load_file(state_ext, filename_buffer, dir_state) == 0 && !first_load)
+                {
+                  load_state(filename_buffer);
+                  return_value = 1;
+                  repeat = 0;
+                }
+                else
+                {
+                  menu_init();
+                  choose_menu(current_menu);
+                  counter = 0;
+                }
+              }
+            }
+            else if (current_option->action_function != NULL)
               current_option->action_function();
             else
             {
