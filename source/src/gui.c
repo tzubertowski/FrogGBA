@@ -152,9 +152,13 @@ typedef struct _MenuType MenuType;
   STRING_SELECTION_OPTION                                                     \
 }                                                                             \
 
+// action_function is deliberately NULL: it used to hold menu_select_savestate,
+// a nested function, and calling through that pointer jumped to a wild address
+// (bus error, EPC 0EAFE6A0). The slot rows are dispatched inline in
+// CURSOR_SELECT instead, matching how every other action option here works.
 #define SAVESTATE_OPTION(number)                                              \
 {                                                                             \
-  menu_select_savestate,                                                      \
+  NULL,                                                                       \
   NULL,                                                                       \
   NULL,                                                                       \
   savestate_timestamps[number],                                               \
@@ -2392,7 +2396,43 @@ u32 menu(void)
             break;
 
           case ACTION_OPTION:
-            if (current_option->action_function != NULL)
+            // The save-state submenu's rows share line numbers with the main
+            // menu's own actions, so resolve them by menu first.
+            if (current_menu == &savestate_menu)
+            {
+              if (current_option->line_number < 10)
+              {
+                // A slot row: savestate_action selects save versus load.
+                savestate_slot = current_option->line_number;
+
+                if (savestate_action != 0)
+                  action_savestate();
+                else
+                  action_loadstate();
+
+                return_value = 1;
+                repeat = 0;
+              }
+              else if (current_option->line_number == 11)
+              {
+                // "Load state from file": browse dir_state for a .svs.
+                const char *state_ext[] = { ".svs", NULL };
+
+                if (load_file(state_ext, filename_buffer, dir_state) == 0 && !first_load)
+                {
+                  load_state(filename_buffer);
+                  return_value = 1;
+                  repeat = 0;
+                }
+                else
+                {
+                  menu_init();
+                  choose_menu(current_menu);
+                  counter = 0;
+                }
+              }
+            }
+            else if (current_option->action_function != NULL)
               current_option->action_function();
             else
             {
