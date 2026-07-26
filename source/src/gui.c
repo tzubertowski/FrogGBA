@@ -1263,6 +1263,17 @@ static void get_savestate_info(char *filename, u16 *snapshot, char *timestamp)
   scePowerUnlock(0);
 }
 
+// Reads the screenshot a save state was written with, for the slot preview in
+// the save-state menu. get_savestate_info fills the buffer with a "no state"
+// placeholder when the slot is empty.
+static void load_savestate_preview(u32 slot, u16 *preview, char *timestamp)
+{
+  char state_filename[MAX_FILE];
+
+  get_savestate_filename(slot, state_filename);
+  get_savestate_info(state_filename, preview, timestamp);
+}
+
 static void get_savestate_filename(u32 slot, char *name_buffer)
 {
   char savestate_ext[16];
@@ -2233,11 +2244,39 @@ u32 menu(void)
   set_cpu_clock(PSP_CLOCK_222);
   
   choose_menu(&main_menu);
-  
+
+  // Save-state slot preview. While a slot row is highlighted the panel shows
+  // that slot's saved screenshot instead of the paused game; anywhere else it
+  // shows the live screen. Refreshed only when the highlighted row changes,
+  // because each refresh reads a screenshot off the memory stick.
+  MenuType *previewed_menu = NULL;
+  u32 previewed_option = (u32)-1;
+
+  #define REFRESH_SAVESTATE_PREVIEW()                                         \
+    do {                                                                      \
+      if (current_menu == &savestate_menu && current_option != NULL &&         \
+          current_option->line_number < 10 && savestate_screen != NULL)        \
+      {                                                                       \
+        savestate_slot = current_option->line_number;                          \
+        load_savestate_preview(savestate_slot, savestate_screen, line_buffer); \
+        screen_image_ptr = savestate_screen;                                   \
+      }                                                                       \
+      else                                                                    \
+      {                                                                       \
+        screen_image_ptr = current_screen;                                     \
+      }                                                                       \
+    } while (0)
 
   while (repeat)
   {
     clear_screen(COLOR15_TO_32(COLOR_BG));
+
+    if (current_menu != previewed_menu || current_option_num != previewed_option)
+    {
+      previewed_menu = current_menu;
+      previewed_option = current_option_num;
+      REFRESH_SAVESTATE_PREVIEW();
+    }
 
     if ((counter % 30) == 0)
 	{
